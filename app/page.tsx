@@ -72,11 +72,12 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="heroImage">
-          <div className="imageStub">
-            <span>Фото строительного объекта</span>
-          </div>
-        </div>
+<div className="heroImage">
+  <img
+    src="/images/hero-construction.jpg"
+    alt="Строительный объект"
+  />
+</div>
       </section>
 
       <section className="features">
