@@ -1,15 +1,15 @@
 const catalog = [
-  { title: "Профиль для гипсокартона", image: "/images/catalog/gkl-profile.jpg" },
-  { title: "Подвесные кассетные потолочные системы", image: "/images/catalog/cassette-ceiling.jpg" },
-  { title: "Реечные потолочные системы", image: "/images/catalog/rack-ceiling.jpg" },
-  { title: "Дизайнерские потолочные решения", image: "/images/catalog/design-ceiling.jpg" },
-  { title: "Потолочные решения для медицинских учреждений", image: "/images/catalog/medical-ceiling.jpg" },
-  { title: "Потолки Грильято", image: "/images/catalog/grilyato.jpg" },
-  { title: "Ревизионные люки", image: "/images/catalog/revision-hatch.jpg" },
-  { title: "Фальшполы", image: "/images/catalog/raised-floor.jpg" },
-  { title: "Сендвич-панели", image: "/images/catalog/sandwich-panel.jpg" },
-  { title: "Металлопрокат", image: "/images/catalog/metal-roll.jpg" },
-  { title: "Арматура", image: "/images/catalog/rebar.jpg" },
+  { title: "Профиль для гипсокартона", image: "/images/catalog/gkl-profile.jpg", href: "/catalog/gkl-profile" },
+  { title: "Подвесные кассетные потолочные системы", image: "/images/catalog/cassette-ceiling.jpg", href: "/catalog/cassette-ceilings" },
+  { title: "Реечные потолочные системы", image: "/images/catalog/rack-ceiling.jpg", href: "/catalog/rack-ceilings" },
+  { title: "Дизайнерские потолочные решения", image: "/images/catalog/design-ceiling.jpg", href: "/catalog/design-ceilings" },
+  { title: "Потолочные решения для медицинских учреждений", image: "/images/catalog/medical-ceiling.jpg", href: "/catalog/medical-ceilings" },
+  { title: "Потолки Грильято", image: "/images/catalog/grilyato.jpg", href: "/catalog/grilyato" },
+  { title: "Ревизионные люки", image: "/images/catalog/revision-hatch.jpg", href: "/catalog/revision-hatches" },
+  { title: "Фальшполы", image: "/images/catalog/raised-floor.jpg", href: "/catalog/raised-floors" },
+  { title: "Сендвич-панели", image: "/images/catalog/sandwich-panel.jpg", href: "/catalog/sandwich-panels" },
+  { title: "Металлопрокат", image: "/images/catalog/metal-roll.jpg", href: "/catalog/metal-roll" },
+  { title: "Арматура", image: "/images/catalog/rebar.jpg", href: "/catalog/rebar" }
 ];
 
 const brands = ["Knauf", "Албес", "ТехноНиколь", "КТЗ", "СПК", "МеталлТрейд"];
@@ -80,7 +80,7 @@ export default function Home() {
         </a>
 
         <nav className="nav">
-          <a href="#catalog">Каталог</a>
+          <a href="/catalog">Каталог</a>
           <a href="/solutions">Решения</a>
           <a href="#brands">Бренды</a>
           <a href="/articles">Статьи</a>
@@ -125,15 +125,18 @@ export default function Home() {
         <h2>Материалы и решения для строительства</h2>
         <div className="catalogGrid">
           {catalog.map((item, index) => (
-            <article className="catalogCard" key={item.title}>
+            <a className="catalogCard" href={item.href} key={item.title}>
               <div className="catalogImage"><img src={item.image} alt={item.title} /></div>
               <div className="catalogText">
                 <span>{index + 1}.</span>
                 <h3>{item.title}</h3>
                 <p>Подберём материалы, рассчитаем объём и организуем поставку на объект.</p>
               </div>
-            </article>
+            </a>
           ))}
+        </div>
+        <div className="sectionAction">
+          <a className="button secondary" href="/catalog">Смотреть весь каталог</a>
         </div>
       </section>
 
