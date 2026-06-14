@@ -811,3 +811,102 @@ a { color: inherit; text-decoration: none; }
     font-size: 28px;
   }
 }
+
+/* Интерактивность кнопок IDELEON */
+
+.button,
+button.button,
+.form button,
+.callbackForm button[type="submit"],
+.modalClose {
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.button:hover,
+button.button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.14);
+}
+
+.button:active,
+button.button:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.button.primary:hover {
+  background: var(--orange-dark);
+  color: #ffffff;
+}
+
+.button.secondary:hover,
+button.button.secondary:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(255, 106, 0, 0.22);
+}
+
+.button:focus-visible,
+button.button:focus-visible,
+.form button:focus-visible,
+.callbackForm button[type="submit"]:focus-visible,
+.modalClose:focus-visible {
+  outline: 3px solid rgba(255, 106, 0, 0.28);
+  outline-offset: 4px;
+}
+
+.form button:hover,
+.callbackForm button[type="submit"]:hover {
+  transform: translateY(-2px);
+  background: var(--orange-dark);
+  box-shadow: 0 16px 34px rgba(255, 106, 0, 0.22);
+}
+
+.form button:active,
+.callbackForm button[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(255, 106, 0, 0.16);
+}
+
+.form button:disabled,
+.callbackForm button[type="submit"]:disabled,
+.button:disabled,
+button.button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+  box-shadow: none;
+}
+
+.modalClose:hover {
+  transform: rotate(90deg);
+  color: var(--orange);
+  border-color: rgba(255, 106, 0, 0.35);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  button.button,
+  .form button,
+  .callbackForm button[type="submit"],
+  .modalClose {
+    transition: none;
+  }
+
+  .button:hover,
+  button.button:hover,
+  .form button:hover,
+  .callbackForm button[type="submit"]:hover,
+  .modalClose:hover {
+    transform: none;
+  }
+}
