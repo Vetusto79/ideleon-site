@@ -6,7 +6,7 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
         <a href="/articles">Статьи</a>
@@ -59,6 +59,13 @@ export default function ArticlePage() {
 
       <article className="articlePage">
         <div className="articleHeader">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/articles">Статьи</a>
+          <span className="crumbSep">/</span>
+          <span>Как рассчитать профиль для гипсокартона</span>
+        </nav>
           <p className="label">Статья</p>
           <h1>Как рассчитать профиль для гипсокартона</h1>
           <p>Профиль для ГКЛ нужно считать не только по площади, но и по конструкции, шагу, высоте и нагрузкам.</p>
@@ -108,4 +115,3 @@ export default function ArticlePage() {
     </main>
   );
 }
-
