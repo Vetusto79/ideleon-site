@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Потолки Грильято</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Потолки Грильято</h1>
           <p>Ячеистые потолочные системы Грильято для торговых центров, офисов, холлов и общественных пространств.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
