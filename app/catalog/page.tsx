@@ -58,6 +58,11 @@ export default function Catalog() {
       <Header />
 
       <section className="pageHero">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <span>Каталог</span>
+        </nav>
         <p className="label">Каталог</p>
         <h1>Строительные материалы и потолочные системы для объектов</h1>
         <p>
@@ -185,4 +190,3 @@ export default function Catalog() {
     </main>
   );
 }
-
