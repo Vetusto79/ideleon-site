@@ -144,6 +144,7 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
   box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: block;
 }
 .catalogCard:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(15, 23, 42, 0.1); }
 .catalogImage { height: 190px; background: #e7edf4; overflow: hidden; }
@@ -151,7 +152,7 @@ a { color: inherit; text-decoration: none; }
 .catalogText { padding: 20px; }
 .catalogText span { color: var(--orange); font-weight: 900; }
 .catalogCard h3 { margin: 8px 0 12px; font-size: 20px; line-height: 1.2; }
-.catalogCard p { margin: 0; color: var(--muted); line-height: 1.55; }
+.catalogCard p { margin: 0 0 14px; color: var(--muted); line-height: 1.55; }
 
 .solutionPreviewGrid {
   display: grid;
@@ -325,7 +326,8 @@ a { color: inherit; text-decoration: none; }
   line-height: 1.7;
 }
 
-.articleListSection {
+.articleListSection,
+.catalogListSection {
   max-width: 1760px;
   margin: 0 auto 80px;
   padding: 0 56px;
@@ -398,6 +400,110 @@ a { color: inherit; text-decoration: none; }
   font-weight: 800;
 }
 
+.productHero {
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: 90px 56px 70px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 56px;
+  align-items: center;
+}
+.productHero h1 {
+  margin: 0;
+  font-size: clamp(42px, 5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.05em;
+}
+.productHero p:not(.label) {
+  max-width: 760px;
+  margin: 24px 0 0;
+  color: var(--muted);
+  font-size: 21px;
+  line-height: 1.65;
+}
+.productHeroImage {
+  min-height: 420px;
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16);
+  background: var(--blue-soft);
+}
+.productHeroImage img {
+  width: 100%;
+  height: 100%;
+  min-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+.productInfoGrid {
+  max-width: 1760px;
+  margin: 0 auto;
+  padding: 0 56px 76px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+.productInfoCard {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 34px;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.05);
+}
+.productInfoCard h2 {
+  margin: 0 0 22px;
+  font-size: 32px;
+  letter-spacing: -0.04em;
+}
+.productInfoCard ul {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.75;
+}
+.productProcess {
+  margin: 20px 0;
+  padding: 80px 56px;
+  background: #0f172a;
+  color: var(--white);
+}
+.productProcess > p,
+.productProcess h2,
+.productProcess .steps {
+  max-width: 1760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.productProcess h2 {
+  margin-top: 0;
+  font-size: clamp(32px, 3vw, 48px);
+  letter-spacing: -0.04em;
+}
+.productCta {
+  max-width: 1760px;
+  margin: 0 auto 80px;
+  padding: 56px;
+  background: linear-gradient(135deg, #ffffff 0%, #eaf2fb 100%);
+  border-radius: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+}
+.productCta h2 {
+  margin: 0 0 12px;
+  font-size: 40px;
+  letter-spacing: -0.04em;
+}
+.productCta p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.6;
+}
+
 .request {
   max-width: 1760px;
   margin: 0 auto 70px;
@@ -455,18 +561,22 @@ a { color: inherit; text-decoration: none; }
   .header { padding: 18px 22px; flex-wrap: wrap; }
   .logo { width: 240px; }
   .nav { order: 3; width: 100%; overflow-x: auto; }
-  .hero { grid-template-columns: 1fr; padding: 54px 22px; }
+  .hero, .productHero { grid-template-columns: 1fr; padding: 54px 22px; }
   .features { grid-template-columns: repeat(2, 1fr); padding: 0 22px 44px; }
   .catalogGrid { grid-template-columns: repeat(2, 1fr); }
   .brandGrid { grid-template-columns: repeat(3, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); }
-  .articleGrid, .faqGrid, .aboutSection, .solutionPreviewGrid, .solutionPageGrid, .detailSection, .articleGridLarge { grid-template-columns: 1fr; }
-  .section, .darkSection, .request, .footer, .aboutSection, .faqSection, .solutionsPreview, .pageHero, .solutionPageGrid, .detailSection, .articleListSection, .articlePage {
+  .articleGrid, .faqGrid, .aboutSection, .solutionPreviewGrid, .solutionPageGrid, .detailSection, .articleGridLarge, .productInfoGrid { grid-template-columns: 1fr; }
+  .section, .darkSection, .request, .footer, .aboutSection, .faqSection, .solutionsPreview, .pageHero, .solutionPageGrid, .detailSection, .articleListSection, .articlePage, .catalogListSection, .productInfoGrid, .productProcess, .productCta {
     padding-left: 22px;
     padding-right: 22px;
   }
   .request { grid-template-columns: 1fr; border-radius: 0; }
   .articleContent { padding: 28px; }
+  .productCta {
+    display: grid;
+    border-radius: 0;
+  }
 }
 
 @media (max-width: 640px) {
