@@ -28,7 +28,8 @@ const routes = [
     "/articles/reechnye-potolki",
     "/articles/revizionnye-lyuki",
     "/articles/profil-dlya-gkl",
-    "/articles/postavshchik-stroymaterialov"
+    "/articles/postavshchik-stroymaterialov",
+    "/privacy"
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -39,4 +40,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : route.startsWith("/catalog") ? 0.8 : 0.7,
   }));
 }
-
