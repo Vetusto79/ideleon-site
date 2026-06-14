@@ -910,3 +910,133 @@ button.button:disabled {
     transform: none;
   }
 }
+
+/* Согласие на обработку персональных данных */
+
+.consentField {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 18px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin: -2px 0 2px;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.consentField input {
+  width: 18px !important;
+  min-height: 18px !important;
+  height: 18px !important;
+  margin: 1px 0 0;
+  padding: 0 !important;
+  accent-color: var(--orange);
+}
+
+.consentField a {
+  color: var(--orange);
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.consentField a:hover {
+  color: var(--orange-dark);
+}
+
+.consentField.compact {
+  margin-top: 0;
+  font-size: 12px;
+}
+
+/* Страница политики обработки персональных данных */
+
+.legalPage {
+  padding: 0 7vw 80px;
+}
+
+.legalContent {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 44px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.06);
+}
+
+.legalContent h2 {
+  margin: 34px 0 12px;
+  color: var(--navy);
+  font-size: 28px;
+  line-height: 1.15;
+}
+
+.legalContent h2:first-of-type {
+  margin-top: 0;
+}
+
+.legalContent p,
+.legalContent li {
+  color: #475569;
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.legalContent ul {
+  margin: 0 0 22px;
+  padding-left: 22px;
+}
+
+.legalDate {
+  margin: 0 0 24px;
+  color: #64748b !important;
+  font-size: 14px !important;
+}
+
+.legalNotice {
+  margin-top: 36px;
+  padding: 22px;
+  border-radius: 20px;
+  background: #fff7ed;
+  border: 1px solid rgba(255, 106, 0, 0.2);
+}
+
+.legalNotice strong {
+  color: var(--navy);
+}
+
+.legalNotice p {
+  margin: 8px 0 0;
+}
+
+.footer a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.18s ease;
+}
+
+.footer a:hover {
+  color: var(--orange);
+}
+
+@media (max-width: 720px) {
+  .legalPage {
+    padding: 0 20px 56px;
+  }
+
+  .legalContent {
+    padding: 28px 22px;
+    border-radius: 22px;
+  }
+
+  .legalContent h2 {
+    font-size: 24px;
+  }
+
+  .legalContent p,
+  .legalContent li {
+    font-size: 16px;
+  }
+}
