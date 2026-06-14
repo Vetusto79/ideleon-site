@@ -1,8 +1,3 @@
-export const metadata = {
-  title: "Решения для застройщиков, подрядчиков и строительных магазинов",
-  description: "Решения Иделеон для застройщиков, подрядчиков, строительных магазинов и медицинских объектов: подбор материалов, расчёт и поставка.",
-};
-
 function Header() {
   return (
     <header className="header">
@@ -11,10 +6,10 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
-        <a href="/#articles">Статьи</a>
+        <a href="/articles">Статьи</a>
         <a href="/#about">О компании</a>
         <a href="/#contacts">Контакты</a>
       </nav>
@@ -75,12 +70,22 @@ const solutions = [
   },
 ];
 
+export const metadata = {
+  title: "Решения для застройщиков, подрядчиков и строительных магазинов",
+  description: "Решения Иделеон для застройщиков, подрядчиков, строительных магазинов и медицинских объектов: подбор материалов, расчёт и поставка.",
+};
+
 export default function Solutions() {
   return (
     <main>
       <Header />
 
       <section className="pageHero">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <span>Решения</span>
+        </nav>
         <p className="label">Решения для клиентов</p>
         <h1>Помогаем разным участникам строительного рынка решать свои задачи</h1>
         <p>
