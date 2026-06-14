@@ -1,6 +1,9 @@
+import RequestForm from "./components/RequestForm";
+
 export const metadata = {
   title: "Поставка строительных материалов для застройщиков и подрядчиков",
-  description: "Иделеон поставляет строительные материалы, потолочные системы, профиль для ГКЛ, люки, фальшполы, металлопрокат и арматуру. Расчёт и доставка по России.",
+  description:
+    "Иделеон поставляет строительные материалы, потолочные системы, профиль для ГКЛ, люки, фальшполы, металлопрокат и арматуру. Расчёт и доставка по России.",
 };
 
 const catalog = [
@@ -14,7 +17,7 @@ const catalog = [
   { title: "Фальшполы", image: "/images/catalog/raised-floor.jpg", href: "/catalog/raised-floors" },
   { title: "Сендвич-панели", image: "/images/catalog/sandwich-panel.jpg", href: "/catalog/sandwich-panels" },
   { title: "Металлопрокат", image: "/images/catalog/metal-roll.jpg", href: "/catalog/metal-roll" },
-  { title: "Арматура", image: "/images/catalog/rebar.jpg", href: "/catalog/rebar" }
+  { title: "Арматура", image: "/images/catalog/rebar.jpg", href: "/catalog/rebar" },
 ];
 
 const brands = ["Knauf", "Албес", "ТехноНиколь", "КТЗ", "СПК", "МеталлТрейд"];
@@ -46,14 +49,17 @@ const articles = [
   {
     title: "Как выбрать подвесную потолочную систему для коммерческого объекта",
     href: "/articles/kak-vybrat-podvesnoy-potolok",
+    text: "Разбираем, на что смотреть при выборе потолочной системы для офиса, ТЦ, клиники или общественного пространства.",
   },
   {
     title: "Кассетные потолки: где применяются и чем отличаются",
     href: "/articles/kassetnye-potolki",
+    text: "Практический обзор кассетных потолочных систем, их преимуществ, комплектующих и области применения.",
   },
   {
     title: "Ревизионные люки под покраску и под плитку: что выбрать",
     href: "/articles/revizionnye-lyuki",
+    text: "Объясняем, как выбрать ревизионный люк под отделку и не ошибиться с размером, доступом и типом открывания.",
   },
 ];
 
@@ -211,7 +217,7 @@ export default function Home() {
           {articles.map((article) => (
             <a className="articleCard" href={article.href} key={article.title}>
               <h3>{article.title}</h3>
-              <p>Практический материал для выбора, расчёта и комплектации объекта.</p>
+              <p>{article.text}</p>
               <span>Читать →</span>
             </a>
           ))}
@@ -240,13 +246,7 @@ export default function Home() {
           <h2>Рассчитаем материалы для вашего объекта</h2>
           <p>Оставьте контакты — специалист Иделеон свяжется с вами, уточнит задачу и подготовит предложение.</p>
         </div>
-        <form className="form">
-          <input placeholder="Ваше имя" />
-          <input placeholder="Телефон" />
-          <input placeholder="Компания" />
-          <textarea placeholder="Кратко опишите задачу" />
-          <button type="button">Получить расчёт</button>
-        </form>
+        <RequestForm />
       </section>
 
       <footer id="contacts" className="footer">
