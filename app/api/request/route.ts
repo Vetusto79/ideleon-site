@@ -30,6 +30,7 @@ export async function POST(request: Request) {
     const email = clean(formData.get("email"));
     const task = clean(formData.get("task"));
     const consent = clean(formData.get("consent"));
+    const sourcePage = clean(formData.get("sourcePage"));
     const website = clean(formData.get("website"));
 
     // Простая защита от ботов: обычный человек это поле не видит и не заполняет.
@@ -111,7 +112,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const referer = request.headers.get("referer") || "Не определена";
+    const referer = sourcePage || request.headers.get("referer") || "Не определена";
     const createdAt = new Date().toISOString();
 
     const isCallback = requestType === "callback";
