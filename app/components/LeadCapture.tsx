@@ -11,7 +11,7 @@ export default function LeadCapture({
   eyebrow = "Заявка",
   title = "Рассчитаем материалы для вашего объекта",
   text = "Оставьте контакты — специалист Иделеон свяжется с вами, уточнит задачу и подготовит предложение.",
-  id,
+  id = "request",
 }: LeadCaptureProps) {
   return (
     <section id={id} className="request">
