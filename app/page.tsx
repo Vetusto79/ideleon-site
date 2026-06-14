@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Поставка строительных материалов для застройщиков и подрядчиков",
+  description: "Иделеон поставляет строительные материалы, потолочные системы, профиль для ГКЛ, люки, фальшполы, металлопрокат и арматуру. Расчёт и доставка по России.",
+};
+
 const catalog = [
   { title: "Профиль для гипсокартона", image: "/images/catalog/gkl-profile.jpg", href: "/catalog/gkl-profile" },
   { title: "Подвесные кассетные потолочные системы", image: "/images/catalog/cassette-ceiling.jpg", href: "/catalog/cassette-ceilings" },
