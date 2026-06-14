@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Дизайнерские потолочные решения</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Дизайнерские потолочные решения</h1>
           <p>Потолочные решения для проектов, где важны архитектура, внешний вид и индивидуальная конфигурация.</p>
@@ -121,4 +128,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
