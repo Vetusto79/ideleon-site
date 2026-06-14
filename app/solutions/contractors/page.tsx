@@ -1,8 +1,3 @@
-export const metadata = {
-  title: "Решения для подрядчиков",
-  description: "Помогаем подрядчикам подобрать строительные материалы, рассчитать комплектацию и организовать поставку под график работ.",
-};
-
 function Header() {
   return (
     <header className="header">
@@ -11,10 +6,10 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
-        <a href="/#articles">Статьи</a>
+        <a href="/articles">Статьи</a>
         <a href="/#about">О компании</a>
         <a href="/#contacts">Контакты</a>
       </nav>
@@ -52,12 +47,24 @@ function Footer() {
   );
 }
 
+export const metadata = {
+  title: "Решения для подрядчиков",
+  description: "Помогаем подрядчикам подобрать строительные материалы, рассчитать комплектацию и организовать поставку под график работ.",
+};
+
 export default function Page() {
   return (
     <main>
       <Header />
 
       <section className="pageHero">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/solutions">Решения</a>
+          <span className="crumbSep">/</span>
+          <span>Подрядчиков</span>
+        </nav>
         <p className="label">Решения для клиентов</p>
         <h1>Решения для подрядчиков</h1>
         <p>Помогаем подрядным организациям быстро подобрать материалы, закрыть спецификацию и получить поставку под график выполнения работ.</p>
