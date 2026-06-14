@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Решения для застройщиков, подрядчиков и строительных магазинов",
+  description: "Решения Иделеон для застройщиков, подрядчиков, строительных магазинов и медицинских объектов: подбор материалов, расчёт и поставка.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -98,4 +103,3 @@ export default function Solutions() {
     </main>
   );
 }
-
