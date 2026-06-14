@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Фальшполы</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Фальшполы</h1>
           <p>Модульные фальшполы для офисов, серверных, технических помещений и объектов с инженерными коммуникациями под полом.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
