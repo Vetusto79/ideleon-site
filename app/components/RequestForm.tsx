@@ -62,6 +62,16 @@ export default function RequestForm() {
       />
       <textarea name="task" placeholder="Кратко опишите задачу" required />
 
+      <label className="consentField">
+        <input name="consent" type="checkbox" value="yes" required />
+        <span>
+          Я согласен на обработку персональных данных и ознакомлен с{" "}
+          <a href="/privacy" target="_blank" rel="noreferrer">
+            Политикой обработки персональных данных
+          </a>
+        </span>
+      </label>
+
       <input
         className="hiddenField"
         name="website"
