@@ -1,12 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
 export default function RequestForm() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [message, setMessage] = useState("");
+  const [sourcePage, setSourcePage] = useState("");
+
+  useEffect(() => {
+    setSourcePage(window.location.href);
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -71,6 +76,8 @@ export default function RequestForm() {
           </a>
         </span>
       </label>
+
+      <input type="hidden" name="sourcePage" value={sourcePage} />
 
       <input
         className="hiddenField"
