@@ -38,9 +38,18 @@ const solutionCards = [
 ];
 
 const articles = [
-  "Как выбрать подвесную потолочную систему для коммерческого объекта",
-  "Кассетные потолки: где применяются и чем отличаются",
-  "Ревизионные люки под покраску и под плитку: что выбрать",
+  {
+    title: "Как выбрать подвесную потолочную систему для коммерческого объекта",
+    href: "/articles/kak-vybrat-podvesnoy-potolok",
+  },
+  {
+    title: "Кассетные потолки: где применяются и чем отличаются",
+    href: "/articles/kassetnye-potolki",
+  },
+  {
+    title: "Ревизионные люки под покраску и под плитку: что выбрать",
+    href: "/articles/revizionnye-lyuki",
+  },
 ];
 
 const faq = [
@@ -74,7 +83,7 @@ export default function Home() {
           <a href="#catalog">Каталог</a>
           <a href="/solutions">Решения</a>
           <a href="#brands">Бренды</a>
-          <a href="#articles">Статьи</a>
+          <a href="/articles">Статьи</a>
           <a href="#about">О компании</a>
           <a href="#contacts">Контакты</a>
         </nav>
@@ -192,11 +201,15 @@ export default function Home() {
         <h2>Экспертный контент для SEO и клиентов</h2>
         <div className="articleGrid">
           {articles.map((article) => (
-            <article className="articleCard" key={article}>
-              <h3>{article}</h3>
-              <p>Материал готовится. Позже здесь появится статья с рекомендациями, примерами и формой заявки.</p>
-            </article>
+            <a className="articleCard" href={article.href} key={article.title}>
+              <h3>{article.title}</h3>
+              <p>Практический материал для выбора, расчёта и комплектации объекта.</p>
+              <span>Читать →</span>
+            </a>
           ))}
+        </div>
+        <div className="sectionAction">
+          <a className="button secondary" href="/articles">Все статьи</a>
         </div>
       </section>
 
