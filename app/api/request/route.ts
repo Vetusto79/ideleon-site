@@ -16,13 +16,18 @@ function escapeHtml(value: string) {
     .replaceAll("'", "&#039;");
 }
 
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
 
+    const requestType = clean(formData.get("requestType")) || "calculation";
     const name = clean(formData.get("name"));
     const phone = clean(formData.get("phone"));
-    const company = clean(formData.get("company"));
+    const email = clean(formData.get("email"));
     const task = clean(formData.get("task"));
     const website = clean(formData.get("website"));
 
@@ -31,11 +36,36 @@ export async function POST(request: Request) {
       return NextResponse.json({ ok: true });
     }
 
-    if (!phone) {
-      return NextResponse.json(
-        { ok: false, message: "Укажите телефон для связи." },
-        { status: 400 }
-      );
+    if (requestType === "callback") {
+      if (!name || !phone) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: "Укажите имя и телефон.",
+          },
+          { status: 400 }
+        );
+      }
+    } else {
+      if (!name || !phone || !email || !task) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: "Заполните имя, телефон, e-mail и сообщение.",
+          },
+          { status: 400 }
+        );
+      }
+
+      if (!isValidEmail(email)) {
+        return NextResponse.json(
+          {
+            ok: false,
+            message: "Укажите корректный e-mail.",
+          },
+          { status: 400 }
+        );
+      }
     }
 
     // VK WorkSpace / Mail.ru: smtp.mail.ru, порт 465, SSL/TLS.
@@ -71,33 +101,56 @@ export async function POST(request: Request) {
     });
 
     const referer = request.headers.get("referer") || "Не определена";
-    const subject = "Новая заявка с сайта IDELEON";
 
-    const text = [
-      "Новая заявка с сайта IDELEON",
-      "",
-      `Имя: ${name || "Не указано"}`,
-      `Телефон: ${phone}`,
-      `Компания: ${company || "Не указана"}`,
-      "",
-      "Задача:",
-      task || "Не указана",
-      "",
-      `Страница отправки: ${referer}`,
-    ].join("\n");
+    const isCallback = requestType === "callback";
+    const subject = isCallback
+      ? "Перезвонить клиенту — IDELEON"
+      : "Новая заявка с сайта IDELEON";
 
-    const html = `
-      <div style="font-family:Arial,sans-serif;font-size:16px;line-height:1.5;color:#111827">
-        <h2 style="margin:0 0 16px">Новая заявка с сайта IDELEON</h2>
-        <p><b>Имя:</b> ${escapeHtml(name || "Не указано")}</p>
-        <p><b>Телефон:</b> ${escapeHtml(phone)}</p>
-        <p><b>Компания:</b> ${escapeHtml(company || "Не указана")}</p>
-        <p><b>Задача:</b></p>
-        <p style="white-space:pre-wrap">${escapeHtml(task || "Не указана")}</p>
-        <hr />
-        <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
-      </div>
-    `;
+    const text = isCallback
+      ? [
+          "Перезвонить клиенту — IDELEON",
+          "",
+          `Имя: ${name}`,
+          `Телефон: ${phone}`,
+          "",
+          `Страница отправки: ${referer}`,
+        ].join("\n")
+      : [
+          "Новая заявка с сайта IDELEON",
+          "",
+          `Имя: ${name}`,
+          `Телефон: ${phone}`,
+          `E-mail: ${email}`,
+          "",
+          "Сообщение:",
+          task,
+          "",
+          `Страница отправки: ${referer}`,
+        ].join("\n");
+
+    const html = isCallback
+      ? `
+        <div style="font-family:Arial,sans-serif;font-size:16px;line-height:1.5;color:#111827">
+          <h2 style="margin:0 0 16px">Перезвонить клиенту — IDELEON</h2>
+          <p><b>Имя:</b> ${escapeHtml(name)}</p>
+          <p><b>Телефон:</b> ${escapeHtml(phone)}</p>
+          <hr />
+          <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
+        </div>
+      `
+      : `
+        <div style="font-family:Arial,sans-serif;font-size:16px;line-height:1.5;color:#111827">
+          <h2 style="margin:0 0 16px">Новая заявка с сайта IDELEON</h2>
+          <p><b>Имя:</b> ${escapeHtml(name)}</p>
+          <p><b>Телефон:</b> ${escapeHtml(phone)}</p>
+          <p><b>E-mail:</b> ${escapeHtml(email)}</p>
+          <p><b>Сообщение:</b></p>
+          <p style="white-space:pre-wrap">${escapeHtml(task)}</p>
+          <hr />
+          <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
+        </div>
+      `;
 
     await transporter.sendMail({
       from: `"IDELEON сайт" <${mailFrom}>`,
@@ -106,7 +159,7 @@ export async function POST(request: Request) {
       subject,
       text,
       html,
-      replyTo: smtpUser,
+      replyTo: isCallback ? smtpUser : email,
     });
 
     return NextResponse.json({ ok: true });
@@ -123,4 +176,3 @@ export async function POST(request: Request) {
     );
   }
 }
-
