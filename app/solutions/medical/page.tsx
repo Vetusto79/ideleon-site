@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Решения для медицинских объектов",
+  description: "Потолочные системы и строительные материалы для медицинских учреждений, клиник, лабораторий и помещений с особыми требованиями.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -83,4 +88,3 @@ export default function Page() {
     </main>
   );
 }
-
