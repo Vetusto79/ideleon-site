@@ -1,10 +1,12 @@
 import { siteConfig } from "./siteConfig";
 import RequestLinkInterceptor from "./RequestLinkInterceptor";
+import CallbackModalHost from "./CallbackModalHost";
 
 export default function SiteHeader() {
   return (
     <>
       <RequestLinkInterceptor />
+      <CallbackModalHost />
       <header className="header">
       <a className="logo" href="/">
         <img src={siteConfig.logo.horizontal} alt={siteConfig.company.name} />
