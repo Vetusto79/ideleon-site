@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Решения для застройщиков",
+  description: "Комплектация строительных объектов материалами и потолочными системами для застройщиков: расчёт, подбор и поставка по России.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -83,4 +88,3 @@ export default function Page() {
     </main>
   );
 }
-
