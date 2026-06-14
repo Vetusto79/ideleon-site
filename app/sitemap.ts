@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const siteUrl = "https://ideleon-site.relaxdev.ru";
+const siteUrl = "https://ideleon.com";
 
 const routes = [
     "",
