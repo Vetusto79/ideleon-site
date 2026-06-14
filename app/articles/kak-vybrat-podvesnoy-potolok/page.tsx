@@ -6,7 +6,7 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
         <a href="/articles">Статьи</a>
@@ -59,6 +59,13 @@ export default function ArticlePage() {
 
       <article className="articlePage">
         <div className="articleHeader">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/articles">Статьи</a>
+          <span className="crumbSep">/</span>
+          <span>Как выбрать подвесную потолочную систему для коммерческого объекта</span>
+        </nav>
           <p className="label">Статья</p>
           <h1>Как выбрать подвесную потолочную систему для коммерческого объекта</h1>
           <p>Разбираем, на что смотреть при выборе подвесного потолка для офиса, торгового центра, медицинского учреждения или общественного пространства.</p>
@@ -112,4 +119,3 @@ export default function ArticlePage() {
     </main>
   );
 }
-
