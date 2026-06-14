@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Решения для строительных магазинов",
+  description: "Оптовые поставки строительных материалов и потолочных систем для строительных магазинов и торговых организаций.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -83,4 +88,3 @@ export default function Page() {
     </main>
   );
 }
-
