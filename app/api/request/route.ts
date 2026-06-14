@@ -29,11 +29,22 @@ export async function POST(request: Request) {
     const phone = clean(formData.get("phone"));
     const email = clean(formData.get("email"));
     const task = clean(formData.get("task"));
+    const consent = clean(formData.get("consent"));
     const website = clean(formData.get("website"));
 
     // Простая защита от ботов: обычный человек это поле не видит и не заполняет.
     if (website) {
       return NextResponse.json({ ok: true });
+    }
+
+    if (consent !== "yes") {
+      return NextResponse.json(
+        {
+          ok: false,
+          message: "Для отправки заявки нужно согласие на обработку персональных данных.",
+        },
+        { status: 400 }
+      );
     }
 
     if (requestType === "callback") {
@@ -101,11 +112,14 @@ export async function POST(request: Request) {
     });
 
     const referer = request.headers.get("referer") || "Не определена";
+    const createdAt = new Date().toISOString();
 
     const isCallback = requestType === "callback";
     const subject = isCallback
       ? "Перезвонить клиенту — IDELEON"
       : "Новая заявка с сайта IDELEON";
+
+    const consentLine = `Согласие на обработку персональных данных: получено через чекбокс формы, ${createdAt}`;
 
     const text = isCallback
       ? [
@@ -114,6 +128,7 @@ export async function POST(request: Request) {
           `Имя: ${name}`,
           `Телефон: ${phone}`,
           "",
+          consentLine,
           `Страница отправки: ${referer}`,
         ].join("\n")
       : [
@@ -126,6 +141,7 @@ export async function POST(request: Request) {
           "Сообщение:",
           task,
           "",
+          consentLine,
           `Страница отправки: ${referer}`,
         ].join("\n");
 
@@ -136,6 +152,7 @@ export async function POST(request: Request) {
           <p><b>Имя:</b> ${escapeHtml(name)}</p>
           <p><b>Телефон:</b> ${escapeHtml(phone)}</p>
           <hr />
+          <p><b>Согласие:</b> получено через чекбокс формы, ${escapeHtml(createdAt)}</p>
           <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
         </div>
       `
@@ -148,6 +165,7 @@ export async function POST(request: Request) {
           <p><b>Сообщение:</b></p>
           <p style="white-space:pre-wrap">${escapeHtml(task)}</p>
           <hr />
+          <p><b>Согласие:</b> получено через чекбокс формы, ${escapeHtml(createdAt)}</p>
           <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
         </div>
       `;
