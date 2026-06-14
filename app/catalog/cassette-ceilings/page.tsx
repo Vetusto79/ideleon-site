@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Подвесные кассетные потолочные системы</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Подвесные кассетные потолочные системы</h1>
           <p>Кассетные потолки для офисов, торговых помещений, медицинских учреждений и общественных объектов.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
