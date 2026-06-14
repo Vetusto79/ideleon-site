@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Статьи о строительных материалах и потолочных системах",
+  description: "Полезные статьи Иделеон о строительных материалах, потолочных системах, ревизионных люках, профиле для ГКЛ и выборе поставщика.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -109,4 +114,3 @@ export default function Articles() {
     </main>
   );
 }
-
