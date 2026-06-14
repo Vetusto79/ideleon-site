@@ -111,6 +111,16 @@ export default function CallbackModal() {
                 required
               />
 
+              <label className="consentField compact">
+                <input name="consent" type="checkbox" value="yes" required />
+                <span>
+                  Я согласен на обработку персональных данных и ознакомлен с{" "}
+                  <a href="/privacy" target="_blank" rel="noreferrer">
+                    политикой
+                  </a>
+                </span>
+              </label>
+
               <input
                 className="hiddenField"
                 name="website"
