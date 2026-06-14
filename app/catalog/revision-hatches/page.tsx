@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Ревизионные люки</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Ревизионные люки</h1>
           <p>Потайные ревизионные люки под плитку и под покраску для доступа к инженерным коммуникациям.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
