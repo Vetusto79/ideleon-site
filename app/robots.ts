@@ -6,7 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://ideleon-site.relaxdev.ru/sitemap.xml",
+    sitemap: "https://ideleon.com/sitemap.xml",
   };
 }
-
