@@ -1,15 +1,48 @@
 const catalog = [
-  "Профиль для гипсокартона",
-  "Подвесные кассетные потолочные системы",
-  "Реечные потолочные системы",
-  "Дизайнерские потолочные решения",
-  "Потолочные решения для медицинских учреждений",
-  "Потолки Грильято",
-  "Ревизионные люки",
-  "Фальшполы",
-  "Сендвич-панели",
-  "Металлопрокат",
-  "Арматура",
+  {
+    title: "Профиль для гипсокартона",
+    image: "/images/catalog/gkl-profile.jpg",
+  },
+  {
+    title: "Подвесные кассетные потолочные системы",
+    image: "/images/catalog/cassette-ceiling.jpg",
+  },
+  {
+    title: "Реечные потолочные системы",
+    image: "/images/catalog/rack-ceiling.jpg",
+  },
+  {
+    title: "Дизайнерские потолочные решения",
+    image: "/images/catalog/design-ceiling.jpg",
+  },
+  {
+    title: "Потолочные решения для медицинских учреждений",
+    image: "/images/catalog/medical-ceiling.jpg",
+  },
+  {
+    title: "Потолки Грильято",
+    image: "/images/catalog/grilyato.jpg",
+  },
+  {
+    title: "Ревизионные люки",
+    image: "/images/catalog/revision-hatch.jpg",
+  },
+  {
+    title: "Фальшполы",
+    image: "/images/catalog/raised-floor.jpg",
+  },
+  {
+    title: "Сендвич-панели",
+    image: "/images/catalog/sandwich-panel.jpg",
+  },
+  {
+    title: "Металлопрокат",
+    image: "/images/catalog/metal-roll.jpg",
+  },
+  {
+    title: "Арматура",
+    image: "/images/catalog/rebar.jpg",
+  },
 ];
 
 const brands = [
@@ -72,12 +105,12 @@ export default function Home() {
           </div>
         </div>
 
-<div className="heroImage">
-  <img
-    src="/images/hero-construction.jpg"
-    alt="Строительный объект"
-  />
-</div>
+        <div className="heroImage">
+          <img
+            src="/images/hero-construction.jpg"
+            alt="Строительный объект"
+          />
+        </div>
       </section>
 
       <section className="features">
@@ -108,13 +141,18 @@ export default function Home() {
 
         <div className="catalogGrid">
           {catalog.map((item, index) => (
-            <article className="catalogCard" key={item}>
-              <div className="catalogImage">{index + 1}</div>
-              <h3>{item}</h3>
-              <p>
-                Подберём материалы, рассчитаем объём и организуем поставку на
-                объект.
-              </p>
+            <article className="catalogCard" key={item.title}>
+              <div className="catalogImage">
+                <img src={item.image} alt={item.title} />
+              </div>
+              <div className="catalogText">
+                <span>{index + 1}.</span>
+                <h3>{item.title}</h3>
+                <p>
+                  Подберём материалы, рассчитаем объём и организуем поставку на
+                  объект.
+                </p>
+              </div>
             </article>
           ))}
         </div>
