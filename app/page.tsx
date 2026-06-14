@@ -269,6 +269,10 @@ export default function Home() {
           <p>ИНН: 7751381987</p>
           <p>ОГРН: 1257700589266</p>
         </div>
+        <div>
+          <strong>Документы</strong>
+          <p><a href="/privacy">Политика обработки персональных данных</a></p>
+        </div>
       </footer>
     </main>
   );
