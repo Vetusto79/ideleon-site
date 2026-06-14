@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Реечные потолочные системы</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Реечные потолочные системы</h1>
           <p>Реечные потолки для общественных пространств, офисов, торговых объектов и помещений с активной эксплуатацией.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
