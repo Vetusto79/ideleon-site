@@ -1040,3 +1040,19 @@ button.button:disabled {
     font-size: 16px;
   }
 }
+
+/* Рефакторинг: элементы хлебных крошек теперь компонентные */
+
+.crumbItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Универсальный блок захвата заявки */
+
+.articlePage .request,
+.productCta.request,
+.detailSection + .request {
+  margin: 42px 0 0;
+}
