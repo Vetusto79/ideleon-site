@@ -1,8 +1,11 @@
 import { siteConfig } from "./siteConfig";
+import RequestLinkInterceptor from "./RequestLinkInterceptor";
 
 export default function SiteHeader() {
   return (
-    <header className="header">
+    <>
+      <RequestLinkInterceptor />
+      <header className="header">
       <a className="logo" href="/">
         <img src={siteConfig.logo.horizontal} alt={siteConfig.company.name} />
       </a>
@@ -22,6 +25,7 @@ export default function SiteHeader() {
           </a>
         ))}
       </div>
-    </header>
+      </header>
+    </>
   );
 }
