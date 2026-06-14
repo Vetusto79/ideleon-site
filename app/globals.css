@@ -586,17 +586,23 @@ a { color: inherit; text-decoration: none; }
 }
 
 
-/* Хлебные крошки */
+/* Хлебные крошки — аккуратный маршрут страницы */
 
 .breadcrumbs {
-  margin: 0 0 22px;
-  display: flex;
+  margin: 0 0 34px;
+  padding: 10px 14px;
+  display: inline-flex;
+  max-width: 100%;
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
   color: #64748b;
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 12px;
+  line-height: 1.25;
 }
 
 .breadcrumbs a {
@@ -615,8 +621,12 @@ a { color: inherit; text-decoration: none; }
 }
 
 .breadcrumbs span:last-child {
-  color: #334155;
-  font-weight: 900;
+  max-width: 520px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #475569;
+  font-weight: 800;
 }
 
 .crumbSep {
@@ -624,9 +634,23 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700 !important;
 }
 
+.articleHeader .breadcrumbs,
+.pageHero .breadcrumbs,
+.productHero .breadcrumbs {
+  margin-bottom: 30px;
+}
+
 @media (max-width: 640px) {
   .breadcrumbs {
-    font-size: 13px;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 14px;
+    font-size: 12px;
     gap: 6px;
+  }
+
+  .breadcrumbs span:last-child {
+    max-width: 100%;
+    white-space: normal;
   }
 }
