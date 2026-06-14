@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Металлопрокат</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Металлопрокат</h1>
           <p>Металлопрокат для строительных объектов: трубы, листы, профиль, уголок, швеллер и другие позиции.</p>
@@ -123,4 +130,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
