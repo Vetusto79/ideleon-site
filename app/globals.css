@@ -696,3 +696,118 @@ a { color: inherit; text-decoration: none; }
   opacity: 0 !important;
   pointer-events: none !important;
 }
+
+/* Поле e-mail в форме заявки */
+
+.formFull {
+  grid-column: 1 / -1;
+}
+
+/* Всплывающее окно обратного звонка */
+
+.modalOpen {
+  overflow: hidden;
+}
+
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.52);
+  backdrop-filter: blur(8px);
+}
+
+.callbackModal {
+  position: relative;
+  width: min(100%, 460px);
+  padding: 34px;
+  border-radius: 26px;
+  background: #ffffff;
+  box-shadow: 0 34px 90px rgba(15, 23, 42, 0.28);
+}
+
+.callbackModal h2 {
+  margin: 8px 0 10px;
+  color: var(--navy);
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.modalLead {
+  margin: 0 0 22px;
+  color: #64748b;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.modalClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.modalClose:hover {
+  color: var(--orange);
+  border-color: rgba(255, 106, 0, 0.28);
+}
+
+.callbackForm {
+  display: grid;
+  gap: 14px;
+}
+
+.callbackForm input {
+  width: 100%;
+  min-height: 56px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #0f172a;
+  font: inherit;
+  outline: none;
+}
+
+.callbackForm input:focus {
+  border-color: rgba(255, 106, 0, 0.45);
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.08);
+}
+
+.callbackForm button[type="submit"] {
+  min-height: 58px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--orange);
+  color: #ffffff;
+  font-weight: 900;
+  font: inherit;
+  cursor: pointer;
+}
+
+.callbackForm button[type="submit"]:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+@media (max-width: 640px) {
+  .callbackModal {
+    padding: 28px 22px;
+    border-radius: 22px;
+  }
+
+  .callbackModal h2 {
+    font-size: 28px;
+  }
+}
