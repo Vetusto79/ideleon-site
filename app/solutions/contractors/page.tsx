@@ -1,3 +1,8 @@
+export const metadata = {
+  title: "Решения для подрядчиков",
+  description: "Помогаем подрядчикам подобрать строительные материалы, рассчитать комплектацию и организовать поставку под график работ.",
+};
+
 function Header() {
   return (
     <header className="header">
@@ -83,4 +88,3 @@ export default function Page() {
     </main>
   );
 }
-
