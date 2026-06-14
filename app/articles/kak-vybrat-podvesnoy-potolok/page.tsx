@@ -1,56 +1,7 @@
-function Header() {
-  return (
-    <header className="header">
-      <a className="logo" href="/">
-        <img src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-      </a>
-
-      <nav className="nav">
-        <a href="/catalog">Каталог</a>
-        <a href="/solutions">Решения</a>
-        <a href="/#brands">Бренды</a>
-        <a href="/articles">Статьи</a>
-        <a href="/#about">О компании</a>
-        <a href="/#contacts">Контакты</a>
-      </nav>
-
-      <div className="headerContacts">
-        <a href="tel:+79266961386">+7-926-696-13-86</a>
-        <a href="tel:+79150384030">+7-915-038-40-30</a>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer id="contacts" className="footer">
-      <div>
-        <img className="footerLogo" src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-        <p>Комплексные поставки строительных материалов и решений.</p>
-      </div>
-      <div>
-        <strong>Контакты</strong>
-        <p>+7-926-696-13-86</p>
-        <p>+7-915-038-40-30</p>
-        <p>ilya@ideleon.com</p>
-        <p>alexei@ideleon.com</p>
-        <p>г. Москва</p>
-      </div>
-      <div>
-        <strong>Реквизиты</strong>
-        <p>ООО «ИДЕЛЕОН»</p>
-        <p>ИНН: 7751381987</p>
-        <p>ОГРН: 1257700589266</p>
-      </div>
-            <div>
-          <strong>Документы</strong>
-          <p><a href="/privacy">Политика обработки персональных данных</a></p>
-        </div>
-      </footer>
-  );
-}
-
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import LeadCapture from "../../components/LeadCapture";
 export const metadata = {
   title: "Как выбрать подвесную потолочную систему для коммерческого объекта — Иделеон",
   description: "Разбираем, на что смотреть при выборе подвесного потолка для офиса, торгового центра, медицинского учреждения или общественного пространства.",
@@ -59,17 +10,11 @@ export const metadata = {
 export default function ArticlePage() {
   return (
     <main>
-      <Header />
+      <SiteHeader />
 
       <article className="articlePage">
         <div className="articleHeader">
-        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
-          <a href="/">Главная</a>
-          <span className="crumbSep">/</span>
-          <a href="/articles">Статьи</a>
-          <span className="crumbSep">/</span>
-          <span>Как выбрать подвесную потолочную систему для коммерческого объекта</span>
-        </nav>
+        <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Статьи", href: "/articles" }, { label: "Как выбрать подвесную потолочную систему для коммерческого объекта" }]} />
           <p className="label">Статья</p>
           <h1>Как выбрать подвесную потолочную систему для коммерческого объекта</h1>
           <p>Разбираем, на что смотреть при выборе подвесного потолка для офиса, торгового центра, медицинского учреждения или общественного пространства.</p>
@@ -101,14 +46,10 @@ export default function ArticlePage() {
             <p>Мы разбираем задачу, подбираем систему, выполняем поэлементный расчёт и организуем поставку материалов на объект.</p>
           </section>
 
-          <div className="articleCta">
-            <h2>Нужен расчёт материалов?</h2>
-            <p>
-              Пришлите задачу или спецификацию — Иделеон поможет подобрать материалы,
-              проверить комплектность и организовать поставку.
-            </p>
-            <a className="button primary" href="/#request">Получить расчёт</a>
-          </div>
+          <LeadCapture
+            title="Нужен расчёт материалов?"
+            text="Пришлите задачу или спецификацию — Иделеон поможет подобрать материалы, проверить комплектность и организовать поставку."
+          />
 
           <div className="relatedArticles">
             <strong>Ещё по теме</strong>
@@ -119,7 +60,7 @@ export default function ArticlePage() {
         </div>
       </article>
 
-      <Footer />
+      <SiteFooter />
     </main>
   );
 }
