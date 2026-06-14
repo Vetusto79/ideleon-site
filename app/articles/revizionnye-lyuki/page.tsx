@@ -6,7 +6,7 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
         <a href="/articles">Статьи</a>
@@ -59,6 +59,13 @@ export default function ArticlePage() {
 
       <article className="articlePage">
         <div className="articleHeader">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/articles">Статьи</a>
+          <span className="crumbSep">/</span>
+          <span>Ревизионные люки под плитку и под покраску: что выбрать</span>
+        </nav>
           <p className="label">Статья</p>
           <h1>Ревизионные люки под плитку и под покраску: что выбрать</h1>
           <p>Ревизионный люк должен давать доступ к коммуникациям и при этом аккуратно вписываться в интерьер.</p>
@@ -112,4 +119,3 @@ export default function ArticlePage() {
     </main>
   );
 }
-
