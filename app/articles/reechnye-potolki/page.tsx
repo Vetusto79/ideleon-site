@@ -6,7 +6,7 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
         <a href="/articles">Статьи</a>
@@ -59,6 +59,13 @@ export default function ArticlePage() {
 
       <article className="articlePage">
         <div className="articleHeader">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/articles">Статьи</a>
+          <span className="crumbSep">/</span>
+          <span>Реечные потолки для офисов, ТЦ и общественных пространств</span>
+        </nav>
           <p className="label">Статья</p>
           <h1>Реечные потолки для офисов, ТЦ и общественных пространств</h1>
           <p>Реечные потолочные системы подходят для помещений с активной эксплуатацией и высокими требованиями к внешнему виду.</p>
@@ -112,4 +119,3 @@ export default function ArticlePage() {
     </main>
   );
 }
-
