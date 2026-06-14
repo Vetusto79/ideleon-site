@@ -653,9 +653,12 @@ a { color: inherit; text-decoration: none; }
     max-width: 100%;
     white-space: normal;
   }
-  .crumbSep {
+}
+
+/* Выразительный разделитель в хлебных крошках */
+
+.crumbSep {
   color: var(--orange) !important;
   font-weight: 900 !important;
-  opacity: 0.9;
-}
+  opacity: 0.95;
 }
