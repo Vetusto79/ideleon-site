@@ -59,6 +59,13 @@ export default function CatalogItemPage() {
 
       <section className="productHero">
         <div>
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/catalog">Каталог</a>
+          <span className="crumbSep">/</span>
+          <span>Профиль для гипсокартона</span>
+        </nav>
           <p className="label">Каталог</p>
           <h1>Профиль для гипсокартона</h1>
           <p>Поставляем профиль для гипсокартона и комплектующие для перегородок, облицовок и потолочных систем.</p>
@@ -122,4 +129,3 @@ export default function CatalogItemPage() {
     </main>
   );
 }
-
