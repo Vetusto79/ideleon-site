@@ -8,6 +8,11 @@ export default function CallbackModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<FormStatus>("idle");
   const [message, setMessage] = useState("");
+  const [sourcePage, setSourcePage] = useState("");
+
+  useEffect(() => {
+    setSourcePage(window.location.href);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -120,6 +125,8 @@ export default function CallbackModal() {
                   </a>
                 </span>
               </label>
+
+              <input type="hidden" name="sourcePage" value={sourcePage} />
 
               <input
                 className="hiddenField"
