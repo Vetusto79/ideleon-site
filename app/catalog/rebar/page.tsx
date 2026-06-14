@@ -43,7 +43,11 @@ function Footer() {
         <p>ИНН: 7751381987</p>
         <p>ОГРН: 1257700589266</p>
       </div>
-    </footer>
+            <div>
+          <strong>Документы</strong>
+          <p><a href="/privacy">Политика обработки персональных данных</a></p>
+        </div>
+      </footer>
   );
 }
 
