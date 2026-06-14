@@ -1,56 +1,7 @@
-function Header() {
-  return (
-    <header className="header">
-      <a className="logo" href="/">
-        <img src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-      </a>
-
-      <nav className="nav">
-        <a href="/catalog">Каталог</a>
-        <a href="/solutions">Решения</a>
-        <a href="/#brands">Бренды</a>
-        <a href="/articles">Статьи</a>
-        <a href="/#about">О компании</a>
-        <a href="/#contacts">Контакты</a>
-      </nav>
-
-      <div className="headerContacts">
-        <a href="tel:+79266961386">+7-926-696-13-86</a>
-        <a href="tel:+79150384030">+7-915-038-40-30</a>
-      </div>
-    </header>
-  );
-}
-
-function Footer() {
-  return (
-    <footer id="contacts" className="footer">
-      <div>
-        <img className="footerLogo" src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-        <p>Комплексные поставки строительных материалов и решений.</p>
-      </div>
-      <div>
-        <strong>Контакты</strong>
-        <p>+7-926-696-13-86</p>
-        <p>+7-915-038-40-30</p>
-        <p>ilya@ideleon.com</p>
-        <p>alexei@ideleon.com</p>
-        <p>г. Москва</p>
-      </div>
-      <div>
-        <strong>Реквизиты</strong>
-        <p>ООО «ИДЕЛЕОН»</p>
-        <p>ИНН: 7751381987</p>
-        <p>ОГРН: 1257700589266</p>
-      </div>
-            <div>
-          <strong>Документы</strong>
-          <p><a href="/privacy">Политика обработки персональных данных</a></p>
-        </div>
-      </footer>
-  );
-}
-
+import SiteHeader from "../../components/SiteHeader";
+import SiteFooter from "../../components/SiteFooter";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import LeadCapture from "../../components/LeadCapture";
 export const metadata = {
   title: "Сендвич-панели — Иделеон",
   description: "Сендвич-панели для быстровозводимых зданий.",
@@ -59,17 +10,11 @@ export const metadata = {
 export default function CatalogItemPage() {
   return (
     <main>
-      <Header />
+      <SiteHeader />
 
       <section className="productHero">
         <div>
-        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
-          <a href="/">Главная</a>
-          <span className="crumbSep">/</span>
-          <a href="/catalog">Каталог</a>
-          <span className="crumbSep">/</span>
-          <span>Сендвич-панели</span>
-        </nav>
+        <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Каталог", href: "/catalog" }, { label: "Сендвич-панели" }]} />
           <p className="label">Каталог</p>
           <h1>Сендвич-панели</h1>
           <p>Сендвич-панели для быстровозводимых зданий, складов, производственных и коммерческих объектов.</p>
@@ -118,18 +63,12 @@ export default function CatalogItemPage() {
         </div>
       </section>
 
-      <section className="productCta">
-        <div>
-          <h2>Нужно рассчитать материалы?</h2>
-          <p>
-            Пришлите задачу, проект или список позиций — Иделеон поможет подобрать
-            материалы и подготовить предложение.
-          </p>
-        </div>
-        <a className="button primary" href="/#request">Получить расчёт</a>
-      </section>
+      <LeadCapture
+        title="Нужно рассчитать материалы?"
+        text="Пришлите задачу, проект или список позиций — Иделеон поможет подобрать материалы и подготовить предложение."
+      />
 
-      <Footer />
+      <SiteFooter />
     </main>
   );
 }
