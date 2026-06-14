@@ -13,6 +13,7 @@ export default function RequestForm() {
 
     const form = event.currentTarget;
     const formData = new FormData(form);
+    formData.set("requestType", "calculation");
 
     setStatus("sending");
     setMessage("Отправляем заявку...");
@@ -37,22 +38,29 @@ export default function RequestForm() {
       setMessage(
         error instanceof Error
           ? error.message
-          : "Не удалось отправить заявку. Попробуйте позвонить нам."
+          : "Не удалось отправить заявку. Попробуйте позвонить нам или написать на почту."
       );
     }
   }
 
   return (
     <form className="form" onSubmit={handleSubmit}>
-      <input name="name" placeholder="Ваше имя" autoComplete="name" />
+      <input name="name" placeholder="Ваше имя" autoComplete="name" required />
       <input
         name="phone"
         placeholder="Телефон"
         autoComplete="tel"
         required
       />
-      <input name="company" placeholder="Компания" autoComplete="organization" />
-      <textarea name="task" placeholder="Кратко опишите задачу" />
+      <input
+        className="formFull"
+        name="email"
+        type="email"
+        placeholder="E-mail"
+        autoComplete="email"
+        required
+      />
+      <textarea name="task" placeholder="Кратко опишите задачу" required />
 
       <input
         className="hiddenField"
@@ -74,4 +82,3 @@ export default function RequestForm() {
     </form>
   );
 }
-
