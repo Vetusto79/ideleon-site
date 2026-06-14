@@ -1,5 +1,7 @@
 import CallbackModal from "./components/CallbackModal";
-import RequestForm from "./components/RequestForm";
+import SiteHeader from "./components/SiteHeader";
+import SiteFooter from "./components/SiteFooter";
+import LeadCapture from "./components/LeadCapture";
 
 export const metadata = {
   title: "Поставка строительных материалов для застройщиков и подрядчиков",
@@ -86,25 +88,7 @@ const faq = [
 export default function Home() {
   return (
     <main>
-      <header className="header">
-        <a className="logo" href="/">
-          <img src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-        </a>
-
-        <nav className="nav">
-          <a href="/catalog">Каталог</a>
-          <a href="/solutions">Решения</a>
-          <a href="#brands">Бренды</a>
-          <a href="/articles">Статьи</a>
-          <a href="#about">О компании</a>
-          <a href="#contacts">Контакты</a>
-        </nav>
-
-        <div className="headerContacts">
-          <a href="tel:+79266961386">+7-926-696-13-86</a>
-          <a href="tel:+79150384030">+7-915-038-40-30</a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <section className="hero">
         <div className="heroText">
@@ -241,39 +225,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="request" className="request">
-        <div>
-          <p className="label">Заявка</p>
-          <h2>Рассчитаем материалы для вашего объекта</h2>
-          <p>Оставьте контакты — специалист Иделеон свяжется с вами, уточнит задачу и подготовит предложение.</p>
-        </div>
-        <RequestForm />
-      </section>
+      <LeadCapture id="request" />
 
-      <footer id="contacts" className="footer">
-        <div>
-          <img className="footerLogo" src="/images/logo/ideleon-logo-horizontal.svg" alt="Иделеон" />
-          <p>Комплексные поставки строительных материалов и решений.</p>
-        </div>
-        <div>
-          <strong>Контакты</strong>
-          <p>+7-926-696-13-86</p>
-          <p>+7-915-038-40-30</p>
-          <p>ilya@ideleon.com</p>
-          <p>alexei@ideleon.com</p>
-          <p>г. Москва</p>
-        </div>
-        <div>
-          <strong>Реквизиты</strong>
-          <p>ООО «ИДЕЛЕОН»</p>
-          <p>ИНН: 7751381987</p>
-          <p>ОГРН: 1257700589266</p>
-        </div>
-        <div>
-          <strong>Документы</strong>
-          <p><a href="/privacy">Политика обработки персональных данных</a></p>
-        </div>
-      </footer>
+      <SiteFooter />
     </main>
   );
 }
