@@ -1,8 +1,3 @@
-export const metadata = {
-  title: "Статьи о строительных материалах и потолочных системах",
-  description: "Полезные статьи Иделеон о строительных материалах, потолочных системах, ревизионных люках, профиле для ГКЛ и выборе поставщика.",
-};
-
 function Header() {
   return (
     <header className="header">
@@ -11,7 +6,7 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
         <a href="/articles">Статьи</a>
@@ -52,9 +47,10 @@ function Footer() {
   );
 }
 
-const articles = [
-
-];
+export const metadata = {
+  title: "Статьи о строительных материалах и потолочных системах",
+  description: "Полезные статьи Иделеон о строительных материалах, потолочных системах, ревизионных люках, профиле для ГКЛ и выборе поставщика.",
+};
 
 export default function Articles() {
   return (
@@ -62,6 +58,11 @@ export default function Articles() {
       <Header />
 
       <section className="pageHero">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <span>Статьи</span>
+        </nav>
         <p className="label">Статьи</p>
         <h1>Полезные материалы для строителей, подрядчиков и застройщиков</h1>
         <p>
