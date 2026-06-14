@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ideleon-site.relaxdev.ru"),
+  metadataBase: new URL("https://ideleon.com"),
   title: {
     default: "Иделеон — поставка строительных материалов для объектов",
     template: "%s | Иделеон",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     title: "Иделеон — поставка строительных материалов для объектов",
     description:
       "Поставляем строительные материалы и потолочные системы. Помогаем подобрать материалы, выполнить расчёт и организовать поставку по России.",
-    url: "https://ideleon-site.relaxdev.ru",
+    url: "https://ideleon.com",
     siteName: "Иделеон",
     locale: "ru_RU",
     type: "website",
