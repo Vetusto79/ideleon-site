@@ -1,8 +1,3 @@
-export const metadata = {
-  title: "Решения для застройщиков",
-  description: "Комплектация строительных объектов материалами и потолочными системами для застройщиков: расчёт, подбор и поставка по России.",
-};
-
 function Header() {
   return (
     <header className="header">
@@ -11,10 +6,10 @@ function Header() {
       </a>
 
       <nav className="nav">
-        <a href="/#catalog">Каталог</a>
+        <a href="/catalog">Каталог</a>
         <a href="/solutions">Решения</a>
         <a href="/#brands">Бренды</a>
-        <a href="/#articles">Статьи</a>
+        <a href="/articles">Статьи</a>
         <a href="/#about">О компании</a>
         <a href="/#contacts">Контакты</a>
       </nav>
@@ -52,12 +47,24 @@ function Footer() {
   );
 }
 
+export const metadata = {
+  title: "Решения для застройщиков",
+  description: "Комплектация строительных объектов материалами и потолочными системами для застройщиков: расчёт, подбор и поставка по России.",
+};
+
 export default function Page() {
   return (
     <main>
       <Header />
 
       <section className="pageHero">
+        <nav className="breadcrumbs" aria-label="Навигационная цепочка">
+          <a href="/">Главная</a>
+          <span className="crumbSep">/</span>
+          <a href="/solutions">Решения</a>
+          <span className="crumbSep">/</span>
+          <span>Застройщиков</span>
+        </nav>
         <p className="label">Решения для клиентов</p>
         <h1>Решения для застройщиков</h1>
         <p>Комплектуем строительные объекты материалами и потолочными системами с учётом сроков, проектных требований и логистики.</p>
