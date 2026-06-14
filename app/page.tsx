@@ -1,3 +1,4 @@
+import CallbackModal from "./components/CallbackModal";
 import RequestForm from "./components/RequestForm";
 
 export const metadata = {
@@ -116,7 +117,7 @@ export default function Home() {
           </p>
           <div className="heroButtons">
             <a className="button primary" href="#request">Получить расчёт проекта</a>
-            <a className="button secondary" href="tel:+79266961386">Перезвоните мне</a>
+            <CallbackModal />
           </div>
         </div>
         <div className="heroImage">
