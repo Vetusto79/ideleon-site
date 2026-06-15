@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-label="СПК">
-  <rect width="360" height="120" rx="22" fill="#ffffff"/>
-  <circle cx="78" cy="60" r="34" fill="#1d4f91"/>
-  <path d="M78 30 104 75H52L78 30Z" fill="#ffffff" opacity=".95"/>
-  <text x="130" y="74" font-family="Arial, Helvetica, sans-serif" font-size="45" font-weight="900" fill="#1d4f91">СПК</text>
-  <text x="132" y="94" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="#64748b">сталь • металлопрокат</text>
-</svg>
