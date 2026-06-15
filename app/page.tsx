@@ -2,6 +2,7 @@ import CallbackModal from "./components/CallbackModal";
 import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import LeadCapture from "./components/LeadCapture";
+import BrandLogos from "./components/BrandLogos";
 
 export const metadata = {
   title: "Поставка строительных материалов для застройщиков и подрядчиков",
@@ -23,7 +24,6 @@ const catalog = [
   { title: "Арматура", image: "/images/catalog/rebar.jpg", href: "/catalog/rebar" },
 ];
 
-const brands = ["Knauf", "Албес", "ТехноНиколь", "КТЗ", "СПК", "МеталлТрейд"];
 
 const solutionCards = [
   {
@@ -168,9 +168,7 @@ export default function Home() {
       <section id="brands" className="section">
         <p className="label">Производители</p>
         <h2>Работаем с ведущими брендами</h2>
-        <div className="brandGrid">
-          {brands.map((brand) => <div className="brandCard" key={brand}>{brand}</div>)}
-        </div>
+        <BrandLogos />
       </section>
 
       <section id="about" className="aboutSection">
