@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-label="Албес">
+  <rect width="360" height="120" rx="22" fill="#ffffff"/>
+  <path d="M44 84 86 36h22l42 48h-25l-8-10H76l-8 10H44Zm46-27h14l-7-9-7 9Z" fill="#d71920"/>
+  <path d="M165 84V36h24v30h23V36h24v48h-71Zm90 0V36h65v16h-41v7h35v15h-35v10h-24Z" fill="#30343b"/>
+  <path d="M42 96h276" stroke="#d71920" stroke-width="6" stroke-linecap="round"/>
+</svg>

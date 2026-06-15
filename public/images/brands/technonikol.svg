@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="ТЕХНОНИКОЛЬ">
+  <rect width="420" height="120" rx="22" fill="#ffffff"/>
+  <path d="M54 30h46l23 40-23 40H54L31 70 54 30Z" fill="#e30613"/>
+  <path d="M66 49h22l11 21-11 21H66L55 70l11-21Z" fill="#ffffff" opacity=".95"/>
+  <path d="M142 42h238v14H142V42Zm0 24h238v14H142V66Zm0 24h238v14H142V90Z" fill="#111827" opacity=".12"/>
+  <text x="142" y="77" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#e30613">ТЕХНОНИКОЛЬ</text>
+</svg>

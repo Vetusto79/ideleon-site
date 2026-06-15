@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-label="Knauf">
+  <rect width="360" height="120" rx="22" fill="#ffffff"/>
+  <rect x="30" y="26" width="300" height="68" rx="8" fill="#0b4f9f"/>
+  <path d="M57 82V38h12v18l18-18h16L82 59l23 23H89L69 62v20H57Zm57 0V38h14l28 27V38h12v44h-13l-29-28v28h-12Zm70 0V38h12v34h35v10h-47Zm61 0V38h47v10h-35v8h31v10h-31v16h-12Z" fill="#ffffff"/>
+</svg>
