@@ -1,21 +1,21 @@
 import { siteConfig } from "./siteConfig";
 
+const marqueeBrands = [...siteConfig.brands, ...siteConfig.brands];
+
 export default function BrandLogos() {
   return (
-    <div className="brandGrid brandLogoGrid">
-      {siteConfig.brands.map((brand) => (
-        <a
-          className="brandCard brandLogoCard"
-          href={brand.href}
-          target="_blank"
-          rel="noreferrer"
-          key={brand.name}
-          aria-label={brand.name}
-        >
-          <img src={brand.logo} alt={brand.name} />
-          <span>{brand.name}</span>
-        </a>
-      ))}
+    <div className="brandMarquee" aria-label="Поставщики и производители">
+      <div className="brandMarqueeTrack">
+        {marqueeBrands.map((brand, index) => (
+          <div
+            className="brandCard brandLogoCard"
+            key={`${brand.name}-${index}`}
+            aria-hidden={index >= siteConfig.brands.length}
+          >
+            <img src={brand.logo} alt={brand.name} />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
