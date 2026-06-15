@@ -1056,3 +1056,80 @@ button.button:disabled {
 .detailSection + .request {
   margin: 42px 0 0;
 }
+
+/* Логотипы партнёров / поставщиков */
+
+.brandLogoGrid {
+  grid-template-columns: repeat(5, minmax(140px, 1fr));
+}
+
+.brandLogoCard {
+  min-height: 118px;
+  padding: 20px;
+  flex-direction: column;
+  gap: 10px;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background-color 0.18s ease;
+}
+
+.brandLogoCard img {
+  width: 100%;
+  max-width: 168px;
+  height: 58px;
+  object-fit: contain;
+  display: block;
+}
+
+.brandLogoCard span {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.brandLogoCard:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 106, 0, 0.28);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.1);
+}
+
+/* Единое поведение CTA-кнопок */
+
+.button.primary,
+.button.secondary,
+button.button.secondary {
+  background: #ffffff;
+  color: var(--orange);
+  border: 1px solid rgba(255, 106, 0, 0.56);
+}
+
+.button.primary:hover,
+.button.secondary:hover,
+button.button.secondary:hover {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 16px 34px rgba(255, 106, 0, 0.22);
+}
+
+.button.primary:active,
+.button.secondary:active,
+button.button.secondary:active {
+  transform: translateY(0);
+  box-shadow: 0 8px 18px rgba(255, 106, 0, 0.16);
+}
+
+@media (max-width: 900px) {
+  .brandLogoGrid {
+    grid-template-columns: repeat(2, minmax(140px, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .brandLogoGrid {
+    grid-template-columns: 1fr;
+  }
+}
