@@ -4,6 +4,7 @@ const siteUrl = "https://ideleon.com";
 
 const routes = [
     "",
+    "/about",
     "/catalog",
     "/catalog/gkl-profile",
     "/catalog/cassette-ceilings",
@@ -40,3 +41,4 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : route.startsWith("/catalog") ? 0.8 : 0.7,
   }));
 }
+
