@@ -39,5 +39,31 @@ export const siteConfig = {
     { label: "Политика обработки персональных данных", href: "/privacy" },
   ],
 
-  brands: ["Knauf", "Албес", "ТехноНиколь", "КТЗ", "СПК", "МеталлТрейд"],
+  brands: [
+    {
+      name: "Knauf",
+      logo: "/images/brands/knauf.svg",
+      href: "https://www.knauf.ru/",
+    },
+    {
+      name: "Албес",
+      logo: "/images/brands/albes.svg",
+      href: "https://albes.ru/",
+    },
+    {
+      name: "ТехноНиколь",
+      logo: "/images/brands/technonikol.svg",
+      href: "https://www.tn.ru/",
+    },
+    {
+      name: "СПК",
+      logo: "/images/brands/spk.svg",
+      href: "https://www.spk.ru/",
+    },
+    {
+      name: "МеталлТрейд",
+      logo: "/images/brands/metalltrade.svg",
+      href: "https://metalltrade48.ru/",
+    },
+  ],
 };
