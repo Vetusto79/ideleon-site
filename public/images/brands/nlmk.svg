@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 120" role="img" aria-label="НЛМК">
+  <rect width="360" height="120" rx="24" fill="#fff"/>
+  <g transform="translate(42 30)">
+    <path d="M0 56V0h18l36 34V0h18v56H54L18 22v34H0Z" fill="#005baa"/>
+    <path d="M92 56V0h18v40h52v16H92Z" fill="#005baa"/>
+    <path d="M184 56V0h18v22l28-22h27l-36 27 38 29h-29l-28-23v23h-18Z" fill="#005baa"/>
+  </g>
+  <text x="256" y="85" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="800" fill="#6b7280">НЛМК</text>
+</svg>

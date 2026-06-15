@@ -1,7 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 120" role="img" aria-label="ТЕХНОНИКОЛЬ">
-  <rect width="420" height="120" rx="22" fill="#ffffff"/>
-  <path d="M54 30h46l23 40-23 40H54L31 70 54 30Z" fill="#e30613"/>
-  <path d="M66 49h22l11 21-11 21H66L55 70l11-21Z" fill="#ffffff" opacity=".95"/>
-  <path d="M142 42h238v14H142V42Zm0 24h238v14H142V66Zm0 24h238v14H142V90Z" fill="#111827" opacity=".12"/>
-  <text x="142" y="77" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="900" fill="#e30613">ТЕХНОНИКОЛЬ</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 120" role="img" aria-label="ТЕХНОНИКОЛЬ">
+  <rect width="430" height="120" rx="24" fill="#fff"/>
+  <g transform="translate(28 24)">
+    <path d="M42 0h42l21 36-21 36H42L21 36 42 0Z" fill="#e30613"/>
+    <path d="M50 18h26l13 18-13 18H50L38 36l12-18Z" fill="#fff"/>
+    <path d="M50 18h26L63 36H38l12-18Zm26 36H50l13-18h26L76 54Z" fill="#e30613" opacity=".9"/>
+  </g>
+  <text x="150" y="72" font-family="Arial, Helvetica, sans-serif" font-size="31" font-weight="900" fill="#e30613">ТЕХНОНИКОЛЬ</text>
 </svg>

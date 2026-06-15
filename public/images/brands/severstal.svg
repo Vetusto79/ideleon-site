@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 410 120" role="img" aria-label="Северсталь">
+  <rect width="410" height="120" rx="24" fill="#fff"/>
+  <g transform="translate(32 32)">
+    <path d="M28 0c20 0 36 11 44 28-8 17-24 28-44 28C12 56 0 44 0 28S12 0 28 0Z" fill="#00a3e0"/>
+    <path d="M72 28c8-17 24-28 44-28 16 0 28 12 28 28s-12 28-28 28c-20 0-36-11-44-28Z" fill="#67b346"/>
+    <circle cx="72" cy="28" r="12" fill="#fff"/>
+  </g>
+  <text x="194" y="72" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" fill="#1f2937">Северсталь</text>
+</svg>
