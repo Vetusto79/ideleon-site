@@ -41,29 +41,44 @@ export const siteConfig = {
 
   brands: [
     {
-      name: "Knauf",
-      logo: "/images/brands/knauf.svg",
-      href: "https://www.knauf.ru/",
-    },
-    {
       name: "Албес",
       logo: "/images/brands/albes.svg",
-      href: "https://albes.ru/",
     },
     {
-      name: "ТехноНиколь",
+      name: "КНАУФ",
+      logo: "/images/brands/knauf.svg",
+    },
+    {
+      name: "ТЕХНОНИКОЛЬ",
       logo: "/images/brands/technonikol.svg",
-      href: "https://www.tn.ru/",
     },
     {
-      name: "СПК",
-      logo: "/images/brands/spk.svg",
-      href: "https://www.spk.ru/",
+      name: "Северсталь",
+      logo: "/images/brands/severstal.svg",
     },
     {
-      name: "МеталлТрейд",
+      name: "STYNERGY",
+      logo: "/images/brands/stynergy.svg",
+    },
+    {
+      name: "Grand Line",
+      logo: "/images/brands/grandline.svg",
+    },
+    {
+      name: "Металл Трейд",
       logo: "/images/brands/metalltrade.svg",
-      href: "https://metalltrade48.ru/",
+    },
+    {
+      name: "ЕВРАЗ",
+      logo: "/images/brands/evraz.svg",
+    },
+    {
+      name: "ММК",
+      logo: "/images/brands/mmk.svg",
+    },
+    {
+      name: "НЛМК",
+      logo: "/images/brands/nlmk.svg",
     },
   ],
 };
