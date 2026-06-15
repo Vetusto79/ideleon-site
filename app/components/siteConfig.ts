@@ -31,7 +31,7 @@ export const siteConfig = {
     { label: "Решения", href: "/solutions" },
     { label: "Бренды", href: "/#brands" },
     { label: "Статьи", href: "/articles" },
-    { label: "О компании", href: "/#about" },
+    { label: "О компании", href: "/about" },
     { label: "Контакты", href: "/#contacts" },
   ],
 
