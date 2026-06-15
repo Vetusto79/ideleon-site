@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { reachGoal } from "./metrika";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
@@ -63,6 +64,8 @@ export default function CallbackModal() {
       if (!response.ok || !result.ok) {
         throw new Error(result.message || "Не удалось отправить заявку.");
       }
+
+      reachGoal("callback_submit", { source: sourcePage || window.location.href });
 
       form.reset();
       setStatus("success");
