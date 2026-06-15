@@ -42,43 +42,43 @@ export const siteConfig = {
   brands: [
     {
       name: "Албес",
-      logo: "/images/brands/albes.svg",
+      logo: "/images/brands/albes.png",
     },
     {
       name: "КНАУФ",
-      logo: "/images/brands/knauf.svg",
+      logo: "/images/brands/knauf.png",
     },
     {
       name: "ТЕХНОНИКОЛЬ",
-      logo: "/images/brands/technonikol.svg",
+      logo: "/images/brands/technonikol.png",
     },
     {
       name: "Северсталь",
-      logo: "/images/brands/severstal.svg",
+      logo: "/images/brands/severstal.png",
     },
     {
-      name: "STYNERGY",
-      logo: "/images/brands/stynergy.svg",
+      name: "STYNERGY GROUP",
+      logo: "/images/brands/stynergy.png",
     },
     {
       name: "Grand Line",
-      logo: "/images/brands/grandline.svg",
+      logo: "/images/brands/grandline.png",
     },
     {
       name: "Металл Трейд",
-      logo: "/images/brands/metalltrade.svg",
+      logo: "/images/brands/metalltrade.png",
     },
     {
       name: "ЕВРАЗ",
-      logo: "/images/brands/evraz.svg",
+      logo: "/images/brands/evraz.png",
     },
     {
       name: "ММК",
-      logo: "/images/brands/mmk.svg",
+      logo: "/images/brands/mmk.png",
     },
     {
-      name: "НЛМК",
-      logo: "/images/brands/nlmk.svg",
+      name: "НЛМК Липецк",
+      logo: "/images/brands/nlmk.png",
     },
   ],
 };
