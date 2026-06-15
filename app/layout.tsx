@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
+import YandexMetrika from "./components/YandexMetrika";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ideleon.com"),
@@ -44,7 +45,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ru">
-      <body>{children}</body>
+      <body>
+        <YandexMetrika />
+        {children}
+      </body>
     </html>
   );
 }
