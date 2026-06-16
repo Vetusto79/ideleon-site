@@ -29,6 +29,7 @@ const routes = [
     "/articles/reechnye-potolki",
     "/articles/revizionnye-lyuki",
     "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+    "/articles/tolshchina-profilya-dlya-gipsokartona",
     "/articles/postavshchik-stroymaterialov",
     "/privacy"
 ];
