@@ -23,7 +23,7 @@ export const siteConfig = {
   },
 
   logo: {
-    horizontal: "/images/logo/ideleon-logo-horizontal.svg",
+    horizontal: "/images/logo/ideleon-logo-horizontal.png",
   },
 
   menu: [
