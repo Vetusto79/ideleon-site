@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
-const MAX_ATTACHMENT_SIZE = 40 * 1024 * 1024;
+const MAX_ATTACHMENT_SIZE = 25 * 1024 * 1024;
 
 const ALLOWED_ATTACHMENT_EXTENSIONS = [
   ".pdf",
