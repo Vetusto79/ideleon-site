@@ -1,5 +1,19 @@
-import { redirect } from "next/navigation";
+import ArticleCategoryPage from "../../components/ArticleCategoryPage";
+import { getCategoryBySlug } from "../../data/articles";
 
-export default function OldGklArticleRedirect() {
-  redirect("/articles/kak-rasschitat-profil-dlya-gipsokartona");
+const category = getCategoryBySlug("profil-dlya-gkl");
+
+export const metadata = {
+  title: category?.seoTitle || "Статьи Иделеон",
+  description:
+    category?.seoDescription ||
+    "Полезные статьи Иделеон о строительных материалах и комплектации объектов.",
+};
+
+export default function CategoryPage() {
+  if (!category) {
+    return null;
+  }
+
+  return <ArticleCategoryPage category={category} />;
 }
