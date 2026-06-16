@@ -230,17 +230,17 @@ export default function ArticlePage() {
               Иделеон работает с разными направлениями строительных материалов и решений:
             </p>
             <ul>
-              <li><a href="/articles/profil-dlya-gkl">профиль для гипсокартона</a>;</li>
-              <li><a href="/articles/kassetnye-potolki">подвесные кассетные потолочные системы</a>;</li>
-              <li><a href="/articles/reechnye-potolki">реечные потолочные системы</a>;</li>
-              <li><a href="/articles/grilyato">потолки Грильято</a>;</li>
-              <li>дизайнерские потолочные решения;</li>
-              <li>потолочные решения для медицинских учреждений;</li>
-              <li><a href="/articles/revizionnye-lyuki">ревизионные люки под плитку и под покраску</a>;</li>
-              <li>фальшполы;</li>
-              <li>сэндвич-панели;</li>
-              <li>металлопрокат;</li>
-              <li>арматура.</li>
+              <li><a href="/catalog/gkl-profile">профиль для гипсокартона</a>;</li>
+              <li><a href="/catalog/cassette-ceilings">подвесные кассетные потолочные системы</a>;</li>
+              <li><a href="/catalog/rack-ceilings">реечные потолочные системы</a>;</li>
+              <li><a href="/catalog/grilyato">потолки Грильято</a>;</li>
+              <li><a href="/catalog/design-ceilings">дизайнерские потолочные решения</a>;</li>
+              <li><a href="/catalog/medical-ceilings">потолочные решения для медицинских учреждений</a>;</li>
+              <li><a href="/catalog/revision-hatches">ревизионные люки под плитку и под покраску</a>;</li>
+              <li><a href="/catalog/raised-floors">фальшполы</a>;</li>
+              <li><a href="/catalog/sandwich-panels">сэндвич-панели</a>;</li>
+              <li><a href="/catalog/metal-roll">металлопрокат</a>;</li>
+              <li><a href="/catalog/rebar">арматура</a>.</li>
             </ul>
             <p>
               Если у вас есть спецификация, проект или список материалов, его можно отправить
