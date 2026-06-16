@@ -28,7 +28,7 @@ const routes = [
     "/articles/grilyato",
     "/articles/reechnye-potolki",
     "/articles/revizionnye-lyuki",
-    "/articles/profil-dlya-gkl",
+    "/articles/kak-rasschitat-profil-dlya-gipsokartona",
     "/articles/postavshchik-stroymaterialov",
     "/privacy"
 ];
@@ -41,4 +41,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: route === "" ? 1 : route.startsWith("/catalog") ? 0.8 : 0.7,
   }));
 }
-
