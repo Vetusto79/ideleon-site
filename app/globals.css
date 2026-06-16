@@ -1337,3 +1337,93 @@ button.button.secondary:disabled {
   font-size: 14px;
   font-weight: 900;
 }
+
+/* IDELEON: таблицы и технические блоки в статьях */
+
+.articleTableWrap {
+  width: 100%;
+  margin: 22px 0 30px;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.05);
+  background: var(--white);
+}
+
+.articleTable {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.articleTable th,
+.articleTable td {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+}
+
+.articleTable th {
+  background: #0f172a;
+  color: var(--white);
+  font-weight: 900;
+}
+
+.articleTable tr:last-child td {
+  border-bottom: 0;
+}
+
+.articleTable td:nth-child(2),
+.articleTable td:nth-child(3) {
+  font-weight: 900;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.articleFigure {
+  margin: 22px 0 28px;
+  min-height: 150px;
+  padding: 28px;
+  border: 1px dashed rgba(255, 106, 0, 0.42);
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+  display: grid;
+  place-items: center;
+  text-align: center;
+  color: #334155;
+}
+
+.articleFigure strong {
+  display: block;
+  color: var(--orange);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.articleFigure span {
+  display: block;
+  margin-top: 8px;
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+@media (max-width: 640px) {
+  .articleTable {
+    font-size: 15px;
+  }
+
+  .articleTable th,
+  .articleTable td {
+    padding: 14px 16px;
+  }
+
+  .articleFigure {
+    padding: 22px;
+    min-height: 120px;
+  }
+}
