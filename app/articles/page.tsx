@@ -48,9 +48,9 @@ export default function Articles() {
             <p>Ревизионный люк должен давать доступ к коммуникациям и при этом аккуратно вписываться в интерьер.</p>
             <span>Читать статью →</span>
           </a>
-          <a className="articleCard" href="/articles/profil-dlya-gkl" key="profil-dlya-gkl">
-            <h3>Как рассчитать профиль для гипсокартона</h3>
-            <p>Профиль для ГКЛ нужно считать не только по площади, но и по конструкции, шагу, высоте и нагрузкам.</p>
+          <a className="articleCard" href="/articles/kak-rasschitat-profil-dlya-gipsokartona" key="kak-rasschitat-profil-dlya-gipsokartona">
+            <h3>Как рассчитать и выбрать профиль для гипсокартона</h3>
+            <p>Виды, размеры, толщина 0,6 мм, потолочные и перегородочные профили, а также подход к расчёту профиля для объекта.</p>
             <span>Читать статью →</span>
           </a>
           <a className="articleCard" href="/articles/postavshchik-stroymaterialov" key="postavshchik-stroymaterialov">
