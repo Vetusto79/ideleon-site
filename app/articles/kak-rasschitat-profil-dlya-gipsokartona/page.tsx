@@ -125,15 +125,6 @@ export default function ArticlePage() {
               стабильная геометрия, нормальная толщина металла и понятная комплектность.
             </p>
 
-            <div className="articleFigure" role="img" aria-label="Сечение потолочного профиля ПП 60×27 для гипсокартона">
-              <strong>Место для чертежа</strong>
-              <span>Сечение ПП 60×27</span>
-            </div>
-
-            <div className="articleFigure" role="img" aria-label="Сечение направляющего потолочного профиля ППН 27×28 для ГКЛ">
-              <strong>Место для чертежа</strong>
-              <span>Сечение ППН 27×28 / ПН 28×27</span>
-            </div>
           </section>
 
           <section>
@@ -182,15 +173,15 @@ export default function ArticlePage() {
               проекта, высотой перегородки, количеством слоёв ГКЛ, нагрузками и бюджетом.
             </p>
 
-            <div className="articleFigure" role="img" aria-label="Сечения стоечных профилей ПС 50×50, 75×50 и 100×50 для перегородок из гипсокартона">
-              <strong>Место для чертежа</strong>
-              <span>Сечения ПС 50×50, ПС 75×50, ПС 100×50</span>
-            </div>
-
-            <div className="articleFigure" role="img" aria-label="Сечения направляющих профилей ПН 50×40, 75×40 и 100×40 для перегородок из ГКЛ">
-              <strong>Место для чертежа</strong>
-              <span>Сечения ПН 50×40, ПН 75×40, ПН 100×40</span>
-            </div>
+            <figure className="articleImageFigure">
+              <img
+                src="/images/articles/gkl-profile/profile-sections.png"
+                alt="Сечения основных профилей для гипсокартона: ПП 60×27, ППН 28×27, ПС 50/75/100×50 и ПН 50/75/100×40"
+              />
+              <figcaption>
+                Сечения основных потолочных и перегородочных профилей для ГКЛ. Размеры указаны в миллиметрах.
+              </figcaption>
+            </figure>
           </section>
 
           <section>
