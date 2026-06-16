@@ -184,15 +184,10 @@ export function getArticlesByCategory(category: ArticleCategorySlug) {
   return articles.filter((article) => article.category === category);
 }
 
-export function getCategoryBySlug(slug: string) {
+export function getCategoryBySlug(slug: ArticleCategorySlug) {
   return articleCategories.find((category) => category.slug === slug);
 }
 
 export function getActiveCategories() {
   return articleCategories.filter((category) => getArticlesByCategory(category.slug).length > 0);
 }
-
-export function getCategoryStaticParams() {
-  return articleCategories.map((category) => ({ categorySlug: category.slug }));
-}
-
