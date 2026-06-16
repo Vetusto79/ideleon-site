@@ -5,7 +5,7 @@ import { reachGoal } from "./metrika";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
-const MAX_FILE_SIZE = 40 * 1024 * 1024;
+const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const ALLOWED_FILE_EXTENSIONS = [
   ".pdf",
   ".doc",
@@ -100,7 +100,17 @@ export default function RequestForm() {
         body: formData,
       });
 
-      const result = await response.json();
+      let result: { ok?: boolean; message?: string } = {};
+
+      try {
+        result = await response.json();
+      } catch {
+        throw new Error(
+          response.status === 413
+            ? "Файл слишком большой для отправки через форму. Максимальный размер — 25 МБ."
+            : "Не удалось отправить заявку. Попробуйте файл меньшего размера или отправьте ссылку на облако в сообщении."
+        );
+      }
 
       if (!response.ok || !result.ok) {
         throw new Error(result.message || "Не удалось отправить заявку.");
@@ -145,7 +155,7 @@ export default function RequestForm() {
         <span className="fileFieldTitle">Прикрепить файл</span>
         <span className="fileFieldText">
           Можно приложить спецификацию, проект, смету или список материалов.
-          PDF, DOC, XLS, JPG, PNG или ZIP до 40 МБ.
+          PDF, DOC, XLS, JPG, PNG или ZIP до 25 МБ.
         </span>
         <input
           ref={fileInputRef}
