@@ -4,7 +4,7 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import LeadCapture from "../../components/LeadCapture";
 
 export const metadata = {
-  title: "Как рассчитать и выбрать профиль для гипсокартона | Иделеон",
+  title: "Как рассчитать и выбрать профиль для гипсокартона",
   description:
     "Как выбрать и рассчитать профиль для гипсокартона: виды, размеры, толщина 0,6 мм, потолочные и перегородочные профили. Поставка профиля ГКЛ на объекты по России.",
 };
