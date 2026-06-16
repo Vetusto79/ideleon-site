@@ -1,40 +1,37 @@
 import type { MetadataRoute } from "next";
+import { articles, getActiveCategories } from "./data/articles";
 
 const siteUrl = "https://ideleon.com";
 
-const routes = [
-    "",
-    "/about",
-    "/catalog",
-    "/catalog/gkl-profile",
-    "/catalog/cassette-ceilings",
-    "/catalog/rack-ceilings",
-    "/catalog/design-ceilings",
-    "/catalog/medical-ceilings",
-    "/catalog/grilyato",
-    "/catalog/revision-hatches",
-    "/catalog/raised-floors",
-    "/catalog/sandwich-panels",
-    "/catalog/metal-roll",
-    "/catalog/rebar",
-    "/solutions",
-    "/solutions/developers",
-    "/solutions/contractors",
-    "/solutions/shops",
-    "/solutions/medical",
-    "/articles",
-    "/articles/kak-vybrat-podvesnoy-potolok",
-    "/articles/kassetnye-potolki",
-    "/articles/grilyato",
-    "/articles/reechnye-potolki",
-    "/articles/revizionnye-lyuki",
-    "/articles/kak-rasschitat-profil-dlya-gipsokartona",
-    "/articles/tolshchina-profilya-dlya-gipsokartona",
-    "/articles/postavshchik-stroymaterialov",
-    "/privacy"
+const staticRoutes = [
+  "",
+  "/about",
+  "/catalog",
+  "/catalog/gkl-profile",
+  "/catalog/cassette-ceilings",
+  "/catalog/rack-ceilings",
+  "/catalog/design-ceilings",
+  "/catalog/medical-ceilings",
+  "/catalog/grilyato",
+  "/catalog/revision-hatches",
+  "/catalog/raised-floors",
+  "/catalog/sandwich-panels",
+  "/catalog/metal-roll",
+  "/catalog/rebar",
+  "/solutions",
+  "/solutions/developers",
+  "/solutions/contractors",
+  "/solutions/shops",
+  "/solutions/medical",
+  "/articles",
+  "/privacy",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const articleRoutes = articles.map((article) => article.href);
+  const categoryRoutes = getActiveCategories().map((category) => category.href);
+  const routes = Array.from(new Set([...staticRoutes, ...categoryRoutes, ...articleRoutes]));
+
   return routes.map((route) => ({
     url: `${siteUrl}${route}`,
     lastModified: new Date(),
