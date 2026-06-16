@@ -82,15 +82,6 @@ export default function ArticlePage() {
               перегородок, коммерческом объекте, офисе, медицинском помещении, магазине или жилом
               комплексе.
             </p>
-
-            <div className="articleIllustrationPlaceholder">
-              <strong>Место для иллюстрации</strong>
-              <span>Сравнение профиля 0,6 мм, 0,5 мм и 0,4 мм</span>
-              <small>
-                Три профиля в разрезе с подписями: “нормальная жёсткость”, “компромисс”,
-                “требует осторожности”.
-              </small>
-            </div>
           </section>
 
           <section>
@@ -193,15 +184,6 @@ export default function ArticlePage() {
               Важный вывод: уменьшение шага стоек — это не бесплатная “мелкая правка”. Это увеличение
               количества профиля, крепежа и работы.
             </p>
-
-            <div className="articleIllustrationPlaceholder">
-              <strong>Место для схемы</strong>
-              <span>Шаг стоек 600 мм и 400 мм</span>
-              <small>
-                Две схемы каркаса перегородки: стойки через 600 мм и через 400 мм. Подпись:
-                “при шаге 400 мм расход стоечного профиля примерно на 50% выше”.
-              </small>
-            </div>
           </section>
 
           <section>
@@ -319,15 +301,6 @@ export default function ArticlePage() {
               <li>претензии после отделки.</li>
             </ul>
             <p>Именно так дешёвый профиль превращается в дорогую конструкцию.</p>
-
-            <div className="articleIllustrationPlaceholder">
-              <strong>Место для инфографики</strong>
-              <span>Почему дешёвый профиль может стать дороже</span>
-              <small>
-                Простое сравнение: 0,6 мм — 200 пог. м; 0,5 мм — 300 пог. м;
-                0,4 мм — 400 пог. м.
-              </small>
-            </div>
           </section>
 
           <section>
