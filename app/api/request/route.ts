@@ -3,6 +3,20 @@ import nodemailer from "nodemailer";
 
 export const runtime = "nodejs";
 
+const MAX_ATTACHMENT_SIZE = 40 * 1024 * 1024;
+
+const ALLOWED_ATTACHMENT_EXTENSIONS = [
+  ".pdf",
+  ".doc",
+  ".docx",
+  ".xls",
+  ".xlsx",
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".zip",
+];
+
 function clean(value: FormDataEntryValue | null) {
   return String(value || "").trim();
 }
@@ -20,6 +34,19 @@ function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
+function getFileExtension(fileName: string) {
+  const dotIndex = fileName.lastIndexOf(".");
+  return dotIndex >= 0 ? fileName.slice(dotIndex).toLowerCase() : "";
+}
+
+function formatFileSize(bytes: number) {
+  return `${(bytes / 1024 / 1024).toFixed(1).replace(".0", "")} МБ`;
+}
+
+function isAllowedAttachment(file: File) {
+  return ALLOWED_ATTACHMENT_EXTENSIONS.includes(getFileExtension(file.name));
+}
+
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
@@ -32,6 +59,12 @@ export async function POST(request: Request) {
     const consent = clean(formData.get("consent"));
     const sourcePage = clean(formData.get("sourcePage"));
     const website = clean(formData.get("website"));
+    const uploadedAttachment = formData.get("attachment");
+
+    const attachment =
+      uploadedAttachment instanceof File && uploadedAttachment.size > 0
+        ? uploadedAttachment
+        : null;
 
     // Простая защита от ботов: обычный человек это поле не видит и не заполняет.
     if (website) {
@@ -78,6 +111,28 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
+
+      if (attachment) {
+        if (attachment.size > MAX_ATTACHMENT_SIZE) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: `Файл слишком большой. Максимальный размер — ${formatFileSize(MAX_ATTACHMENT_SIZE)}.`,
+            },
+            { status: 400 }
+          );
+        }
+
+        if (!isAllowedAttachment(attachment)) {
+          return NextResponse.json(
+            {
+              ok: false,
+              message: "Можно приложить PDF, DOC, DOCX, XLS, XLSX, JPG, PNG или ZIP.",
+            },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // VK WorkSpace / Mail.ru: smtp.mail.ru, порт 465, SSL/TLS.
@@ -121,6 +176,9 @@ export async function POST(request: Request) {
       : "Новая заявка с сайта IDELEON";
 
     const consentLine = `Согласие на обработку персональных данных: получено через чекбокс формы, ${createdAt}`;
+    const attachmentLine = attachment
+      ? `Файл: ${attachment.name} (${formatFileSize(attachment.size)})`
+      : "Файл: не приложен";
 
     const text = isCallback
       ? [
@@ -141,6 +199,8 @@ export async function POST(request: Request) {
           "",
           "Сообщение:",
           task,
+          "",
+          attachmentLine,
           "",
           consentLine,
           `Страница отправки: ${referer}`,
@@ -165,11 +225,28 @@ export async function POST(request: Request) {
           <p><b>E-mail:</b> ${escapeHtml(email)}</p>
           <p><b>Сообщение:</b></p>
           <p style="white-space:pre-wrap">${escapeHtml(task)}</p>
+          <p><b>Файл:</b> ${
+            attachment
+              ? `${escapeHtml(attachment.name)} (${escapeHtml(formatFileSize(attachment.size))})`
+              : "не приложен"
+          }</p>
           <hr />
           <p><b>Согласие:</b> получено через чекбокс формы, ${escapeHtml(createdAt)}</p>
           <p style="color:#64748b"><b>Страница отправки:</b> ${escapeHtml(referer)}</p>
         </div>
       `;
+
+    const attachments = [];
+
+    if (!isCallback && attachment) {
+      const arrayBuffer = await attachment.arrayBuffer();
+
+      attachments.push({
+        filename: attachment.name,
+        content: Buffer.from(arrayBuffer),
+        contentType: attachment.type || undefined,
+      });
+    }
 
     await transporter.sendMail({
       from: `"IDELEON сайт" <${mailFrom}>`,
@@ -178,6 +255,7 @@ export async function POST(request: Request) {
       subject,
       text,
       html,
+      attachments,
       replyTo: isCallback ? smtpUser : email,
     });
 
