@@ -53,6 +53,11 @@ export default function Articles() {
             <p>Виды, размеры, толщина 0,6 мм, потолочные и перегородочные профили, а также подход к расчёту профиля для объекта.</p>
             <span>Читать статью →</span>
           </a>
+          <a className="articleCard" href="/articles/tolshchina-profilya-dlya-gipsokartona" key="tolshchina-profilya-dlya-gipsokartona">
+            <h3>Какой толщины выбрать профиль для ГКЛ: 0,6 мм, 0,5 мм или 0,4 мм</h3>
+            <p>Разбираем, почему экономия на тонком профиле может увеличить расход материалов, трудозатраты и итоговую стоимость конструкции.</p>
+            <span>Читать статью →</span>
+          </a>
           <a className="articleCard" href="/articles/postavshchik-stroymaterialov" key="postavshchik-stroymaterialov">
             <h3>Как выбрать поставщика строительных материалов для объекта</h3>
             <p>Для строительного объекта поставщик — это не просто продавец, а участник процесса, от которого зависят сроки и комплектация.</p>
