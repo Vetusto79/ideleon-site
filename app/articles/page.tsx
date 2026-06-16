@@ -1,12 +1,17 @@
 import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import Breadcrumbs from "../components/Breadcrumbs";
+import { getActiveCategories, getArticlesByCategory } from "../data/articles";
+
 export const metadata = {
   title: "Статьи о строительных материалах и потолочных системах",
-  description: "Полезные статьи Иделеон о строительных материалах, потолочных системах, ревизионных люках, профиле для ГКЛ и выборе поставщика.",
+  description:
+    "Полезные статьи Иделеон о строительных материалах, потолочных системах, ревизионных люках, профиле для ГКЛ и выборе поставщика.",
 };
 
 export default function Articles() {
+  const activeCategories = getActiveCategories();
+
   return (
     <main>
       <SiteHeader />
@@ -16,53 +21,61 @@ export default function Articles() {
         <p className="label">Статьи</p>
         <h1>Полезные материалы для строителей, подрядчиков и застройщиков</h1>
         <p>
-          Здесь будут практические статьи по строительным материалам, потолочным системам,
-          расчётам, подбору решений и комплектации объектов.
+          Практические статьи по строительным материалам, потолочным системам, расчётам,
+          подбору решений и комплектации объектов. Материалы разложены по тематическим рубрикам,
+          чтобы нужную информацию было проще найти.
         </p>
       </section>
 
-      <section className="articleListSection">
-        <div className="articleGrid articleGridLarge">
-          <a className="articleCard" href="/articles/kak-vybrat-podvesnoy-potolok" key="kak-vybrat-podvesnoy-potolok">
-            <h3>Как выбрать подвесную потолочную систему для коммерческого объекта</h3>
-            <p>Разбираем, на что смотреть при выборе подвесного потолка для офиса, торгового центра, медицинского учреждения или общественного пространства.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/kassetnye-potolki" key="kassetnye-potolki">
-            <h3>Кассетные потолки: где применяются и чем отличаются</h3>
-            <p>Кассетные потолочные системы остаются одним из самых практичных решений для коммерческих помещений.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/grilyato" key="grilyato">
-            <h3>Потолки Грильято: плюсы, минусы и особенности</h3>
-            <p>Грильято — выразительная ячеистая потолочная система для общественных и коммерческих пространств.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/reechnye-potolki" key="reechnye-potolki">
-            <h3>Реечные потолки для офисов, ТЦ и общественных пространств</h3>
-            <p>Реечные потолочные системы подходят для помещений с активной эксплуатацией и высокими требованиями к внешнему виду.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/revizionnye-lyuki" key="revizionnye-lyuki">
-            <h3>Ревизионные люки под плитку и под покраску: что выбрать</h3>
-            <p>Ревизионный люк должен давать доступ к коммуникациям и при этом аккуратно вписываться в интерьер.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/kak-rasschitat-profil-dlya-gipsokartona" key="kak-rasschitat-profil-dlya-gipsokartona">
-            <h3>Как рассчитать и выбрать профиль для гипсокартона</h3>
-            <p>Виды, размеры, толщина 0,6 мм, потолочные и перегородочные профили, а также подход к расчёту профиля для объекта.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/tolshchina-profilya-dlya-gipsokartona" key="tolshchina-profilya-dlya-gipsokartona">
-            <h3>Какой толщины выбрать профиль для ГКЛ: 0,6 мм, 0,5 мм или 0,4 мм</h3>
-            <p>Разбираем, почему экономия на тонком профиле может увеличить расход материалов, трудозатраты и итоговую стоимость конструкции.</p>
-            <span>Читать статью →</span>
-          </a>
-          <a className="articleCard" href="/articles/postavshchik-stroymaterialov" key="postavshchik-stroymaterialov">
-            <h3>Как выбрать поставщика строительных материалов для объекта</h3>
-            <p>Для строительного объекта поставщик — это не просто продавец, а участник процесса, от которого зависят сроки и комплектация.</p>
-            <span>Читать статью →</span>
-          </a>
+      <section className="articleHubSection">
+        <div className="articleCategoryNav">
+          {activeCategories.map((category) => (
+            <a href={`#${category.slug}`} key={category.slug}>
+              {category.shortTitle}
+            </a>
+          ))}
+        </div>
+
+        <div className="articleCategoryGrid">
+          {activeCategories.map((category) => {
+            const categoryArticles = getArticlesByCategory(category.slug);
+            const mainArticle = categoryArticles.find((article) => article.isMain);
+            const otherArticles = categoryArticles.filter((article) => !article.isMain);
+
+            return (
+              <section className="articleCategoryBlock" id={category.slug} key={category.slug}>
+                <div className="articleCategoryHeader">
+                  <div>
+                    <p className="label">{category.shortTitle}</p>
+                    <h2>{category.title}</h2>
+                    <p>{category.description}</p>
+                  </div>
+                  <a className="articleCategoryLink" href={category.href}>
+                    Все статьи рубрики →
+                  </a>
+                </div>
+
+                <div className="articleGrid articleGridLarge">
+                  {mainArticle && (
+                    <a className="articleCard articleCardFeatured" href={mainArticle.href}>
+                      <span className="articleBadge">Главная статья</span>
+                      <h3>{mainArticle.title}</h3>
+                      <p>{mainArticle.description}</p>
+                      <span>Читать статью →</span>
+                    </a>
+                  )}
+
+                  {otherArticles.map((article) => (
+                    <a className="articleCard" href={article.href} key={article.href}>
+                      <h3>{article.title}</h3>
+                      <p>{article.description}</p>
+                      <span>Читать статью →</span>
+                    </a>
+                  ))}
+                </div>
+              </section>
+            );
+          })}
         </div>
       </section>
 
