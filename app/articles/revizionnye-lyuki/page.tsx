@@ -4,13 +4,13 @@ import { getCategoryBySlug } from "../../data/articles";
 const category = getCategoryBySlug("revizionnye-lyuki");
 
 export const metadata = {
-  title: category?.seoTitle || "Ревизионные люки",
+  title: category?.seoTitle || "Статьи Иделеон",
   description:
     category?.seoDescription ||
-    "Статьи Иделеон о ревизионных люках: люки под плитку, под покраску, подбор размера и применение на объектах.",
+    "Полезные статьи Иделеон о строительных материалах и комплектации объектов.",
 };
 
-export default function RevisionHatchesCategoryPage() {
+export default function CategoryPage() {
   if (!category) {
     return null;
   }
