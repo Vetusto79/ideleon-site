@@ -8,25 +8,38 @@ export default function SiteHeader() {
       <RequestLinkInterceptor />
       <CallbackModalHost />
       <header className="header">
-      <a className="logo" href="/">
-        <img src={siteConfig.logo.horizontal} alt={siteConfig.company.name} />
-      </a>
+        <a className="logo" href="/">
+          <img src={siteConfig.logo.horizontal} alt={siteConfig.company.name} />
+        </a>
 
-      <nav className="nav">
-        {siteConfig.menu.map((item) => (
-          <a href={item.href} key={item.href}>
-            {item.label}
-          </a>
-        ))}
-      </nav>
+        <nav className="nav">
+          {siteConfig.menu.map((item) => (
+            <div className="navItem" key={item.href}>
+              <a href={item.href} className={item.children ? "navLink navLinkWithDropdown" : "navLink"}>
+                {item.label}
+                {item.children ? <span className="navArrow">▾</span> : null}
+              </a>
 
-      <div className="headerContacts">
-        {siteConfig.contacts.phones.map((phone) => (
-          <a href={phone.href} key={phone.href}>
-            {phone.label}
-          </a>
-        ))}
-      </div>
+              {item.children ? (
+                <div className="navDropdown">
+                  {item.children.map((child) => (
+                    <a href={child.href} key={child.href}>
+                      {child.label}
+                    </a>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </nav>
+
+        <div className="headerContacts">
+          {siteConfig.contacts.phones.map((phone) => (
+            <a href={phone.href} key={phone.href}>
+              {phone.label}
+            </a>
+          ))}
+        </div>
       </header>
     </>
   );
