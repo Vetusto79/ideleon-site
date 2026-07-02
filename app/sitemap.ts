@@ -24,6 +24,8 @@ const staticRoutes = [
   "/solutions/shops",
   "/solutions/medical",
   "/articles",
+  "/calculators",
+  "/calculators/profil-gkl",
   "/privacy",
 ];
 
