@@ -19,6 +19,7 @@ type ResultRow = {
   consumption: string;
   quantityWithoutReserve: number | null;
   quantityWithReserve: number | null;
+  includeInOffer: boolean;
 };
 
 const typeLabels: Record<GrilyatoType, string> = {
@@ -120,7 +121,8 @@ function row(
   consumptionValue: number | "периметр" | null,
   quantityWithoutReserve: number | null,
   reservePercent: number,
-  step = 1
+  step = 1,
+  includeInOffer = true
 ): ResultRow {
   return {
     element,
@@ -136,6 +138,7 @@ function row(
     quantityWithoutReserve,
     quantityWithReserve:
       quantityWithoutReserve === null ? null : withReserve(quantityWithoutReserve, reservePercent, step),
+    includeInOffer,
   };
 }
 
@@ -147,12 +150,113 @@ function escapeHtml(value: string) {
     .replaceAll('"', "&quot;");
 }
 
+function createExcelBlob({
+  area,
+  perimeter,
+  grilyatoType,
+  cellSize,
+  reserve,
+  result,
+}: {
+  area: string;
+  perimeter: string;
+  grilyatoType: GrilyatoType;
+  cellSize: string;
+  reserve: number;
+  result: ResultRow[];
+}) {
+  const date = new Date().toLocaleDateString("ru-RU");
+  const offerRows = result.filter((item) => item.includeInOffer);
+
+  const bodyRows = offerRows
+    .map((item, index) => {
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.element)}</td>
+          <td style='mso-number-format:"\\@";'>${escapeHtml(item.size)}</td>
+          <td style='mso-number-format:"\\@";'>${escapeHtml(item.catalogName)}</td>
+          <td>${escapeHtml(item.unit)}</td>
+          <td>${formatNumber(item.quantityWithReserve)}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  const html = `
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <style>
+          table { border-collapse: collapse; font-family: Arial, sans-serif; }
+          td, th { border: 1px solid #999; padding: 8px; font-size: 12pt; vertical-align: top; }
+          .title { font-size: 18pt; font-weight: bold; color: #111827; }
+          .brand { font-size: 14pt; font-weight: bold; color: #111827; }
+          .muted { color: #64748b; }
+          .header { background: #111827; color: #ffffff; font-weight: bold; }
+          .text { mso-number-format:"\\@"; }
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr>
+            <td colspan="8" class="brand">
+              <img src="https://ideleon.com/images/logo/ideleon-logo-horizontal.png" width="220" />
+            </td>
+          </tr>
+          <tr><td colspan="8" class="title">Коммерческое предложение / расчёт потолка Грильято</td></tr>
+          <tr><td colspan="8" class="muted">ООО «ИДЕЛЕОН»</td></tr>
+          <tr><td colspan="8">Дата: ${date}</td></tr>
+          <tr><td colspan="8">Площадь: ${escapeHtml(area)} м²; периметр: ${escapeHtml(perimeter)} м; тип: ${escapeHtml(typeLabels[grilyatoType])}; ячейка: ${escapeHtml(cellSize)}; запас: ${reserve}%</td></tr>
+          <tr><td colspan="8"></td></tr>
+          <tr class="header">
+            <th>№</th>
+            <th>Наименование элемента</th>
+            <th>Размер</th>
+            <th>Название по каталогу</th>
+            <th>Ед. изм.</th>
+            <th>Количество</th>
+            <th>Цена</th>
+            <th>Сумма</th>
+          </tr>
+          ${bodyRows}
+          <tr><td colspan="8"></td></tr>
+          <tr><td colspan="8" class="muted">Цена и сумма оставлены пустыми для заполнения менеджером.</td></tr>
+          <tr><td colspan="8" class="muted">Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.</td></tr>
+        </table>
+      </body>
+    </html>
+  `;
+
+  return new Blob(["\ufeff", html], {
+    type: "application/vnd.ms-excel;charset=utf-8",
+  });
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+}
+
 export default function GrilyatoCalculatorPage() {
   const [area, setArea] = useState("100");
   const [perimeter, setPerimeter] = useState("40");
   const [grilyatoType, setGrilyatoType] = useState<GrilyatoType>("standard");
   const [cellSize, setCellSize] = useState("100х100");
   const [reservePercent, setReservePercent] = useState("5");
+  const [clientName, setClientName] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [sendMessage, setSendMessage] = useState("");
 
   const reserve = Math.min(Math.max(toNumber(reservePercent), 0), 30);
   const areaNumber = toNumber(area);
@@ -171,27 +275,27 @@ export default function GrilyatoCalculatorPage() {
     const latticeCoeff = isModel10(cellSize) ? 0.7 : 2.78;
     const latticeQty = ceilTo(areaNumber * latticeCoeff, 1);
 
-    rows.push(row("Решётка", isModel10(cellSize) ? "1.2×1.2" : "0.6×0.6", "РГ", "шт.", latticeCoeff, latticeQty, reserve));
+    rows.push(row("Решётка", isModel10(cellSize) ? "1200×1200 мм" : "600×600 мм", "РГ", "шт.", latticeCoeff, latticeQty, reserve, 1, false));
 
     const mama = mamaCoeff(cellSize);
     const papa = papaCoeff(cellSize);
     const mamaQty = ceilTo(latticeQty * mama, 1);
     const papaQty = ceilTo(latticeQty * papa, 1);
 
-    rows.push(row("Профиль «мама»", "0.6", grilyatoType === "multilevel" ? "мама (10×30)" : "мама", "шт.", mama, mamaQty, reserve));
-    rows.push(row("Профиль «папа»", "0.6", grilyatoType === "multilevel" ? "папа (10×30)" : "папа", "шт.", papa, papaQty, reserve));
+    rows.push(row("Профиль «мама»", "600 мм", grilyatoType === "multilevel" ? "мама (10×30)" : "мама", "шт.", mama, mamaQty, reserve));
+    rows.push(row("Профиль «папа»", "600 мм", grilyatoType === "multilevel" ? "папа (10×30)" : "папа", "шт.", papa, papaQty, reserve));
 
     const n1Coeff = isSmallCell(cellSize) ? 0.7 : 0.35;
-    rows.push(row("Несущая направляющая №1", "2.4", grilyatoType === "multilevel" ? "№1 (10×50)" : "№1", "шт.", n1Coeff, ceilTo(areaNumber * n1Coeff, 1), reserve));
+    rows.push(row("Несущая направляющая L=2400 мм", "2400 мм", grilyatoType === "multilevel" ? "№1 (10×50)" : "№1", "шт.", n1Coeff, ceilTo(areaNumber * n1Coeff, 1), reserve));
 
     if (!isSmallCell(cellSize)) {
       const n2Coeff = isModel10(cellSize) ? 0.7 : 1.39;
-      rows.push(row("Несущая направляющая №2", "1.2", grilyatoType === "multilevel" ? "№2 (10×50)" : "№2", "шт.", n2Coeff, ceilTo(areaNumber * n2Coeff, 1), reserve));
+      rows.push(row("Несущая направляющая L=1200 мм", "1200 мм", grilyatoType === "multilevel" ? "№2 (10×50)" : "№2", "шт.", n2Coeff, ceilTo(areaNumber * n2Coeff, 1), reserve));
     }
 
     if (!isModel10(cellSize)) {
       const n3Coeff = isSmallCell(cellSize) ? 2.78 : 1.39;
-      rows.push(row("Несущая направляющая №3", "0.6", grilyatoType === "multilevel" ? "№3 (10×50)" : "№3", "шт.", n3Coeff, ceilTo(areaNumber * n3Coeff, 1), reserve));
+      rows.push(row("Несущая направляющая L=600 мм", "600 мм", grilyatoType === "multilevel" ? "№3 (10×50)" : "№3", "шт.", n3Coeff, ceilTo(areaNumber * n3Coeff, 1), reserve));
     }
 
     const pgCoeff = isSmallCell(cellSize) ? 0.7 : 0.35;
@@ -200,103 +304,76 @@ export default function GrilyatoCalculatorPage() {
     const hangerCoeff = isSmallCell(cellSize) ? 1.85 : 0.93;
     rows.push(row("Подвес", "по проекту", "АП-Г", "комп.", hangerCoeff, ceilTo(areaNumber * hangerCoeff, 10), reserve, 10));
 
-    rows.push(row("Уголок", "3", "PL", "м.п.", "периметр", ceilTo(perimeterNumber, 3), reserve, 3));
+    rows.push(row("Уголок", "3000 мм", "PL", "м.п.", "периметр", ceilTo(perimeterNumber, 3), reserve, 3));
 
     return rows;
   }, [areaNumber, perimeterNumber, grilyatoType, cellSize, reserve]);
 
-  const summaryText = useMemo(() => {
-    const lines = result.map((item) => `${item.element} ${item.catalogName}: ${formatNumber(item.quantityWithReserve)} ${item.unit}`);
-
-    return [
-      "Расчёт потолка Грильято",
-      `Площадь: ${area} м²`,
-      `Периметр: ${perimeter} м`,
-      `Тип: ${typeLabels[grilyatoType]}`,
-      `Ячейка: ${cellSize}`,
-      `Запас: ${reserve}%`,
-      "",
-      ...lines,
-    ].join("\\n");
-  }, [area, perimeter, grilyatoType, cellSize, reserve, result]);
-
-  async function copyResult() {
-    try {
-      await navigator.clipboard.writeText(summaryText);
-    } catch {
-      // Если браузер не дал доступ к буферу обмена — просто ничего не ломаем.
-    }
+  function makeExcelBlob() {
+    return createExcelBlob({
+      area,
+      perimeter,
+      grilyatoType,
+      cellSize,
+      reserve,
+      result,
+    });
   }
 
   function downloadExcelOffer() {
-    const date = new Date().toLocaleDateString("ru-RU");
+    downloadBlob(makeExcelBlob(), "KP_grilyato_ideleon.xls");
+  }
 
-    const bodyRows = result
-      .map((item, index) => {
-        return `
-          <tr>
-            <td>${index + 1}</td>
-            <td>${escapeHtml(item.element)}</td>
-            <td>${escapeHtml(item.size)}</td>
-            <td>${escapeHtml(item.catalogName)}</td>
-            <td>${escapeHtml(item.unit)}</td>
-            <td>${formatNumber(item.quantityWithReserve)}</td>
-            <td></td>
-            <td></td>
-          </tr>
-        `;
-      })
-      .join("");
+  async function sendExcelOffer() {
+    setSendStatus("idle");
+    setSendMessage("");
 
-    const html = `
-      <html>
-        <head>
-          <meta charset="utf-8" />
-          <style>
-            table { border-collapse: collapse; font-family: Arial, sans-serif; }
-            td, th { border: 1px solid #999; padding: 8px; font-size: 12pt; }
-            .title { font-size: 18pt; font-weight: bold; color: #111827; }
-            .muted { color: #64748b; }
-            .header { background: #111827; color: #ffffff; font-weight: bold; }
-          </style>
-        </head>
-        <body>
-          <table>
-            <tr><td colspan="8" class="title">Коммерческое предложение / расчёт потолка Грильято</td></tr>
-            <tr><td colspan="8" class="muted">ООО «ИДЕЛЕОН»</td></tr>
-            <tr><td colspan="8">Дата: ${date}</td></tr>
-            <tr><td colspan="8">Площадь: ${escapeHtml(area)} м²; периметр: ${escapeHtml(perimeter)} м; тип: ${escapeHtml(typeLabels[grilyatoType])}; ячейка: ${escapeHtml(cellSize)}; запас: ${reserve}%</td></tr>
-            <tr><td colspan="8"></td></tr>
-            <tr class="header">
-              <th>№</th>
-              <th>Наименование элемента</th>
-              <th>Размер</th>
-              <th>Название по каталогу</th>
-              <th>Ед. изм.</th>
-              <th>Количество</th>
-              <th>Цена</th>
-              <th>Сумма</th>
-            </tr>
-            ${bodyRows}
-            <tr><td colspan="8"></td></tr>
-            <tr><td colspan="8" class="muted">Цена и сумма оставлены пустыми для заполнения менеджером.</td></tr>
-            <tr><td colspan="8" class="muted">Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.</td></tr>
-          </table>
-        </body>
-      </html>
-    `;
+    if (!clientName.trim() || !clientPhone.trim() || !clientEmail.trim()) {
+      setSendStatus("error");
+      setSendMessage("Заполните имя, телефон и e-mail.");
+      return;
+    }
 
-    const blob = new Blob(["\\ufeff", html], {
-      type: "application/vnd.ms-excel;charset=utf-8",
+    if (!consent) {
+      setSendStatus("error");
+      setSendMessage("Нужно согласие на обработку персональных данных.");
+      return;
+    }
+
+    const file = new File([makeExcelBlob()], "KP_grilyato_ideleon.xls", {
+      type: "application/vnd.ms-excel",
     });
 
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "KP_grilyato_ideleon.xls";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    URL.revokeObjectURL(link.href);
+    const formData = new FormData();
+    formData.append("requestType", "calculation");
+    formData.append("name", clientName);
+    formData.append("phone", clientPhone);
+    formData.append("email", clientEmail);
+    formData.append("task", `Клиент отправил расчёт потолка Грильято из калькулятора.\n\nПлощадь: ${area} м²\nПериметр: ${perimeter} м\nТип: ${typeLabels[grilyatoType]}\nЯчейка: ${cellSize}\nЗапас: ${reserve}%`);
+    formData.append("consent", "yes");
+    formData.append("sourcePage", "/calculators/grilyato");
+    formData.append("website", "");
+    formData.append("attachment", file);
+
+    try {
+      setSendStatus("sending");
+      const response = await fetch("/api/request", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || "Не удалось отправить расчёт.");
+      }
+
+      setSendStatus("success");
+      setSendMessage("Расчёт отправлен. Мы свяжемся с вами.");
+    } catch (error) {
+      setSendStatus("error");
+      setSendMessage(error instanceof Error ? error.message : "Не удалось отправить расчёт.");
+    }
   }
 
   return (
@@ -403,15 +480,31 @@ export default function GrilyatoCalculatorPage() {
             </div>
 
             <div className="calculatorActions">
-              <button type="button" className="btn primary" onClick={downloadExcelOffer}>
-                Скачать КП в Excel
+              <button type="button" className="btn secondary" onClick={downloadExcelOffer}>
+                Скачать КП
               </button>
-              <button type="button" className="btn secondary" onClick={copyResult}>
-                Скопировать расчёт
+            </div>
+
+            <div className="calculatorSendBox">
+              <h3>Отправить расчёт в Иделеон</h3>
+              <p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p>
+
+              <div className="calculatorSendGrid">
+                <input placeholder="Ваше имя" value={clientName} onChange={(event) => setClientName(event.target.value)} />
+                <input placeholder="Телефон" value={clientPhone} onChange={(event) => setClientPhone(event.target.value)} />
+                <input placeholder="E-mail" value={clientEmail} onChange={(event) => setClientEmail(event.target.value)} />
+              </div>
+
+              <label className="calculatorConsent">
+                <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+                <span>Согласен на обработку персональных данных</span>
+              </label>
+
+              <button type="button" className="btn primary calculatorSendButton" onClick={sendExcelOffer} disabled={sendStatus === "sending"}>
+                {sendStatus === "sending" ? "Отправляем..." : "Отправить в Иделеон"}
               </button>
-              <a className="btn secondary" href="/#contacts">
-                Отправить в Иделеон
-              </a>
+
+              {sendMessage ? <p className={`calculatorStatus ${sendStatus}`}>{sendMessage}</p> : null}
             </div>
 
             <p className="calculatorDisclaimer">
