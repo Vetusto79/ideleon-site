@@ -2188,3 +2188,10 @@ button.button.secondary:disabled {
     width: 100%;
   }
 }
+
+
+/* IDELEON: excel formula pack tweaks */
+.calculatorTable th,
+.calculatorTable td {
+  overflow-wrap: anywhere;
+}
