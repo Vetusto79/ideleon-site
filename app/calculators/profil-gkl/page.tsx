@@ -41,16 +41,117 @@ function formatNumber(value: number) {
   }).format(value);
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function createExcelBlob({
+  title,
+  subtitle,
+  params,
+  rows,
+}: {
+  title: string;
+  subtitle: string;
+  params: string;
+  rows: ResultRow[];
+}) {
+  const date = new Date().toLocaleDateString("ru-RU");
+
+  const bodyRows = rows
+    .map((row, index) => {
+      return `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(row.name)}</td>
+          <td>${escapeHtml(row.unit)}</td>
+          <td style='mso-number-format:"\\@";'>${escapeHtml(row.coefficient)}</td>
+          <td>${formatNumber(row.rounded)}</td>
+          <td></td>
+          <td></td>
+        </tr>
+      `;
+    })
+    .join("");
+
+  const html = `
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <style>
+          table { border-collapse: collapse; font-family: Arial, sans-serif; }
+          td, th { border: 1px solid #999; padding: 8px; font-size: 12pt; vertical-align: top; }
+          .title { font-size: 18pt; font-weight: bold; color: #111827; }
+          .brand { font-size: 14pt; font-weight: bold; color: #111827; }
+          .muted { color: #64748b; }
+          .header { background: #111827; color: #ffffff; font-weight: bold; }
+          .text { mso-number-format:"\\@"; }
+        </style>
+      </head>
+      <body>
+        <table>
+          <tr>
+            <td colspan="7" class="brand">
+              <img src="https://ideleon.com/images/logo/ideleon-logo-horizontal.png" width="220" />
+            </td>
+          </tr>
+          <tr><td colspan="7" class="title">${escapeHtml(title)}</td></tr>
+          <tr><td colspan="7" class="muted">${escapeHtml(subtitle)}</td></tr>
+          <tr><td colspan="7">Дата: ${date}</td></tr>
+          <tr><td colspan="7">${escapeHtml(params)}</td></tr>
+          <tr><td colspan="7"></td></tr>
+          <tr class="header">
+            <th>№</th>
+            <th>Наименование</th>
+            <th>Ед. изм.</th>
+            <th>Коэффициент</th>
+            <th>Количество</th>
+            <th>Цена</th>
+            <th>Сумма</th>
+          </tr>
+          ${bodyRows}
+          <tr><td colspan="7"></td></tr>
+          <tr><td colspan="7" class="muted">Цена и сумма оставлены пустыми для заполнения менеджером.</td></tr>
+          <tr><td colspan="7" class="muted">Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.</td></tr>
+        </table>
+      </body>
+    </html>
+  `;
+
+  return new Blob(["\ufeff", html], {
+    type: "application/vnd.ms-excel;charset=utf-8",
+  });
+}
+
+function downloadBlob(blob: Blob, filename: string) {
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+}
+
 export default function GklProfileCalculatorPage() {
   const [constructionType, setConstructionType] = useState<ConstructionType>("ceiling");
-  const [ceilingArea, setCeilingArea] = useState("100");
+  const [ceilingArea, setCeilingArea] = useState("200");
   const [ceilingPerimeter, setCeilingPerimeter] = useState("40");
   const [wallHeight, setWallHeight] = useState("3");
   const [wallLength, setWallLength] = useState("10");
   const [partitionWidth, setPartitionWidth] = useState<PartitionWidth>("50");
   const [suspensionType, setSuspensionType] = useState<SuspensionType>("direct");
-  const [reservePercent, setReservePercent] = useState("10");
-  const [copied, setCopied] = useState(false);
+  const [reservePercent, setReservePercent] = useState("5");
+  const [clientName, setClientName] = useState("");
+  const [clientPhone, setClientPhone] = useState("");
+  const [clientEmail, setClientEmail] = useState("");
+  const [consent, setConsent] = useState(false);
+  const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
+  const [sendMessage, setSendMessage] = useState("");
 
   const reserve = Math.min(Math.max(toNumber(reservePercent), 0), 30);
   const wallArea = toNumber(wallHeight) * toNumber(wallLength);
@@ -127,48 +228,84 @@ export default function GklProfileCalculatorPage() {
     reserve,
   ]);
 
-  const summaryText = useMemo(() => {
-    const title =
-      constructionType === "ceiling"
-        ? "Потолок из ГКЛ"
-        : constructionType === "cladding"
-          ? "Облицовка стены ГКЛ"
-          : `Перегородка ГКЛ, профиль ${partitionWidth} мм`;
+  const calcTitle =
+    constructionType === "ceiling"
+      ? "Потолок из ГКЛ"
+      : constructionType === "cladding"
+        ? "Облицовка стены ГКЛ"
+        : `Перегородка ГКЛ, профиль ${partitionWidth} мм`;
 
-    const inputs =
-      constructionType === "ceiling"
-        ? `Площадь потолка: ${ceilingArea} м²; периметр: ${ceilingPerimeter} м; подвес: ${
-            suspensionType === "direct" ? "прямой" : "анкерный с тягой"
-          }; запас: ${reserve}%`
-        : `Высота: ${wallHeight} м; длина: ${wallLength} м; площадь: ${formatNumber(
-            wallArea
-          )} м²; запас: ${reserve}%`;
+  const paramsText =
+    constructionType === "ceiling"
+      ? `Площадь потолка: ${ceilingArea} м²; периметр: ${ceilingPerimeter} м; подвес: ${
+          suspensionType === "direct" ? "прямой" : "анкерный с тягой"
+        }; запас: ${reserve}%`
+      : `Высота: ${wallHeight} м; длина: ${wallLength} м; площадь: ${formatNumber(
+          wallArea
+        )} м²; запас: ${reserve}%`;
 
-    const lines = result.map(
-      (row) => `${row.name}: ${formatNumber(row.rounded)} ${row.unit}`
-    );
+  function makeExcelBlob() {
+    return createExcelBlob({
+      title: "Коммерческое предложение / расчёт профиля для ГКЛ",
+      subtitle: "ООО «ИДЕЛЕОН»",
+      params: `${calcTitle}; ${paramsText}`,
+      rows: result,
+    });
+  }
 
-    return [`Расчёт: ${title}`, inputs, "", ...lines].join("\\n");
-  }, [
-    constructionType,
-    partitionWidth,
-    ceilingArea,
-    ceilingPerimeter,
-    suspensionType,
-    reserve,
-    wallHeight,
-    wallLength,
-    wallArea,
-    result,
-  ]);
+  function downloadExcelOffer() {
+    downloadBlob(makeExcelBlob(), "KP_profil_GKL_ideleon.xls");
+  }
 
-  async function copyResult() {
+  async function sendExcelOffer() {
+    setSendStatus("idle");
+    setSendMessage("");
+
+    if (!clientName.trim() || !clientPhone.trim() || !clientEmail.trim()) {
+      setSendStatus("error");
+      setSendMessage("Заполните имя, телефон и e-mail.");
+      return;
+    }
+
+    if (!consent) {
+      setSendStatus("error");
+      setSendMessage("Нужно согласие на обработку персональных данных.");
+      return;
+    }
+
+    const file = new File([makeExcelBlob()], "KP_profil_GKL_ideleon.xls", {
+      type: "application/vnd.ms-excel",
+    });
+
+    const formData = new FormData();
+    formData.append("requestType", "calculation");
+    formData.append("name", clientName);
+    formData.append("phone", clientPhone);
+    formData.append("email", clientEmail);
+    formData.append("task", `Клиент отправил расчёт профиля для ГКЛ из калькулятора.\n\n${calcTitle}\n${paramsText}`);
+    formData.append("consent", "yes");
+    formData.append("sourcePage", "/calculators/profil-gkl");
+    formData.append("website", "");
+    formData.append("attachment", file);
+
     try {
-      await navigator.clipboard.writeText(summaryText);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2200);
-    } catch {
-      setCopied(false);
+      setSendStatus("sending");
+      const response = await fetch("/api/request", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json().catch(() => null);
+
+      if (!response.ok || !data?.ok) {
+        throw new Error(data?.message || "Не удалось отправить расчёт.");
+      }
+
+      setSendStatus("success");
+      setSendMessage("Расчёт отправлен. Мы свяжемся с вами.");
+    } catch (error) {
+      setSendStatus("error");
+      setSendMessage(error instanceof Error ? error.message : "Не удалось отправить расчёт.");
     }
   }
 
@@ -348,12 +485,31 @@ export default function GklProfileCalculatorPage() {
             </div>
 
             <div className="calculatorActions">
-              <button type="button" className="btn primary" onClick={copyResult}>
-                {copied ? "Расчёт скопирован" : "Скопировать расчёт"}
+              <button type="button" className="btn secondary" onClick={downloadExcelOffer}>
+                Скачать КП
               </button>
-              <a className="btn secondary" href="/#contacts">
-                Отправить в Иделеон
-              </a>
+            </div>
+
+            <div className="calculatorSendBox">
+              <h3>Отправить расчёт в Иделеон</h3>
+              <p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p>
+
+              <div className="calculatorSendGrid">
+                <input placeholder="Ваше имя" value={clientName} onChange={(event) => setClientName(event.target.value)} />
+                <input placeholder="Телефон" value={clientPhone} onChange={(event) => setClientPhone(event.target.value)} />
+                <input placeholder="E-mail" value={clientEmail} onChange={(event) => setClientEmail(event.target.value)} />
+              </div>
+
+              <label className="calculatorConsent">
+                <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+                <span>Согласен на обработку персональных данных</span>
+              </label>
+
+              <button type="button" className="btn primary calculatorSendButton" onClick={sendExcelOffer} disabled={sendStatus === "sending"}>
+                {sendStatus === "sending" ? "Отправляем..." : "Отправить в Иделеон"}
+              </button>
+
+              {sendMessage ? <p className={`calculatorStatus ${sendStatus}`}>{sendMessage}</p> : null}
             </div>
 
             <p className="calculatorDisclaimer">
