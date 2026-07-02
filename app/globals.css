@@ -2023,13 +2023,21 @@ button.button.secondary:disabled {
   }
 }
 
-/* IDELEON: calculator buttons and grilyato select polish */
+/* IDELEON: calculators excel send polish */
+
+.calculatorActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
 
 .calculatorActions .btn,
+.calculatorSendButton,
 .calculatorActions button.btn,
 .calculatorActions a.btn {
-  min-height: 48px;
-  padding: 13px 20px;
+  min-height: 50px;
+  padding: 14px 22px;
   border-radius: 999px;
   border: 0;
   font-size: 15px;
@@ -2040,15 +2048,18 @@ button.button.secondary:disabled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
-.calculatorActions .btn.primary {
+.calculatorActions .btn.primary,
+.calculatorSendButton.btn.primary {
   background: var(--orange);
   color: #ffffff;
   box-shadow: 0 16px 34px rgba(255, 106, 0, 0.28);
 }
 
-.calculatorActions .btn.primary:hover {
+.calculatorActions .btn.primary:hover,
+.calculatorSendButton.btn.primary:hover {
   background: var(--orange-dark);
   transform: translateY(-1px);
 }
@@ -2064,6 +2075,17 @@ button.button.secondary:disabled {
   color: var(--orange);
   border-color: rgba(255, 106, 0, 0.38);
   transform: translateY(-1px);
+}
+
+.calculatorSendButton {
+  width: fit-content;
+  margin-top: 12px;
+}
+
+.calculatorSendButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+  transform: none;
 }
 
 .calculatorSelect {
@@ -2083,4 +2105,86 @@ button.button.secondary:disabled {
   border-color: rgba(255, 106, 0, 0.5);
   background: #ffffff;
   box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+.calculatorSendBox {
+  margin-top: 24px;
+  padding: 22px;
+  border: 1px solid rgba(255, 106, 0, 0.24);
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(255, 247, 237, 0.92) 0%, rgba(255, 255, 255, 1) 66%);
+  box-shadow: 0 16px 38px rgba(15, 23, 42, 0.05);
+}
+
+.calculatorSendBox h3 {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.calculatorSendBox p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.calculatorSendGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.calculatorSendGrid input {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 700;
+  outline: none;
+}
+
+.calculatorSendGrid input:focus {
+  border-color: rgba(255, 106, 0, 0.5);
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
+
+.calculatorConsent {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 14px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.calculatorConsent input {
+  margin-top: 2px;
+}
+
+.calculatorStatus {
+  margin: 12px 0 0 !important;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.calculatorStatus.success {
+  color: #15803d;
+}
+
+.calculatorStatus.error {
+  color: #b91c1c;
+}
+
+@media (max-width: 680px) {
+  .calculatorActions .btn,
+  .calculatorSendButton {
+    width: 100%;
+  }
 }
