@@ -94,11 +94,13 @@ function createExcelBlob({
       </head>
       <body>
         <table>
-          <tr>
-            <td colspan="7" class="brand">
-              <img src="https://ideleon.com/images/logo/ideleon-logo-horizontal.png" width="220" />
+          <tr style="height: 76px;">
+            <td colspan="7" class="brand" style="height: 76px; vertical-align: middle;">
+              <img src="https://ideleon.com/images/logo/ideleon-logo-horizontal.png" width="220" style="display: block;" />
             </td>
           </tr>
+          <tr><td colspan="7" style="height: 16px;"></td></tr>
+          <tr><td colspan="7" style="height: 16px;"></td></tr>
           <tr><td colspan="7" class="title">${escapeHtml(title)}</td></tr>
           <tr><td colspan="7" class="muted">${escapeHtml(subtitle)}</td></tr>
           <tr><td colspan="7">Дата: ${date}</td></tr>
@@ -298,7 +300,7 @@ export default function GklProfileCalculatorPage() {
       const data = await response.json().catch(() => null);
 
       if (!response.ok || !data?.ok) {
-        throw new Error(data?.message || "Не удалось отправить расчёт.");
+        throw new Error(data?.message || "Не удалось отправить расчёт. Проверьте, что API /api/request поддерживает Excel-вложения.");
       }
 
       setSendStatus("success");
