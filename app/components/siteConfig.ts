@@ -30,6 +30,13 @@ export const siteConfig = {
     { label: "Каталог", href: "/catalog" },
     { label: "Решения", href: "/solutions" },
     { label: "Бренды", href: "/#brands" },
+    {
+      label: "Калькуляторы",
+      href: "/calculators",
+      children: [
+        { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
+      ],
+    },
     { label: "Статьи", href: "/articles" },
     { label: "О компании", href: "/about" },
     { label: "Контакты", href: "/#contacts" },
