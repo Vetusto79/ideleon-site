@@ -2022,3 +2022,65 @@ button.button.secondary:disabled {
     box-shadow: none;
   }
 }
+
+/* IDELEON: calculator buttons and grilyato select polish */
+
+.calculatorActions .btn,
+.calculatorActions button.btn,
+.calculatorActions a.btn {
+  min-height: 48px;
+  padding: 13px 20px;
+  border-radius: 999px;
+  border: 0;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.calculatorActions .btn.primary {
+  background: var(--orange);
+  color: #ffffff;
+  box-shadow: 0 16px 34px rgba(255, 106, 0, 0.28);
+}
+
+.calculatorActions .btn.primary:hover {
+  background: var(--orange-dark);
+  transform: translateY(-1px);
+}
+
+.calculatorActions .btn.secondary {
+  background: #ffffff;
+  color: #111827;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
+}
+
+.calculatorActions .btn.secondary:hover {
+  color: var(--orange);
+  border-color: rgba(255, 106, 0, 0.38);
+  transform: translateY(-1px);
+}
+
+.calculatorSelect {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #f8fafc;
+  color: #111827;
+  font-size: 17px;
+  font-weight: 800;
+  outline: none;
+}
+
+.calculatorSelect:focus {
+  border-color: rgba(255, 106, 0, 0.5);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(255, 106, 0, 0.1);
+}
