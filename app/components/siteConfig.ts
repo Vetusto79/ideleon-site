@@ -35,6 +35,7 @@ export const siteConfig = {
       href: "/calculators",
       children: [
         { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
+        { label: "Потолок Грильято", href: "/calculators/grilyato" },
       ],
     },
     { label: "Статьи", href: "/articles" },
