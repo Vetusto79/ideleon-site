@@ -46,55 +46,171 @@ function row(element: string, size: string, lengthMeters: number | null, catalog
   return { element, size, lengthMeters, catalogName, unit, consumption: consumptionValue === null ? "-" : consumptionValue === "периметр" ? "периметр" : String(consumptionValue).replace(".", ","), quantityWithReserve: quantityWithoutReserve === null ? null : withReserve(quantityWithoutReserve, reservePercent, step), includeInOffer };
 }
 
-function excelFormula(rowNum: number, lengthMeters: number | null, unit: string) {
-  if (unit === "м.п.") return `=IF(G${rowNum}=\"\",\"\",F${rowNum}*G${rowNum})`;
-  if (lengthMeters && lengthMeters > 0) return `=IF(G${rowNum}=\"\",\"\",F${rowNum}*D${rowNum}*G${rowNum})`;
-  return `=IF(G${rowNum}=\"\",\"\",F${rowNum}*G${rowNum})`;
+function escapeXml(value: string) {
+  return escapeHtml(value);
 }
 
+function xmlCell(value: string | number, type: "String" | "Number" = "String", style = "Default") {
+  return `<Cell ss:StyleID="${style}"><Data ss:Type="${type}">${escapeXml(String(value))}</Data></Cell>`;
+}
+
+function xmlEmptyCell(style = "Default") {
+  return `<Cell ss:StyleID="${style}"></Cell>`;
+}
+
+function xmlFormulaCell(formula: string, style = "Money") {
+  return `<Cell ss:StyleID="${style}" ss:Formula="${escapeXml(formula)}"><Data ss:Type="Number">0</Data></Cell>`;
+}
 function createExcelBlob({ area, perimeter, grilyatoType, cellSize, reserve, result }: { area: string; perimeter: string; grilyatoType: GrilyatoType; cellSize: string; reserve: number; result: ResultRow[]; }) {
   const date = new Date().toLocaleDateString("ru-RU");
   const offerRows = result.filter((item) => item.includeInOffer);
-  const firstDataRow = 15;
+
   const bodyRows = offerRows.map((item, index) => {
-    const excelRow = firstDataRow + index;
-    return `<tr>
-      <td>${index + 1}</td>
-      <td>${escapeHtml(item.element)}</td>
-      <td style='mso-number-format:"\\@";'>${escapeHtml(item.size)}</td>
-      <td>${item.lengthMeters ?? ""}</td>
-      <td>${escapeHtml(item.unit)}</td>
-      <td>${formatNumber(item.quantityWithReserve)}</td>
-      <td></td>
-      <td>${excelFormula(excelRow, item.lengthMeters, item.unit)}</td>
-    </tr>`;
+    const excelRow = 10 + index;
+    const length = item.lengthMeters ?? "";
+
+    const pricePerPieceFormula =
+      item.unit === "м.п."
+        ? `=IF(RC[-1]="","",RC[-1])`
+        : item.lengthMeters && item.lengthMeters > 0
+          ? `=IF(RC[-1]="","",RC[-2]*RC[-1])`
+          : "";
+
+    const sumFormula =
+      item.unit === "м.п."
+        ? `=IF(RC[-2]="","",RC[-3]*RC[-2])`
+        : item.lengthMeters && item.lengthMeters > 0
+          ? `=IF(RC[-1]="","",RC[-2]*RC[-1])`
+          : `=IF(RC[-1]="","",RC[-2]*RC[-1])`;
+
+    return `
+      <Row ss:AutoFitHeight="1">
+        ${xmlCell(index + 1, "Number", "Center")}
+        ${xmlCell(item.element)}
+        ${xmlCell(item.size)}
+        ${length === "" ? xmlEmptyCell("Number") : xmlCell(length, "Number", "Number")}
+        ${xmlCell(item.unit, "String", "Center")}
+        ${xmlCell(formatNumber(item.quantityWithReserve), "String", "Number")}
+        ${xmlEmptyCell("Money")}
+        ${pricePerPieceFormula ? xmlFormulaCell(pricePerPieceFormula, "Money") : xmlEmptyCell("Money")}
+        ${xmlFormulaCell(sumFormula, "Money")}
+      </Row>
+    `;
   }).join("");
-  const html = `<html><head><meta charset="utf-8" /><style>
-    table { border-collapse: collapse; font-family: Arial, sans-serif; }
-    td, th { border: 1px solid #999; padding: 8px; font-size: 12pt; vertical-align: top; }
-    .title { font-size: 18pt; font-weight: bold; color: #111827; }
-    .brand { font-size: 14pt; font-weight: bold; color: #111827; }
-    .muted { color: #64748b; }
-    .header { background: #111827; color: #ffffff; font-weight: bold; }
-  </style></head><body><table>
-    <tr style="height: 92px;"><td colspan="8" class="brand" style="height: 92px; vertical-align: middle;"><img src="https://ideleon.com/images/logo/ideleon-logo-horizontal.png" width="220" style="display: block;" /></td></tr>
-    <tr><td colspan="8" style="height: 24px;"></td></tr>
-    <tr><td colspan="8" style="height: 24px;"></td></tr>
-    <tr><td colspan="8" style="height: 24px;"></td></tr>
-    <tr><td colspan="8" class="title">Коммерческое предложение / расчёт потолка Грильято</td></tr>
-    <tr><td colspan="8" class="muted">ООО «ИДЕЛЕОН»</td></tr>
-    <tr><td colspan="8">Дата: ${date}</td></tr>
-    <tr><td colspan="8">Площадь: ${escapeHtml(area)} м²; периметр: ${escapeHtml(perimeter)} м; тип: ${escapeHtml(typeLabels[grilyatoType])}; ячейка: ${escapeHtml(cellSize)}; запас: ${reserve}%</td></tr>
-    <tr><td colspan="8"></td></tr>
-    <tr class="header"><th>№</th><th>Наименование элемента</th><th>Размер</th><th>Длина, м</th><th>Ед. изм.</th><th>Количество</th><th>Цена за м.п.</th><th>Сумма</th></tr>
-    ${bodyRows}
-    <tr><td colspan="8"></td></tr>
-    <tr><td colspan="8" class="muted">В столбец «Цена за м.п.» менеджер вносит цену за погонный метр. Для штучных элементов без длины цена считается за единицу.</td></tr>
-    <tr><td colspan="8" class="muted">Столбец «Сумма» рассчитывается автоматически в Excel.</td></tr>
-    <tr><td colspan="8" class="muted">Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.</td></tr>
-  </table></body></html>`;
-  return new Blob(["\ufeff", html], { type: "application/vnd.ms-excel;charset=utf-8" });
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:x="urn:schemas-microsoft-com:office:excel"
+  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"
+  xmlns:html="http://www.w3.org/TR/REC-html40">
+  <Styles>
+    <Style ss:ID="Default">
+      <Alignment ss:Vertical="Center" ss:WrapText="1"/>
+      <Font ss:FontName="Arial" ss:Size="11"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="Brand">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Arial" ss:Size="20" ss:Bold="1" ss:Color="#111827"/>
+    </Style>
+    <Style ss:ID="Title">
+      <Alignment ss:Vertical="Center"/>
+      <Font ss:FontName="Arial" ss:Size="18" ss:Bold="1" ss:Color="#111827"/>
+    </Style>
+    <Style ss:ID="Muted">
+      <Font ss:FontName="Arial" ss:Size="11" ss:Color="#64748B"/>
+    </Style>
+    <Style ss:ID="Header">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center" ss:WrapText="1"/>
+      <Interior ss:Color="#111827" ss:Pattern="Solid"/>
+      <Font ss:FontName="Arial" ss:Size="11" ss:Bold="1" ss:Color="#FFFFFF"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="Center">
+      <Alignment ss:Horizontal="Center" ss:Vertical="Center"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="Number">
+      <NumberFormat ss:Format="0.00"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+      </Borders>
+    </Style>
+    <Style ss:ID="Money">
+      <NumberFormat ss:Format="#,##0.00"/>
+      <Borders>
+        <Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+        <Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#999999"/>
+      </Borders>
+    </Style>
+  </Styles>
+  <Worksheet ss:Name="КП Грильято">
+    <Table>
+      <Column ss:Width="36"/>
+      <Column ss:Width="240"/>
+      <Column ss:Width="90"/>
+      <Column ss:Width="80"/>
+      <Column ss:Width="70"/>
+      <Column ss:Width="90"/>
+      <Column ss:Width="105"/>
+      <Column ss:Width="105"/>
+      <Column ss:Width="105"/>
+      <Row ss:Height="42">
+        <Cell ss:MergeAcross="8" ss:StyleID="Brand"><Data ss:Type="String">IDELEON — строительные материалы</Data></Cell>
+      </Row>
+      <Row ss:Height="18"></Row>
+      <Row ss:Height="30">
+        <Cell ss:MergeAcross="8" ss:StyleID="Title"><Data ss:Type="String">Коммерческое предложение / расчёт потолка Грильято</Data></Cell>
+      </Row>
+      <Row><Cell ss:MergeAcross="8" ss:StyleID="Muted"><Data ss:Type="String">ООО «ИДЕЛЕОН»</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="8"><Data ss:Type="String">Дата: ${escapeXml(date)}</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="8"><Data ss:Type="String">Площадь: ${escapeXml(area)} м²; периметр: ${escapeXml(perimeter)} м; тип: ${escapeXml(typeLabels[grilyatoType])}; ячейка: ${escapeXml(cellSize)}; запас: ${reserve}%</Data></Cell></Row>
+      <Row ss:Height="14"></Row>
+      <Row ss:Height="34">
+        ${xmlCell("№", "String", "Header")}
+        ${xmlCell("Наименование элемента", "String", "Header")}
+        ${xmlCell("Размер", "String", "Header")}
+        ${xmlCell("Длина, м", "String", "Header")}
+        ${xmlCell("Ед. изм.", "String", "Header")}
+        ${xmlCell("Количество", "String", "Header")}
+        ${xmlCell("Цена за м.п.", "String", "Header")}
+        ${xmlCell("Цена за шт.", "String", "Header")}
+        ${xmlCell("Сумма", "String", "Header")}
+      </Row>
+      ${bodyRows}
+      <Row ss:Height="14"></Row>
+      <Row><Cell ss:MergeAcross="8" ss:StyleID="Muted"><Data ss:Type="String">Для профильных элементов менеджер заполняет «Цена за м.п.», Excel считает «Цена за шт.» и «Сумма».</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="8" ss:StyleID="Muted"><Data ss:Type="String">Для штучных элементов без длины менеджер заполняет «Цена за шт.», Excel считает «Сумма».</Data></Cell></Row>
+      <Row><Cell ss:MergeAcross="8" ss:StyleID="Muted"><Data ss:Type="String">Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.</Data></Cell></Row>
+    </Table>
+  </Worksheet>
+</Workbook>`;
+
+  return new Blob([xml], { type: "application/vnd.ms-excel;charset=utf-8" });
 }
+
 
 function downloadBlob(blob: Blob, filename: string) { const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = filename; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href); }
 
