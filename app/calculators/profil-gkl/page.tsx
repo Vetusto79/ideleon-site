@@ -175,7 +175,7 @@ function emptyCell(ref: string, style = "0") {
 }
 
 function formulaCell(ref: string, formula: string, style = "5") {
-  return `<c r="${ref}" s="${style}"><f>${xml(formula)}</f></c>`;
+  return `<c r="${ref}" s="${style}"><f ca="1">${xml(formula)}</f><v>0</v></c>`;
 }
 
 function rowXml(rowNumber: number, cells: string[], height?: number) {
@@ -206,10 +206,10 @@ function xlsxStyles() {
   <borders count="4">
     <border><left/><right/><top/><bottom/><diagonal/></border>
     <border>
-      <left style="thin"><color rgb="FF94A3B8"/></left>
-      <right style="thin"><color rgb="FF94A3B8"/></right>
-      <top style="thin"><color rgb="FF94A3B8"/></top>
-      <bottom style="thin"><color rgb="FF94A3B8"/></bottom>
+      <left style="thin"><color rgb="FF475569"/></left>
+      <right style="thin"><color rgb="FF475569"/></right>
+      <top style="thin"><color rgb="FF475569"/></top>
+      <bottom style="thin"><color rgb="FF475569"/></bottom>
       <diagonal/>
     </border>
     <border>
@@ -309,7 +309,8 @@ function createWorkbookBlob(sheet: string) {
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <sheets><sheet name="КП IDELEON" sheetId="1" r:id="rId1"/></sheets>
-  <calcPr calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>
+  <workbookPr date1904="false"/>
+  <calcPr calcId="0" calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>
 </workbook>`),
     },
     {
@@ -370,7 +371,7 @@ function createExcelBlob({
   excelRows.push(rowXml(9, [
     cell("A9", "№", "2"),
     cell("B9", "Наименование", "2"),
-    cell("C9", "Длина профиля", "2"),
+    cell("C9", "Длина", "2"),
     cell("D9", "Ед. изм.", "2"),
     cell("E9", "Коэффициент", "2"),
     cell("F9", "Количество", "2"),
@@ -409,8 +410,8 @@ function createExcelBlob({
   <sheetFormatPr defaultRowHeight="18"/>
   <cols>
     <col min="1" max="1" width="5" customWidth="1"/>
-    <col min="2" max="2" width="40" customWidth="1"/>
-    <col min="3" max="3" width="16" customWidth="1"/>
+    <col min="2" max="2" width="42" customWidth="1"/>
+    <col min="3" max="3" width="14" customWidth="1"/>
     <col min="4" max="4" width="12" customWidth="1"/>
     <col min="5" max="5" width="28" customWidth="1"/>
     <col min="6" max="6" width="14" customWidth="1"/>
@@ -434,8 +435,6 @@ function createExcelBlob({
 
   return createWorkbookBlob(sheet);
 }
-
-
 
 function downloadBlob(blob: Blob, filename: string) {
   const link = document.createElement("a");
