@@ -175,7 +175,7 @@ function emptyCell(ref: string, style = "0") {
 }
 
 function formulaCell(ref: string, formula: string, style = "5") {
-  return `<c r="${ref}" s="${style}"><f ca="1">${xml(formula)}</f><v>0</v></c>`;
+  return `<c r="${ref}" s="${style}"><f>${xml(formula)}</f></c>`;
 }
 
 function rowXml(rowNumber: number, cells: string[], height?: number) {
@@ -206,10 +206,10 @@ function xlsxStyles() {
   <borders count="4">
     <border><left/><right/><top/><bottom/><diagonal/></border>
     <border>
-      <left style="thin"><color rgb="FF475569"/></left>
-      <right style="thin"><color rgb="FF475569"/></right>
-      <top style="thin"><color rgb="FF475569"/></top>
-      <bottom style="thin"><color rgb="FF475569"/></bottom>
+      <left style="thin"><color rgb="FF94A3B8"/></left>
+      <right style="thin"><color rgb="FF94A3B8"/></right>
+      <top style="thin"><color rgb="FF94A3B8"/></top>
+      <bottom style="thin"><color rgb="FF94A3B8"/></bottom>
       <diagonal/>
     </border>
     <border>
@@ -382,7 +382,7 @@ function createExcelBlob({
   rows.forEach((row, index) => {
     const rowNumber = 10 + index;
     const unit = row.unit === "пог. м" ? "м.п." : row.unit;
-    const sumFormula = `IF(H${rowNumber}="","",F${rowNumber}*H${rowNumber})`;
+    const sumFormula = `F${rowNumber}*H${rowNumber}`;
 
     excelRows.push(rowXml(rowNumber, [
       numberCell(`A${rowNumber}`, index + 1, "6"),
@@ -406,11 +406,10 @@ function createExcelBlob({
   const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <sheetViews><sheetView workbookViewId="0" showGridLines="0"/></sheetViews>
-  <printOptions gridLines="0" headings="0"/>
   <sheetFormatPr defaultRowHeight="18"/>
   <cols>
     <col min="1" max="1" width="5" customWidth="1"/>
-    <col min="2" max="2" width="42" customWidth="1"/>
+    <col min="2" max="2" width="40" customWidth="1"/>
     <col min="3" max="3" width="16" customWidth="1"/>
     <col min="4" max="4" width="12" customWidth="1"/>
     <col min="5" max="5" width="28" customWidth="1"/>
@@ -610,7 +609,7 @@ export default function GklProfileCalculatorPage() {
               </>
             )}
             <label className="calculatorField"><span>Запас, %</span><input value={reservePercent} onChange={(e) => setReservePercent(e.target.value)} /></label>
-            <p className="calculatorHint">Версия расчёта: границы оставлены только в таблице КП. Цена вводится в одном столбце, сумма считается автоматически.</p>
+            <p className="calculatorHint">Версия расчёта: стабильное КП без ошибок Excel. Цена вводится в одном столбце, сумма считается автоматически.</p>
           </div>
 
           <div className="calculatorPanel calculatorResultPanel">
