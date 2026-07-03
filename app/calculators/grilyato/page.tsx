@@ -294,8 +294,8 @@ function createExcelBlob({
 
   const noteRow = 11 + offerRows.length;
   rows.push(rowXml(noteRow, [], 10));
-  rows.push(rowXml(noteRow + 1, [cell(`A${noteRow + 1}`, "Для профильных элементов менеджер заполняет «Цена за м.п.», Excel считает «Цена за шт.» и «Сумма».", "4")], 18));
-  rows.push(rowXml(noteRow + 2, [cell(`A${noteRow + 2}`, "Для штучных элементов без длины менеджер заполняет «Цена за шт.», Excel считает «Сумма».", "4")], 18));
+  rows.push(rowXml(noteRow + 1, [cell(`A${noteRow + 1}`, "Профили: заполните «Цена за м.п.» — Excel рассчитает «Цена за шт.» и «Сумма».", "4")], 18));
+  rows.push(rowXml(noteRow + 2, [cell(`A${noteRow + 2}`, "Штучные элементы: заполните «Цена за шт.» — Excel рассчитает «Сумма».", "4")], 18));
   rows.push(rowXml(noteRow + 3, [cell(`A${noteRow + 3}`, "Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.", "4")], 18));
 
   const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -345,8 +345,8 @@ function createExcelBlob({
     <fill><patternFill patternType="solid"><fgColor rgb="FF0F1B33"/><bgColor indexed="64"/></patternFill></fill>
     <fill><patternFill patternType="solid"><fgColor rgb="FFFFF7ED"/><bgColor indexed="64"/></patternFill></fill>
     <fill><patternFill patternType="solid"><fgColor rgb="FFF6F8FB"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFFFEDD5"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFEFF6FF"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>
   </fills>
   <borders count="4">
     <border><left/><right/><top/><bottom/><diagonal/></border>
