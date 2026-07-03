@@ -309,8 +309,7 @@ function createWorkbookBlob(sheet: string) {
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <sheets><sheet name="КП IDELEON" sheetId="1" r:id="rId1"/></sheets>
-  <workbookPr date1904="false"/>
-  <calcPr calcId="0" calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>
+  <calcPr calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>
 </workbook>`),
     },
     {
@@ -371,7 +370,7 @@ function createExcelBlob({
   excelRows.push(rowXml(9, [
     cell("A9", "№", "2"),
     cell("B9", "Наименование", "2"),
-    cell("C9", "Длина", "2"),
+    cell("C9", "Длина профиля", "2"),
     cell("D9", "Ед. изм.", "2"),
     cell("E9", "Коэффициент", "2"),
     cell("F9", "Количество", "2"),
@@ -411,7 +410,7 @@ function createExcelBlob({
   <cols>
     <col min="1" max="1" width="5" customWidth="1"/>
     <col min="2" max="2" width="42" customWidth="1"/>
-    <col min="3" max="3" width="14" customWidth="1"/>
+    <col min="3" max="3" width="16" customWidth="1"/>
     <col min="4" max="4" width="12" customWidth="1"/>
     <col min="5" max="5" width="28" customWidth="1"/>
     <col min="6" max="6" width="14" customWidth="1"/>
@@ -435,6 +434,8 @@ function createExcelBlob({
 
   return createWorkbookBlob(sheet);
 }
+
+
 
 function downloadBlob(blob: Blob, filename: string) {
   const link = document.createElement("a");
@@ -608,7 +609,7 @@ export default function GklProfileCalculatorPage() {
               </>
             )}
             <label className="calculatorField"><span>Запас, %</span><input value={reservePercent} onChange={(e) => setReservePercent(e.target.value)} /></label>
-            <p className="calculatorHint">Версия расчёта: КП оформлено в едином стиле с Грильято. Цена вводится в одном столбце, сумма считается автоматически.</p>
+            <p className="calculatorHint">Версия расчёта: безопасный фикс КП. Цена вводится в одном столбце, сумма считается автоматически.</p>
           </div>
 
           <div className="calculatorPanel calculatorResultPanel">
