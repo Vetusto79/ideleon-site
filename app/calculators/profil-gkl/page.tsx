@@ -406,6 +406,7 @@ function createExcelBlob({
   const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
   <sheetViews><sheetView workbookViewId="0" showGridLines="0"/></sheetViews>
+  <printOptions gridLines="0" headings="0"/>
   <sheetFormatPr defaultRowHeight="18"/>
   <cols>
     <col min="1" max="1" width="5" customWidth="1"/>
@@ -609,7 +610,7 @@ export default function GklProfileCalculatorPage() {
               </>
             )}
             <label className="calculatorField"><span>Запас, %</span><input value={reservePercent} onChange={(e) => setReservePercent(e.target.value)} /></label>
-            <p className="calculatorHint">Версия расчёта: безопасный фикс КП. Цена вводится в одном столбце, сумма считается автоматически.</p>
+            <p className="calculatorHint">Версия расчёта: границы оставлены только в таблице КП. Цена вводится в одном столбце, сумма считается автоматически.</p>
           </div>
 
           <div className="calculatorPanel calculatorResultPanel">
