@@ -232,14 +232,14 @@ function createExcelBlob({
   const offerRows = result.filter((item) => item.includeInOffer);
   const rows: string[] = [];
 
-  rows.push(rowXml(1, [], 18));
-  rows.push(rowXml(2, [], 26));
-  rows.push(rowXml(3, [], 26));
-  rows.push(rowXml(4, [cell("A4", "Коммерческое предложение / расчёт потолка Грильято", "2")], 34));
+  rows.push(rowXml(1, [], 22));
+  rows.push(rowXml(2, [], 22));
+  rows.push(rowXml(3, [], 22));
+  rows.push(rowXml(4, [cell("A4", "Коммерческое предложение / расчёт потолка Грильято", "1")], 34));
   rows.push(rowXml(5, [cell("A5", "ООО «ИДЕЛЕОН»", "4")], 20));
-  rows.push(rowXml(6, [cell("A6", `Дата: ${date}`, "10")], 20));
-  rows.push(rowXml(7, [cell("A7", `Площадь: ${area} м² · периметр: ${perimeter} м · тип: ${typeLabels[grilyatoType]} · ячейка: ${cellSize} · запас: ${reserve}%`, "11")], 26));
-  rows.push(rowXml(8, [], 10));
+  rows.push(rowXml(6, [cell("A6", `Дата: ${date}`, "0")], 20));
+  rows.push(rowXml(7, [cell("A7", `Площадь: ${area} м² · периметр: ${perimeter} м · тип: ${typeLabels[grilyatoType]} · ячейка: ${cellSize} · запас: ${reserve}%`, "0")], 24));
+  rows.push(rowXml(8, [], 8));
 
   rows.push(
     rowXml(
@@ -251,8 +251,8 @@ function createExcelBlob({
         cell("D9", "Длина, м", "3"),
         cell("E9", "Ед. изм.", "3"),
         cell("F9", "Количество", "3"),
-        cell("G9", "Цена за м.п.", "3"),
-        cell("H9", "Цена за шт.", "3"),
+        cell("G9", "Цена за", "3"),
+        cell("H9", "Цена", "3"),
         cell("I9", "Сумма", "3"),
       ],
       28,
@@ -261,31 +261,25 @@ function createExcelBlob({
 
   offerRows.forEach((item, index) => {
     const rowNumber = 10 + index;
-    const length = item.lengthMeters ?? null;
-    const isMeterUnit = item.unit === "м.п.";
-    const isProfile = Boolean(length && length > 0);
-
-    const pricePerPieceCell = isProfile
-      ? formulaCell(`H${rowNumber}`, `IF(G${rowNumber}="","",D${rowNumber}*G${rowNumber})`, "6")
-      : emptyCell(`H${rowNumber}`, isMeterUnit ? "13" : "12");
-
-    const sumCell = isMeterUnit
-      ? formulaCell(`I${rowNumber}`, `IF(G${rowNumber}="","",F${rowNumber}*G${rowNumber})`, "6")
-      : formulaCell(`I${rowNumber}`, `IF(H${rowNumber}="","",F${rowNumber}*H${rowNumber})`, "6");
+    const hasLength = Boolean(item.lengthMeters && item.lengthMeters > 0);
+    const priceBasis = hasLength || item.unit === "м.п." ? "м.п." : item.unit;
+    const sumFormula = hasLength
+      ? `IF(H${rowNumber}="","",F${rowNumber}*D${rowNumber}*H${rowNumber})`
+      : `IF(H${rowNumber}="","",F${rowNumber}*H${rowNumber})`;
 
     rows.push(
       rowXml(
         rowNumber,
         [
           numberCell(`A${rowNumber}`, index + 1, "7"),
-          cell(`B${rowNumber}`, item.element, "14"),
+          cell(`B${rowNumber}`, item.element, "9"),
           cell(`C${rowNumber}`, item.size, "0"),
-          length === null ? emptyCell(`D${rowNumber}`, "5") : numberCell(`D${rowNumber}`, length, "5"),
+          item.lengthMeters === null ? emptyCell(`D${rowNumber}`, "5") : numberCell(`D${rowNumber}`, item.lengthMeters, "5"),
           cell(`E${rowNumber}`, item.unit, "7"),
           numberCell(`F${rowNumber}`, Number(item.quantityWithReserve ?? 0), "5"),
-          emptyCell(`G${rowNumber}`, isMeterUnit || isProfile ? "12" : "13"),
-          pricePerPieceCell,
-          sumCell,
+          cell(`G${rowNumber}`, priceBasis, "7"),
+          emptyCell(`H${rowNumber}`, "8"),
+          formulaCell(`I${rowNumber}`, sumFormula, "6"),
         ],
         24,
       ),
@@ -293,9 +287,9 @@ function createExcelBlob({
   });
 
   const noteRow = 11 + offerRows.length;
-  rows.push(rowXml(noteRow, [], 10));
-  rows.push(rowXml(noteRow + 1, [cell(`A${noteRow + 1}`, "Профили: заполните «Цена за м.п.» — Excel рассчитает «Цена за шт.» и «Сумма».", "4")], 18));
-  rows.push(rowXml(noteRow + 2, [cell(`A${noteRow + 2}`, "Штучные элементы: заполните «Цена за шт.» — Excel рассчитает «Сумма».", "4")], 18));
+  rows.push(rowXml(noteRow, [], 8));
+  rows.push(rowXml(noteRow + 1, [cell(`A${noteRow + 1}`, "Заполняйте только столбец «Цена». Столбец «Цена за» подсказывает, в каких единицах вводить стоимость.", "4")], 18));
+  rows.push(rowXml(noteRow + 2, [cell(`A${noteRow + 2}`, "Для профилей цена вводится за м.п. — Excel сам посчитает сумму по длине элемента и количеству.", "4")], 18));
   rows.push(rowXml(noteRow + 3, [cell(`A${noteRow + 3}`, "Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.", "4")], 18));
 
   const sheet = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -309,8 +303,8 @@ function createExcelBlob({
     <col min="4" max="4" width="12" customWidth="1"/>
     <col min="5" max="5" width="12" customWidth="1"/>
     <col min="6" max="6" width="14" customWidth="1"/>
-    <col min="7" max="7" width="16" customWidth="1"/>
-    <col min="8" max="8" width="16" customWidth="1"/>
+    <col min="7" max="7" width="12" customWidth="1"/>
+    <col min="8" max="8" width="14" customWidth="1"/>
     <col min="9" max="9" width="18" customWidth="1"/>
   </cols>
   <sheetData>${rows.join("")}</sheetData>
@@ -329,32 +323,26 @@ function createExcelBlob({
 
   const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
-  <fonts count="8">
-    <font><sz val="11"/><name val="Arial"/></font>
+  <fonts count="5">
+    <font><sz val="11"/><color rgb="FF0F172A"/><name val="Arial"/></font>
     <font><b/><sz val="20"/><color rgb="FF0F172A"/><name val="Arial"/></font>
     <font><b/><sz val="12"/><color rgb="FFFFFFFF"/><name val="Arial"/></font>
     <font><sz val="11"/><color rgb="FF64748B"/><name val="Arial"/></font>
-    <font><b/><sz val="11"/><name val="Arial"/></font>
-    <font><sz val="11"/><color rgb="FF0F172A"/><name val="Arial"/></font>
-    <font><b/><sz val="11"/><color rgb="FFFF7A00"/><name val="Arial"/></font>
-    <font><b/><sz val="10"/><color rgb="FF64748B"/><name val="Arial"/></font>
+    <font><b/><sz val="11"/><color rgb="FF0F172A"/><name val="Arial"/></font>
   </fonts>
-  <fills count="7">
+  <fills count="4">
     <fill><patternFill patternType="none"/></fill>
     <fill><patternFill patternType="gray125"/></fill>
     <fill><patternFill patternType="solid"><fgColor rgb="FF0F1B33"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFFFF7ED"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFF6F8FB"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>
-    <fill><patternFill patternType="solid"><fgColor rgb="FFFFFFFF"/><bgColor indexed="64"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFF3E6"/><bgColor indexed="64"/></patternFill></fill>
   </fills>
-  <borders count="4">
+  <borders count="3">
     <border><left/><right/><top/><bottom/><diagonal/></border>
     <border>
-      <left style="thin"><color rgb="FFD8DEE9"/></left>
-      <right style="thin"><color rgb="FFD8DEE9"/></right>
-      <top style="thin"><color rgb="FFD8DEE9"/></top>
-      <bottom style="thin"><color rgb="FFD8DEE9"/></bottom>
+      <left style="thin"><color rgb="FF94A3B8"/></left>
+      <right style="thin"><color rgb="FF94A3B8"/></right>
+      <top style="thin"><color rgb="FF94A3B8"/></top>
+      <bottom style="thin"><color rgb="FF94A3B8"/></bottom>
       <diagonal/>
     </border>
     <border>
@@ -364,27 +352,19 @@ function createExcelBlob({
       <bottom style="medium"><color rgb="FF0F1B33"/></bottom>
       <diagonal/>
     </border>
-    <border>
-      <bottom style="thin"><color rgb="FFFF7A00"/></bottom>
-    </border>
   </borders>
   <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
-  <cellXfs count="15">
+  <cellXfs count="10">
     <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
     <xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
-    <xf numFmtId="0" fontId="1" fillId="0" borderId="3" xfId="0" applyAlignment="1" applyBorder="1"><alignment vertical="center" wrapText="1"/></xf>
     <xf numFmtId="0" fontId="2" fillId="2" borderId="2" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
     <xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
-    <xf numFmtId="2" fontId="5" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
-    <xf numFmtId="4" fontId="4" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
-    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center"/></xf>
-    <xf numFmtId="2" fontId="4" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
-    <xf numFmtId="0" fontId="0" fillId="6" borderId="1" xfId="0" applyFill="1" applyBorder="1"/>
-    <xf numFmtId="0" fontId="4" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
-    <xf numFmtId="0" fontId="5" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
-    <xf numFmtId="2" fontId="4" fillId="5" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1"/>
-    <xf numFmtId="2" fontId="4" fillId="6" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1"/>
-    <xf numFmtId="0" fontId="5" fillId="4" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="2" fontId="0" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+    <xf numFmtId="2" fontId="4" fillId="0" borderId="1" xfId="0" applyNumberFormat="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment horizontal="center" vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="2" fontId="4" fillId="3" borderId="1" xfId="0" applyNumberFormat="1" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
+    <xf numFmtId="0" fontId="4" fillId="0" borderId="1" xfId="0" applyBorder="1" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf>
+    <xf numFmtId="0" fontId="0" fillId="3" borderId="1" xfId="0" applyFill="1" applyBorder="1" applyAlignment="1"><alignment vertical="center"/></xf>
   </cellXfs>
   <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
 </styleSheet>`;
@@ -430,11 +410,11 @@ function createExcelBlob({
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
   <Default Extension="png" ContentType="image/png"/>
-  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
-  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
   <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
   <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
   <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
+  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
   <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
 </Types>`),
     },
@@ -450,27 +430,25 @@ function createExcelBlob({
     {
       name: "docProps/core.xml",
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <dc:title>КП Грильято IDELEON</dc:title>
-  <dc:creator>IDELEON</dc:creator>
-  <cp:lastModifiedBy>IDELEON</cp:lastModifiedBy>
+<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dc:creator>OpenAI</dc:creator>
+  <cp:lastModifiedBy>OpenAI</cp:lastModifiedBy>
+  <dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:created>
+  <dcterms:modified xsi:type="dcterms:W3CDTF">${new Date().toISOString()}</dcterms:modified>
 </cp:coreProperties>`),
     },
     {
       name: "docProps/app.xml",
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
-  <Application>IDELEON calculator</Application>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+  <Application>Microsoft Excel</Application>
 </Properties>`),
     },
     {
       name: "xl/workbook.xml",
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-  <sheets>
-    <sheet name="КП Грильято" sheetId="1" r:id="rId1"/>
-  </sheets>
-  <calcPr calcMode="auto" fullCalcOnLoad="1" forceFullCalc="1"/>
+  <sheets><sheet name="КП Грильято" sheetId="1" r:id="rId1"/></sheets>
 </workbook>`),
     },
     {
@@ -481,7 +459,14 @@ function createExcelBlob({
   <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
 </Relationships>`),
     },
-    { name: "xl/worksheets/sheet1.xml", data: stringToBytes(sheet) },
+    {
+      name: "xl/worksheets/sheet1.xml",
+      data: stringToBytes(sheet),
+    },
+    {
+      name: "xl/styles.xml",
+      data: stringToBytes(styles),
+    },
     {
       name: "xl/worksheets/_rels/sheet1.xml.rels",
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -489,25 +474,28 @@ function createExcelBlob({
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
 </Relationships>`),
     },
-    { name: "xl/styles.xml", data: stringToBytes(styles) },
-    { name: "xl/drawings/drawing1.xml", data: stringToBytes(drawing) },
+    {
+      name: "xl/drawings/drawing1.xml",
+      data: stringToBytes(drawing),
+    },
     {
       name: "xl/drawings/_rels/drawing1.xml.rels",
       data: stringToBytes(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo.png"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 </Relationships>`),
     },
-    { name: "xl/media/logo.png", data: logoBytes },
+    {
+      name: "xl/media/image1.png",
+      data: logoBytes,
+    },
   ];
 
-  const zipBytes = makeZip(files);
-
-  return new Blob([zipBytes], {
+  const zip = makeZip(files);
+  return new Blob([zip], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   });
 }
-
 
 function downloadBlob(blob: Blob, filename: string) { const link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = filename; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(link.href); }
 
@@ -574,13 +562,13 @@ export default function GrilyatoCalculatorPage() {
         <div className="calculatorField"><span>Тип Грильято</span><div className="calculatorTabs"><button type="button" className={grilyatoType === "standard" ? "active" : ""} onClick={() => changeType("standard")}>Стандарт</button><button type="button" className={grilyatoType === "nonstandard" ? "active" : ""} onClick={() => changeType("nonstandard")}>Нестандарт</button><button type="button" className={grilyatoType === "pyramidal" ? "active" : ""} onClick={() => changeType("pyramidal")}>Пирамидальное</button><button type="button" className={grilyatoType === "multilevel" ? "active" : ""} onClick={() => changeType("multilevel")}>Разноуровневое</button></div></div>
         <label className="calculatorField"><span>Размер ячейки</span><select className="calculatorSelect" value={cellSize} onChange={(e) => setCellSize(e.target.value)}>{availableCells.map((option) => <option value={option} key={option}>{option}</option>)}</select></label>
         <label className="calculatorField"><span>Запас, %</span><input value={reservePercent} onChange={(e) => setReservePercent(e.target.value)} /></label>
-        <p className="calculatorHint">Версия расчёта: КП с ценой за м.п. включено. Формулы перенесены из расчётного файла, финальную комплектацию лучше проверять по проекту.</p>
+        <p className="calculatorHint">Версия расчёта: КП с единым столбцом «Цена». Для профилей цена вводится за м.п., для штучных элементов — за штуку. Финальную комплектацию лучше проверять по проекту.</p>
       </div>
       <div className="calculatorPanel calculatorResultPanel"><h2>Результат</h2>
         <div className="calculatorTableWrap"><table className="calculatorTable"><thead><tr><th>Материал</th><th>Размер</th><th>Длина, м</th><th>Расход</th><th>Количество</th></tr></thead><tbody>{result.map((item) => <tr key={`${item.element}-${item.catalogName}`}><td>{item.element}</td><td>{item.size}</td><td>{item.lengthMeters ?? "-"}</td><td>{item.consumption}</td><td><strong>{formatNumber(item.quantityWithReserve)}</strong> {item.unit}</td></tr>)}</tbody></table></div>
         <div className="calculatorActions"><button type="button" className="btn secondary" onClick={downloadExcelOffer}>Скачать КП</button></div>
         <div className="calculatorSendBox"><h3>Отправить расчёт в Иделеон</h3><p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p><div className="calculatorSendGrid"><input placeholder="Ваше имя" value={clientName} onChange={(e) => setClientName(e.target.value)} /><input placeholder="Телефон" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} /><input placeholder="E-mail" value={clientEmail} onChange={(e) => setClientEmail(e.target.value)} /></div><label className="calculatorConsent"><input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} /><span>Согласен на обработку персональных данных</span></label><button type="button" className="btn primary calculatorSendButton" onClick={sendExcelOffer} disabled={sendStatus === "sending"}>{sendStatus === "sending" ? "Отправляем..." : "Отправить в Иделеон"}</button>{sendMessage ? <p className={`calculatorStatus ${sendStatus}`}>{sendMessage}</p> : null}</div>
-        <p className="calculatorDisclaimer">В Excel-файле будут формулы для пересчёта суммы по цене за метр погонный. Строка «Решётка» в КП не выводится, но участвует в расчёте.</p>
+        <p className="calculatorDisclaimer">В Excel-файле используется один столбец «Цена». Столбец «Цена за» подсказывает, в каких единицах вводить стоимость. Строка «Решётка» в КП не выводится, но участвует в расчёте.</p>
       </div>
     </div></section><SiteFooter /></main>;
 }
