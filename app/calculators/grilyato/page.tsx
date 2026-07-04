@@ -509,5 +509,133 @@ export default function GrilyatoCalculatorPage() {
         <div className="calculatorSendBox"><h3>Отправить расчёт в Иделеон</h3><p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p><div className="calculatorSendGrid"><input placeholder="Ваше имя" value={clientName} onChange={(e) => setClientName(e.target.value)} /><input placeholder="Телефон" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} /><input placeholder="E-mail" value={clientEmail} onChange={(e) => setClientEmail(e.target.value)} /></div><label className="calculatorConsent"><input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} /><span>Согласен на обработку персональных данных</span></label><button type="button" className="btn primary calculatorSendButton" onClick={sendExcelOffer} disabled={sendStatus === "sending"}>{sendStatus === "sending" ? "Отправляем..." : "Отправить в Иделеон"}</button>{sendMessage ? <p className={`calculatorStatus ${sendStatus}`}>{sendMessage}</p> : null}</div>
         <p className="calculatorDisclaimer">В Excel-файле используется один столбец «Цена». Столбец «Цена за» подсказывает, в каких единицах вводить стоимость.</p>
       </div>
-    </div></section><SiteFooter /></main>;
+    </div></section>
+      <section className="calculatorSeoSection">
+        <div className="calculatorSeoWrap">
+          <div className="calculatorSeoIntro">
+            <p className="label">Калькулятор потолка Грильято</p>
+            <h2>Онлайн-расчёт потолка Грильято для коммерческого объекта</h2>
+            <p>
+              Калькулятор помогает предварительно посчитать расход элементов потолка Грильято
+              по площади, периметру, типу системы и размеру ячейки. Такой расчёт удобно использовать
+              для быстрой оценки комплектации и подготовки запроса на поставку.
+            </p>
+          </div>
+
+          <div className="calculatorSeoGrid">
+            <article className="calculatorSeoCard">
+              <h3>Как пользоваться калькулятором</h3>
+              <ul>
+                <li>Введите площадь помещения и периметр.</li>
+                <li>Выберите тип потолка Грильято и размер ячейки.</li>
+                <li>Укажите процент запаса.</li>
+                <li>Посмотрите расход элементов и скачайте КП.</li>
+                <li>Отправьте расчёт в Иделеон, чтобы менеджер проверил комплектацию.</li>
+              </ul>
+            </article>
+
+            <article className="calculatorSeoCard">
+              <h3>Какие элементы входят в расчёт</h3>
+              <p>
+                В расчёте используются профиль «мама», профиль «папа», несущие направляющие
+                L=2400 мм, L=1200 мм и L=600 мм, соединительный элемент, подвес и уголок.
+                Строка «решётка» нужна для внутренней логики расчёта, но в клиентском КП не выводится.
+              </p>
+            </article>
+
+            <article className="calculatorSeoCard">
+              <h3>От чего зависит расход Грильято</h3>
+              <p>
+                Итоговая комплектация зависит от площади, периметра, выбранной ячейки, типа системы,
+                раскладки потолка, запаса и особенностей объекта. Для нестандартных помещений расчёт
+                лучше дополнительно проверить по плану.
+              </p>
+            </article>
+
+            <article className="calculatorSeoCard">
+              <h3>Почему стоит отправить расчёт на проверку</h3>
+              <p>
+                Менеджер проверит комплектность, уточнит количество направляющих и подвесов,
+                подготовит коммерческое предложение, подскажет сроки поставки и поможет подобрать
+                решение под требования объекта.
+              </p>
+            </article>
+          </div>
+
+          <div className="calculatorSeoLinks">
+            <h3>Полезные материалы по теме</h3>
+            <div>
+              <a href="/catalog/grilyato">Каталог потолков Грильято</a>
+              <a href="/articles/grilyato">Потолки Грильято: плюсы, минусы и особенности</a>
+              <a href="/articles/potolochnye-sistemy">Статьи о потолочных системах</a>
+            </div>
+          </div>
+
+          <div className="calculatorFaq">
+            <h3>Вопросы по расчёту потолка Грильято</h3>
+
+            <details>
+              <summary>Что означает размер ячейки 100×100?</summary>
+              <p>Размер ячейки показывает визуальный модуль потолка Грильято. От него зависит внешний вид потолка и расход отдельных элементов системы.</p>
+            </details>
+
+            <details>
+              <summary>Почему в КП нет строки «решётка»?</summary>
+              <p>Решётка используется в расчётной логике, но клиенту удобнее видеть отдельные элементы комплектации: профили, направляющие, подвесы и уголок.</p>
+            </details>
+
+            <details>
+              <summary>Как считается цена за штуку из цены за метр?</summary>
+              <p>В КП для профильных элементов цена за штуку считается через длину элемента. Менеджер вводит цену за погонный метр, а Excel рассчитывает итоговую сумму.</p>
+            </details>
+
+            <details>
+              <summary>Можно ли рассчитать нестандартный потолок?</summary>
+              <p>Калькулятор подходит для предварительной оценки. Для нестандартной геометрии, сложной раскладки и больших объектов лучше отправить план помещения менеджеру.</p>
+            </details>
+
+            <details>
+              <summary>Можно ли заказать поставку по России?</summary>
+              <p>Да. Иделеон поставляет строительные материалы и потолочные системы на объекты по России через подрядчиков-перевозчиков и склады производителей.</p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Что означает размер ячейки потолка Грильято?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Размер ячейки показывает визуальный модуль потолка Грильято. От него зависит внешний вид потолка и расход отдельных элементов системы."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Почему в КП нет строки решётка?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Решётка используется в расчётной логике, но клиенту удобнее видеть отдельные элементы комплектации: профили, направляющие, подвесы и уголок."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Можно ли заказать поставку Грильято по России?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Да. Иделеон поставляет строительные материалы и потолочные системы на объекты по России."
+                }
+              }
+            ]
+          }),
+        }}
+      />
+<SiteFooter /></main>;
 }
