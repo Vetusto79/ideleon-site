@@ -514,7 +514,7 @@ export default function GklProfileCalculatorPage() {
     return rows;
   }, [constructionType, ceilingArea, ceilingPerimeter, wallArea, partitionWidth, ceilingProfileLengthMm, studProfileLengthMm, suspensionType, reserve]);
 
-  const calcTitle = constructionType === "ceiling" ? "Потолок из ГКЛ" : constructionType === "cladding" ? "Облицовка стены ГКЛ" : `Перегородка ГКЛ, профиль ${partitionWidth} мм`;
+  const calcTitle = constructionType === "ceiling" ? "Потолок из ГКЛ" : constructionType === "cladding" ? "Выравнивание стены ГКЛ" : `Перегородка ГКЛ, профиль ${partitionWidth} мм`;
   const paramsText = constructionType === "ceiling"
     ? `Площадь потолка: ${ceilingArea} м²; периметр: ${ceilingPerimeter} м; подвес: ${suspensionType === "direct" ? "прямой" : "анкерный с тягой"}; длина ПП 60×27: ${ceilingProfileLengthMm} мм; запас: ${reserve}%`
     : `Высота: ${wallHeight} м; длина: ${wallLength} м; площадь: ${formatNumber(wallArea)} м²; ${constructionType === "partition" ? `длина ПС: ${studProfileLengthMm} мм; ` : `длина ПП 60×27: ${ceilingProfileLengthMm} мм; `}запас: ${reserve}%`;
@@ -558,7 +558,44 @@ export default function GklProfileCalculatorPage() {
         <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Калькуляторы", href: "/calculators" }, { label: "Профиль для ГКЛ" }]} />
         <p className="label">Калькулятор</p>
         <h1>Калькулятор профиля для ГКЛ</h1>
-        <p>Предварительный расчёт расхода материалов для потолка, облицовки стены и перегородки из гипсокартона. Расчёт универсальный и не привязан к толщине профиля.</p>
+        <p>Предварительный расчёт расхода материалов для потолка, выравнивания стены и перегородки из гипсокартона. Расчёт универсальный и не привязан к толщине профиля.</p>
+      </section>
+
+      <section className="calculatorVisualSection">
+        <div className="calculatorVisualHeader">
+          <p className="label">Наглядная схема</p>
+          <h2>Что именно считает калькулятор</h2>
+          <p>
+            Выберите тип конструкции в параметрах расчёта. Ниже показаны основные схемы,
+            чтобы проще было отличить потолочный каркас, выравнивание стены и перегородку.
+          </p>
+        </div>
+
+        <div className="calculatorVisualGrid calculatorVisualGridThree">
+          <article className={constructionType === "ceiling" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+            <img src="/images/calculators/gkl/gkl-ceiling.png" alt="Схема потолочного каркаса из профиля ПП 60×27 и ППН 27×28" />
+            <div>
+              <h3>Потолок из ГКЛ</h3>
+              <p>ПП 60×27, ППН 27×28, подвесы и соединители для потолочного каркаса.</p>
+            </div>
+          </article>
+
+          <article className={constructionType === "cladding" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+            <img src="/images/calculators/gkl/gkl-wall-alignment.png" alt="Схема выравнивания стены профилем ПП 60×27 на прямых подвесах" />
+            <div>
+              <h3>Выравнивание стены</h3>
+              <p>Потолочная пара ПП 60×27 и ППН 27×28, крепление к основанию через прямые подвесы.</p>
+            </div>
+          </article>
+
+          <article className={constructionType === "partition" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+            <img src="/images/calculators/gkl/gkl-partition.png" alt="Схема перегородки из ГКЛ на профилях ПН и ПС" />
+            <div>
+              <h3>Перегородка из ГКЛ</h3>
+              <p>ПН и ПС 50 / 75 / 100 мм, листовая обшивка с двух сторон, изоляция по проекту.</p>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section className="calculatorSection">
@@ -567,7 +604,7 @@ export default function GklProfileCalculatorPage() {
             <h2>Параметры расчёта</h2>
             <div className="calculatorField"><span>Тип конструкции</span><div className="calculatorTabs">
               <button type="button" className={constructionType === "ceiling" ? "active" : ""} onClick={() => setConstructionType("ceiling")}>Потолок</button>
-              <button type="button" className={constructionType === "cladding" ? "active" : ""} onClick={() => setConstructionType("cladding")}>Облицовка</button>
+              <button type="button" className={constructionType === "cladding" ? "active" : ""} onClick={() => setConstructionType("cladding")}>Выравнивание</button>
               <button type="button" className={constructionType === "partition" ? "active" : ""} onClick={() => setConstructionType("partition")}>Перегородка</button>
             </div></div>
 
@@ -646,7 +683,7 @@ export default function GklProfileCalculatorPage() {
             <article className="calculatorSeoCard">
               <h3>Как пользоваться калькулятором</h3>
               <ul>
-                <li>Выберите тип конструкции: потолок, облицовка или перегородка.</li>
+                <li>Выберите тип конструкции: потолок, выравнивание стены или перегородка.</li>
                 <li>Укажите площадь, периметр или размеры конструкции.</li>
                 <li>Выберите длину потолочного или стоечного профиля.</li>
                 <li>Задайте процент запаса и посмотрите итоговый расход.</li>
