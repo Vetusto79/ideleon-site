@@ -565,7 +565,7 @@ export default function GrilyatoCalculatorPage() {
           <p>Для специальных систем вынесены отдельные расчёты, чтобы не смешивать разные схемы комплектации в одном калькуляторе.</p>
           <div className="calculatorRelatedLinks">
             <a href="/calculators/grilyato-gl">Грильято GL15 / GL24 →</a>
-            <a href="/calculators/grilyato-dl15">Грильято DL15 →</a>
+            <a href="/calculators/diagonalnoe-grilyato">Диагональное Грильято →</a>
             <a href="/calculators/treugolnoe-grilyato">Треугольное Грильято →</a>
           </div>
         </div>
