@@ -44,6 +44,32 @@ export default function CalculatorsPage() {
             </p>
             <span>Открыть калькулятор →</span>
           </a>
+
+          <a className="articleCard articleCardFeatured" href="/calculators/grilyato-gl">
+            <span className="articleBadge">Калькулятор</span>
+            <h3>Потолок Грильято GL</h3>
+            <p>
+              Расчёт потолка Грильято GL15 и GL24 с выбором ячейки, стандартной или усиленной схемы
+              монтажа и выгрузкой КП.
+            </p>
+            <span>Открыть калькулятор →</span>
+          </a>
+
+
+          <a className="articleCard articleCardFeatured" href="/calculators/grilyato-dl15">
+            <span className="articleBadge">Калькулятор</span>
+            <h3>Грильято DL15</h3>
+            <p>Расчёт решётки, диагонального элемента, направляющих, подвесов и уголка для системы DL15.</p>
+            <span>Открыть калькулятор →</span>
+          </a>
+
+          <a className="articleCard articleCardFeatured" href="/calculators/treugolnoe-grilyato">
+            <span className="articleBadge">Калькулятор</span>
+            <h3>Треугольное Грильято</h3>
+            <p>Расчёт треугольной решётки, диагональных элементов D1–D4 и подвесной системы.</p>
+            <span>Открыть калькулятор →</span>
+          </a>
+
         </div>
       </section>
 
