@@ -5,7 +5,6 @@ import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
-type GLType = "_GL15" | "_GL24";
 type MountScheme = "standard" | "reinforced";
 
 type ResultRow = {
@@ -19,11 +18,6 @@ type ResultRow = {
   includeInOffer: boolean;
   priceBasis: string;
   priceByMeterPerPiece?: boolean;
-};
-
-const typeLabels: Record<GLType, string> = {
-  _GL15: "Диагональное Грильято",
-  _GL24: "Диагональное Грильято",
 };
 
 const schemeLabels: Record<MountScheme, string> = {
@@ -405,16 +399,12 @@ function createWorkbookBlob(sheet: string) {
 function createExcelBlob({
   area,
   perimeter,
-  glType,
-  cellSize,
   mountScheme,
   reserve,
   result,
 }: {
   area: string;
   perimeter: string;
-  glType: GLType;
-  cellSize: string;
   mountScheme: MountScheme;
   reserve: number;
   result: ResultRow[];
@@ -429,7 +419,7 @@ function createExcelBlob({
   rows.push(rowXml(4, [cell("A4", "Коммерческое предложение / расчёт диагонального Грильято", "1")], 34));
   rows.push(rowXml(5, [cell("A5", "ООО «ИДЕЛЕОН»", "3")], 20));
   rows.push(rowXml(6, [cell("A6", `Дата: ${date}`, "11")], 20));
-  rows.push(rowXml(7, [cell("A7", `Площадь: ${area} м² · периметр: ${perimeter} м · тип: ${typeLabels[glType]} · ячейка: ${cellSize} · схема: ${schemeLabels[mountScheme]} · запас: ${reserve}%`, "11")], 24));
+  rows.push(rowXml(7, [cell("A7", `Площадь: ${area} м² · периметр: ${perimeter} м · тип: Диагональное Грильято · схема: ${schemeLabels[mountScheme]} · запас: ${reserve}%`, "11")], 24));
   rows.push(rowXml(8, [], 8));
 
   rows.push(rowXml(9, [
@@ -552,7 +542,7 @@ export default function GrilyatoДиагональноеCalculatorPage() {
   const sourcePage = "/calculators/diagonalnoe-grilyato";
 
   function handleDownload() {
-    const blob = createExcelBlob({ area, perimeter, glType, cellSize, mountScheme, reserve, result });
+    const blob = createExcelBlob({ area, perimeter, mountScheme, reserve, result });
     downloadBlob(blob, fileName);
   }
 
@@ -567,7 +557,7 @@ export default function GrilyatoДиагональноеCalculatorPage() {
     setSendMessage("");
 
     try {
-      const blob = createExcelBlob({ area, perimeter, glType, cellSize, mountScheme, reserve, result });
+      const blob = createExcelBlob({ area, perimeter, mountScheme, reserve, result });
       const file = new File([blob], fileName, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const formData = new FormData();
       formData.append("name", clientName);
