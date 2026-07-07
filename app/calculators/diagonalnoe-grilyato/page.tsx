@@ -22,8 +22,8 @@ type ResultRow = {
 };
 
 const typeLabels: Record<GLType, string> = {
-  _GL15: "Грильято GL15",
-  _GL24: "Грильято GL24",
+  _GL15: "Диагональное Грильято",
+  _GL24: "Диагональное Грильято",
 };
 
 const schemeLabels: Record<MountScheme, string> = {
@@ -426,7 +426,7 @@ function createExcelBlob({
   rows.push(rowXml(1, [], 26));
   rows.push(rowXml(2, [], 26));
   rows.push(rowXml(3, [], 26));
-  rows.push(rowXml(4, [cell("A4", "Коммерческое предложение / расчёт потолка Грильято GL", "1")], 34));
+  rows.push(rowXml(4, [cell("A4", "Коммерческое предложение / расчёт диагонального Грильято", "1")], 34));
   rows.push(rowXml(5, [cell("A5", "ООО «ИДЕЛЕОН»", "3")], 20));
   rows.push(rowXml(6, [cell("A6", `Дата: ${date}`, "11")], 20));
   rows.push(rowXml(7, [cell("A7", `Площадь: ${area} м² · периметр: ${perimeter} м · тип: ${typeLabels[glType]} · ячейка: ${cellSize} · схема: ${schemeLabels[mountScheme]} · запас: ${reserve}%`, "11")], 24));
@@ -547,12 +547,12 @@ export default function GrilyatoДиагональноеCalculatorPage() {
   }, [area, perimeter, reservePercent, mountScheme]);
 
   const paramsText = `Площадь: ${area} м² · периметр: ${perimeter} м · схема: ${schemeLabels[mountScheme]} · запас: ${reserve}%`;
-  const offerTitle = "Коммерческое предложение / расчёт грильято diagonal";
-  const fileName = "KP_diagonalnoe-grilyato_ideleon.xlsx";
+  const offerTitle = "Коммерческое предложение / расчёт диагонального Грильято";
+  const fileName = "KP_diagonalnoe_grilyato_ideleon.xlsx";
   const sourcePage = "/calculators/diagonalnoe-grilyato";
 
   function handleDownload() {
-    const blob = createExcelBlob({ title: offerTitle, subtitle: "ООО «ИДЕЛЕОН»", params: paramsText, rows: result.filter((item) => item.includeInOffer) });
+    const blob = createExcelBlob({ area, perimeter, glType, cellSize, mountScheme, reserve, result });
     downloadBlob(blob, fileName);
   }
 
@@ -567,7 +567,7 @@ export default function GrilyatoДиагональноеCalculatorPage() {
     setSendMessage("");
 
     try {
-      const blob = createExcelBlob({ title: offerTitle, subtitle: "ООО «ИДЕЛЕОН»", params: paramsText, rows: result.filter((item) => item.includeInOffer) });
+      const blob = createExcelBlob({ area, perimeter, glType, cellSize, mountScheme, reserve, result });
       const file = new File([blob], fileName, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
       const formData = new FormData();
       formData.append("name", clientName);
