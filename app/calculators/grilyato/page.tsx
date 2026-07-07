@@ -494,6 +494,52 @@ export default function GrilyatoCalculatorPage() {
 
   return <main><SiteHeader />
     <section className="pageHero"><Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Калькуляторы", href: "/calculators" }, { label: "Потолок Грильято" }]} /><p className="label">Калькулятор</p><h1>Калькулятор потолка Грильято</h1><p>Предварительный расчёт расхода элементов потолка Грильято по площади, периметру, типу системы и размеру ячейки. По результату можно скачать Excel-файл в формате КП.</p></section>
+
+    <section className="calculatorVisualSection">
+      <div className="calculatorVisualHeader">
+        <p className="label">Виды Грильято</p>
+        <h2>Выберите тип потолочной системы</h2>
+        <p>
+          Калькулятор считает комплектацию по выбранному типу Грильято. Схемы помогают быстро
+          отличить стандартную систему, нестандартную ячейку, пирамидальное и разноуровневое исполнение.
+        </p>
+      </div>
+
+      <div className="calculatorVisualGrid">
+        <article className={grilyatoType === "standard" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <img src="/images/calculators/grilyato/grilyato-standard.png" alt="Схема монтажа стандартного Грильято" />
+          <div>
+            <h3>Стандартное Грильято</h3>
+            <p>Классическая открытая ячейка на стандартной подвесной системе.</p>
+          </div>
+        </article>
+
+        <article className={grilyatoType === "nonstandard" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <img src="/images/calculators/grilyato/grilyato-nonstandard-models.png" alt="Схема нестандартного Грильято модель 1" />
+          <div>
+            <h3>Нестандартная ячейка</h3>
+            <p>Раскладка с отличающимися размерами ячейки. В КП строка решётки не выводится.</p>
+          </div>
+        </article>
+
+        <article className={grilyatoType === "pyramidal" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <img src="/images/calculators/grilyato/grilyato-pyramidal.png" alt="Пирамидальное Грильято" />
+          <div>
+            <h3>Пирамидальное</h3>
+            <p>Объёмный визуальный эффект за счёт формы профилей и глубины ячейки.</p>
+          </div>
+        </article>
+
+        <article className={grilyatoType === "multilevel" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <img src="/images/calculators/grilyato/grilyato-multilevel.png" alt="Разноуровневое Грильято" />
+          <div>
+            <h3>Разноуровневое</h3>
+            <p>Решение с выраженной геометрией и перепадом высоты элементов.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section className="calculatorSection"><div className="calculatorGrid">
       <div className="calculatorPanel"><h2>Параметры расчёта</h2>
         <label className="calculatorField"><span>Площадь помещения, м²</span><input value={area} onChange={(e) => setArea(e.target.value)} /></label>
@@ -510,6 +556,21 @@ export default function GrilyatoCalculatorPage() {
         <p className="calculatorDisclaimer">В Excel-файле используется один столбец «Цена». Столбец «Цена за» подсказывает, в каких единицах вводить стоимость.</p>
       </div>
     </div></section>
+      
+
+      <section className="calculatorRelatedSection">
+        <div className="calculatorRelatedCard">
+          <p className="label">Дополнительные калькуляторы</p>
+          <h2>Другие варианты потолков Грильято</h2>
+          <p>Для специальных систем вынесены отдельные расчёты, чтобы не смешивать разные схемы комплектации в одном калькуляторе.</p>
+          <div className="calculatorRelatedLinks">
+            <a href="/calculators/grilyato-gl">Грильято GL15 / GL24 →</a>
+            <a href="/calculators/grilyato-dl15">Грильято DL15 →</a>
+            <a href="/calculators/treugolnoe-grilyato">Треугольное Грильято →</a>
+          </div>
+        </div>
+      </section>
+
       <section className="calculatorSeoSection">
         <div className="calculatorSeoWrap">
           <div className="calculatorSeoIntro">
