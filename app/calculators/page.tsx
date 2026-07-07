@@ -56,10 +56,10 @@ export default function CalculatorsPage() {
           </a>
 
 
-          <a className="articleCard articleCardFeatured" href="/calculators/grilyato-dl15">
+          <a className="articleCard articleCardFeatured" href="/calculators/diagonalnoe-grilyato">
             <span className="articleBadge">Калькулятор</span>
-            <h3>Грильято DL15</h3>
-            <p>Расчёт решётки, диагонального элемента, направляющих, подвесов и уголка для системы DL15.</p>
+            <h3>Диагональное Грильято</h3>
+            <p>Расчёт решётки, диагонального элемента, направляющих, подвесов и уголка для системы Диагональное.</p>
             <span>Открыть калькулятор →</span>
           </a>
 
