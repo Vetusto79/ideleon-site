@@ -36,6 +36,9 @@ export const siteConfig = {
       children: [
         { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
         { label: "Потолок Грильято", href: "/calculators/grilyato" },
+        { label: "Грильято GL", href: "/calculators/grilyato-gl" },
+        { label: "Грильято DL15", href: "/calculators/grilyato-dl15" },
+        { label: "Треугольное Грильято", href: "/calculators/treugolnoe-grilyato" },
       ],
     },
     { label: "Статьи", href: "/articles" },
