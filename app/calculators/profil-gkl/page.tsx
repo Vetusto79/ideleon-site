@@ -572,29 +572,44 @@ export default function GklProfileCalculatorPage() {
         </div>
 
         <div className="calculatorVisualGrid calculatorVisualGridThree">
-          <article className={constructionType === "ceiling" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <button
+            type="button"
+            className={constructionType === "ceiling" ? "calculatorVisualCard active" : "calculatorVisualCard"}
+            onClick={() => setConstructionType("ceiling")}
+            aria-pressed={constructionType === "ceiling"}
+          >
             <img src="/images/calculators/gkl/gkl-ceiling.png" alt="Схема потолочного каркаса из профиля ПП 60×27 и ППН 27×28" />
             <div>
               <h3>Потолок из ГКЛ</h3>
               <p>ПП 60×27, ППН 27×28, подвесы и соединители для потолочного каркаса.</p>
             </div>
-          </article>
+          </button>
 
-          <article className={constructionType === "cladding" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <button
+            type="button"
+            className={constructionType === "cladding" ? "calculatorVisualCard active" : "calculatorVisualCard"}
+            onClick={() => setConstructionType("cladding")}
+            aria-pressed={constructionType === "cladding"}
+          >
             <img src="/images/calculators/gkl/gkl-wall-alignment.png" alt="Схема выравнивания стены профилем ПП 60×27 на прямых подвесах" />
             <div>
               <h3>Выравнивание стены</h3>
               <p>Потолочная пара ПП 60×27 и ППН 27×28, крепление к основанию через прямые подвесы.</p>
             </div>
-          </article>
+          </button>
 
-          <article className={constructionType === "partition" ? "calculatorVisualCard active" : "calculatorVisualCard"}>
+          <button
+            type="button"
+            className={constructionType === "partition" ? "calculatorVisualCard active" : "calculatorVisualCard"}
+            onClick={() => setConstructionType("partition")}
+            aria-pressed={constructionType === "partition"}
+          >
             <img src="/images/calculators/gkl/gkl-partition.png" alt="Схема перегородки из ГКЛ на профилях ПН и ПС" />
             <div>
               <h3>Перегородка из ГКЛ</h3>
               <p>ПН и ПС 50 / 75 / 100 мм, листовая обшивка с двух сторон, изоляция по проекту.</p>
             </div>
-          </article>
+          </button>
         </div>
       </section>
 
