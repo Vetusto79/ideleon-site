@@ -28,7 +28,7 @@ const staticRoutes = [
   "/calculators/profil-gkl",
   "/calculators/grilyato",
   "/calculators/grilyato-gl",
-  "/calculators/grilyato-dl15",
+  "/calculators/diagonalnoe-grilyato",
   "/calculators/treugolnoe-grilyato",
   "/privacy",
 ];
