@@ -1,5 +1,7 @@
 import type { CalculatorConfig, CalculatorResultRow, OfferColumn } from "../data/calculators";
 
+const LOGO_URL = "/images/logo/ideleon-logo-horizontal.png";
+
 function stringToBytes(value: string) {
   return new TextEncoder().encode(value);
 }
@@ -136,7 +138,18 @@ function getValue(row: CalculatorResultRow, key: string, rowNumber: number) {
   return "";
 }
 
-function cellForColumn(column: OfferColumn, row: CalculatorResultRow, rowIndex: number, colIndex: number) {
+function columnSearchIndex(columns: OfferColumn[], key: string) {
+  const index = columns.findIndex((column) => column.key === key);
+  return index >= 0 ? index + 1 : 1;
+}
+
+function cellForColumn(
+  columns: OfferColumn[],
+  column: OfferColumn,
+  row: CalculatorResultRow,
+  rowIndex: number,
+  colIndex: number,
+) {
   const ref = `${letters(colIndex)}${rowIndex}`;
   if (column.key === "index") return numberCell(ref, rowIndex - 9, "6");
   if (column.key === "quantity") return numberCell(ref, row.quantity, "6");
@@ -145,9 +158,9 @@ function cellForColumn(column: OfferColumn, row: CalculatorResultRow, rowIndex: 
   }
   if (column.key === "price") return cell(ref, "", "9");
   if (column.key === "sum") {
-    const priceColumnIndex = colIndex - 1;
-    const quantityColumnIndex = Math.max(1, columnSearchIndex("quantity"));
-    const lengthColumnIndex = columnSearchIndex("lengthM");
+    const priceColumnIndex = columnSearchIndex(columns, "price");
+    const quantityColumnIndex = columnSearchIndex(columns, "quantity");
+    const lengthColumnIndex = columnSearchIndex(columns, "lengthM");
     const priceRef = `${letters(priceColumnIndex)}${rowIndex}`;
     const quantityRef = `${letters(quantityColumnIndex)}${rowIndex}`;
     const formula =
@@ -159,13 +172,15 @@ function cellForColumn(column: OfferColumn, row: CalculatorResultRow, rowIndex: 
   return cell(ref, String(getValue(row, column.key, rowIndex)), column.key === "name" ? "8" : "0");
 }
 
-let activeColumns: OfferColumn[] = [];
-function columnSearchIndex(key: string) {
-  const index = activeColumns.findIndex((column) => column.key === key);
-  return index >= 0 ? index + 1 : 1;
+async function loadLogoBytes() {
+  const response = await fetch(LOGO_URL, { cache: "force-cache" });
+  if (!response.ok) {
+    throw new Error(`Не удалось загрузить логотип: ${LOGO_URL}`);
+  }
+  return new Uint8Array(await response.arrayBuffer());
 }
 
-export function buildCalculatorOfferExcel({
+export async function buildCalculatorOfferExcel({
   calculator,
   values,
   rows,
@@ -174,16 +189,16 @@ export function buildCalculatorOfferExcel({
   values: Record<string, string>;
   rows: CalculatorResultRow[];
 }) {
-  activeColumns = calculator.offerColumns;
+  const logoBytes = await loadLogoBytes();
   const date = new Date().toLocaleDateString("ru-RU");
   const offerRows = rows.filter((row) => row.includeInOffer !== false);
   const maxColumn = calculator.offerColumns.length;
   const maxLetter = letters(maxColumn);
   const sheetRows: string[] = [];
 
-  sheetRows.push(rowXml(1, [cell("A1", "IDELEON — строительные материалы", "10")], 36));
-  sheetRows.push(rowXml(2, [], 22));
-  sheetRows.push(rowXml(3, [], 16));
+  sheetRows.push(rowXml(1, [], 38));
+  sheetRows.push(rowXml(2, [], 38));
+  sheetRows.push(rowXml(3, [], 38));
   sheetRows.push(rowXml(4, [cell("A4", calculator.offerTitle, "1")], 34));
   sheetRows.push(rowXml(5, [cell("A5", "ООО «ИДЕЛЕОН»", "3")], 22));
   sheetRows.push(rowXml(6, [cell("A6", `Дата: ${date}`, "11")], 22));
@@ -195,7 +210,9 @@ export function buildCalculatorOfferExcel({
 
   offerRows.forEach((row, index) => {
     const rowNumber = 10 + index;
-    const cells = calculator.offerColumns.map((column, colIndex) => cellForColumn(column, row, rowNumber, colIndex + 1));
+    const cells = calculator.offerColumns.map((column, colIndex) =>
+      cellForColumn(calculator.offerColumns, column, row, rowNumber, colIndex + 1),
+    );
     sheetRows.push(rowXml(rowNumber, cells, 26));
   });
 
@@ -204,13 +221,14 @@ export function buildCalculatorOfferExcel({
   sheetRows.push(rowXml(footerStart + 1, [cell(`A${footerStart + 1}`, "Заполняйте только столбец «Цена». Столбец «Цена за» подсказывает, в каких единицах вводить стоимость.", "3")], 22));
   sheetRows.push(rowXml(footerStart + 2, [cell(`A${footerStart + 2}`, "Для профильных элементов цена может вводиться за м.п. — Excel сам рассчитает сумму по длине и количеству.", "3")], 22));
   sheetRows.push(rowXml(footerStart + 3, [cell(`A${footerStart + 3}`, "Расчёт ориентировочный. Точную комплектацию рекомендуется проверить по проекту.", "3")], 22));
+  sheetRows.push(rowXml(footerStart + 4, [cell(`A${footerStart + 4}`, "ООО «ИДЕЛЕОН» · ideleon.com · zakaz@ideleon.com · +7-926-696-13-86 · +7-915-038-40-30", "3")], 22));
 
   const cols = calculator.offerColumns
     .map((column, index) => `<col min="${index + 1}" max="${index + 1}" width="${columnWidth(column)}" customWidth="1"/>`)
     .join("");
 
   const merges = [
-    `<mergeCell ref="A1:${maxLetter}1"/>`,
+    `<mergeCell ref="A1:${maxLetter}3"/>`,
     `<mergeCell ref="A4:${maxLetter}4"/>`,
     `<mergeCell ref="A5:${maxLetter}5"/>`,
     `<mergeCell ref="A6:${maxLetter}6"/>`,
@@ -218,13 +236,18 @@ export function buildCalculatorOfferExcel({
     `<mergeCell ref="A${footerStart + 1}:${maxLetter}${footerStart + 1}"/>`,
     `<mergeCell ref="A${footerStart + 2}:${maxLetter}${footerStart + 2}"/>`,
     `<mergeCell ref="A${footerStart + 3}:${maxLetter}${footerStart + 3}"/>`,
+    `<mergeCell ref="A${footerStart + 4}:${maxLetter}${footerStart + 4}"/>`,
   ];
 
   const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheetViews><sheetView showGridLines="0" workbookViewId="0"><pane ySplit="9" topLeftCell="A10" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>
   <cols>${cols}</cols>
   <sheetData>${sheetRows.join("")}</sheetData>
   <mergeCells count="${merges.length}">${merges.join("")}</mergeCells>
+  <pageMargins left="0.35" right="0.35" top="0.45" bottom="0.45" header="0.2" footer="0.2"/>
+  <pageSetup orientation="landscape" fitToWidth="1" fitToHeight="0" paperSize="9"/>
+  <drawing r:id="rId1"/>
 </worksheet>`;
 
   const workbookXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -243,13 +266,39 @@ export function buildCalculatorOfferExcel({
   <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
 </Relationships>`;
 
+  const sheetRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/drawing" Target="../drawings/drawing1.xml"/>
+</Relationships>`;
+
+  const drawingXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xdr:wsDr xmlns:xdr="http://schemas.openxmlformats.org/drawingml/2006/spreadsheetDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <xdr:oneCellAnchor>
+    <xdr:from><xdr:col>0</xdr:col><xdr:colOff>80000</xdr:colOff><xdr:row>0</xdr:row><xdr:rowOff>80000</xdr:rowOff></xdr:from>
+    <xdr:ext cx="4700000" cy="1565000"/>
+    <xdr:pic>
+      <xdr:nvPicPr><xdr:cNvPr id="2" name="IDELEON logo"/><xdr:cNvPicPr><a:picLocks noChangeAspect="1"/></xdr:cNvPicPr></xdr:nvPicPr>
+      <xdr:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></xdr:blipFill>
+      <xdr:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="4700000" cy="1565000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></xdr:spPr>
+    </xdr:pic>
+    <xdr:clientData/>
+  </xdr:oneCellAnchor>
+</xdr:wsDr>`;
+
+  const drawingRels = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
+</Relationships>`;
+
   const contentTypes = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="png" ContentType="image/png"/>
   <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
   <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
   <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+  <Override PartName="/xl/drawings/drawing1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawing+xml"/>
 </Types>`;
 
   const styles = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -267,9 +316,8 @@ export function buildCalculatorOfferExcel({
     <fill><patternFill patternType="solid"><fgColor rgb="FFFFF1E6"/><bgColor indexed="64"/></patternFill></fill>
     <fill><patternFill patternType="solid"><fgColor rgb="FFF8FAFC"/><bgColor indexed="64"/></patternFill></fill>
   </fills>
-  <borders count="3">
+  <borders count="2">
     <border><left/><right/><top/><bottom/><diagonal/></border>
-    <border><left style="thin"><color rgb="FFCBD5E1"/></left><right style="thin"><color rgb="FFCBD5E1"/></right><top style="thin"><color rgb="FFCBD5E1"/></top><bottom style="thin"><color rgb="FFCBD5E1"/></bottom><diagonal/></border>
     <border><left style="thin"><color rgb="FFCBD5E1"/></left><right style="thin"><color rgb="FFCBD5E1"/></right><top style="thin"><color rgb="FFCBD5E1"/></top><bottom style="thin"><color rgb="FFCBD5E1"/></bottom><diagonal/></border>
   </borders>
   <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
@@ -296,9 +344,12 @@ export function buildCalculatorOfferExcel({
     { name: "xl/workbook.xml", data: stringToBytes(workbookXml) },
     { name: "xl/_rels/workbook.xml.rels", data: stringToBytes(workbookRels) },
     { name: "xl/worksheets/sheet1.xml", data: stringToBytes(sheetXml) },
+    { name: "xl/worksheets/_rels/sheet1.xml.rels", data: stringToBytes(sheetRels) },
+    { name: "xl/drawings/drawing1.xml", data: stringToBytes(drawingXml) },
+    { name: "xl/drawings/_rels/drawing1.xml.rels", data: stringToBytes(drawingRels) },
+    { name: "xl/media/image1.png", data: logoBytes },
     { name: "xl/styles.xml", data: stringToBytes(styles) },
   ]);
 
-  activeColumns = [];
   return new Blob([zip], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
