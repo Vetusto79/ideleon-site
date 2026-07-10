@@ -1,11 +1,12 @@
-import SiteHeader from "../components/SiteHeader";
-import SiteFooter from "../components/SiteFooter";
+import Link from "next/link";
 import Breadcrumbs from "../components/Breadcrumbs";
+import SiteFooter from "../components/SiteFooter";
+import SiteHeader from "../components/SiteHeader";
+import { calculators } from "../data/calculators";
 
 export const metadata = {
-  title: "Калькуляторы строительных материалов",
-  description:
-    "Калькуляторы Иделеон для ориентировочного расчёта расхода строительных материалов: профиль для ГКЛ, потолок Грильято и другие решения.",
+  title: "Калькуляторы строительных материалов | Иделеон",
+  description: "Онлайн-калькуляторы Иделеон для предварительного расчёта профиля ГКЛ, потолков Грильято, Грильято GL, диагонального и треугольного Грильято.",
 };
 
 export default function CalculatorsPage() {
@@ -16,61 +17,22 @@ export default function CalculatorsPage() {
       <section className="pageHero">
         <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Калькуляторы" }]} />
         <p className="label">Калькуляторы</p>
-        <h1>Калькуляторы расхода строительных материалов</h1>
+        <h1>Калькуляторы строительных материалов</h1>
         <p>
-          Быстрые расчёты для предварительной оценки расхода материалов. Результат лучше проверять
-          по проекту или спецификации — особенно на объектах со сложной геометрией.
+          Предварительные расчёты расхода материалов для объектов. Результат можно скачать в Excel
+          и отправить в Иделеон для проверки и подготовки предложения.
         </p>
       </section>
 
-      <section className="articleListSection">
-        <div className="articleGrid articleGridLarge">
-          <a className="articleCard articleCardFeatured" href="/calculators/profil-gkl">
-            <span className="articleBadge">Калькулятор</span>
-            <h3>Профиль для ГКЛ</h3>
-            <p>
-              Расчёт ориентировочного расхода материалов для потолка, облицовки стены и перегородки
-              из гипсокартона.
-            </p>
-            <span>Открыть калькулятор →</span>
-          </a>
-
-          <a className="articleCard articleCardFeatured" href="/calculators/grilyato">
-            <span className="articleBadge">Калькулятор</span>
-            <h3>Потолок Грильято</h3>
-            <p>
-              Расчёт решёток, профилей «мама» и «папа», направляющих, подвесов, соединителей и
-              периметрального уголка.
-            </p>
-            <span>Открыть калькулятор →</span>
-          </a>
-
-          <a className="articleCard articleCardFeatured" href="/calculators/grilyato-gl">
-            <span className="articleBadge">Калькулятор</span>
-            <h3>Потолок Грильято GL</h3>
-            <p>
-              Расчёт потолка Грильято GL15 и GL24 с выбором ячейки, стандартной или усиленной схемы
-              монтажа и выгрузкой КП.
-            </p>
-            <span>Открыть калькулятор →</span>
-          </a>
-
-
-          <a className="articleCard articleCardFeatured" href="/calculators/diagonalnoe-grilyato">
-            <span className="articleBadge">Калькулятор</span>
-            <h3>Диагональное Грильято</h3>
-            <p>Расчёт решётки, диагонального элемента, направляющих, подвесов и уголка для системы Диагональное.</p>
-            <span>Открыть калькулятор →</span>
-          </a>
-
-          <a className="articleCard articleCardFeatured" href="/calculators/treugolnoe-grilyato">
-            <span className="articleBadge">Калькулятор</span>
-            <h3>Треугольное Грильято</h3>
-            <p>Расчёт треугольной решётки, диагональных элементов D1–D4 и подвесной системы.</p>
-            <span>Открыть калькулятор →</span>
-          </a>
-
-        </div>
+      <section className="calculatorHub">
+        {calculators.map((calculator) => (
+          <Link key={calculator.slug} href={`/calculators/${calculator.slug}`} className="calculatorHubCard">
+            <span>{calculator.group === "gkl" ? "ГКЛ" : "Грильято"}</span>
+            <h2>{calculator.title}</h2>
+            <p>{calculator.description}</p>
+            <strong>Открыть калькулятор →</strong>
+          </Link>
+        ))}
       </section>
 
       <SiteFooter />
