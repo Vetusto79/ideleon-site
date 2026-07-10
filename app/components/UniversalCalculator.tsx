@@ -25,9 +25,9 @@ function downloadBlob(blob: Blob, fileName: string) {
 }
 
 export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug: string }) {
-  const calculator = getCalculator(calculatorSlug);
+  const calculator = getCalculator(calculatorSlug)!;
 
-  const [values, setValues] = useState<Record<string, string>>(() => (calculator ? initialValues(calculator) : {}));
+  const [values, setValues] = useState<Record<string, string>>(() => initialValues(calculator));
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
@@ -35,12 +35,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
   const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [sendMessage, setSendMessage] = useState("");
 
-  const rows = useMemo(() => (calculator ? calculator.calculate(values) : []), [calculator, values]);
-
-  if (!calculator) {
-    return null;
-  }
-
+  const rows = useMemo(() => calculator.calculate(values), [calculator, values]);
   function setValue(id: string, value: string) {
     setValues((current) => ({ ...current, [id]: value }));
   }
