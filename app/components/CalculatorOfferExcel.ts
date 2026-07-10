@@ -129,6 +129,7 @@ function columnWidth(column: OfferColumn) {
 function getValue(row: CalculatorResultRow, key: string, rowNumber: number) {
   if (key === "name") return row.name;
   if (key === "size") return row.size ?? "";
+  if (key === "catalogName") return row.catalogName ?? "";
   if (key === "lengthM") return row.lengthM ?? "";
   if (key === "unit") return row.unit;
   if (key === "coefficient") return row.coefficient;
@@ -169,7 +170,7 @@ function cellForColumn(
         : `IF(${priceRef}="","",${quantityRef}*${priceRef})`;
     return formulaCell(ref, formula, "7");
   }
-  return cell(ref, String(getValue(row, column.key, rowIndex)), column.key === "name" ? "8" : "0");
+  return cell(ref, String(getValue(row, column.key, rowIndex)), (column.key === "name" || column.key === "catalogName") ? "8" : "0");
 }
 
 async function loadLogoBytes() {
