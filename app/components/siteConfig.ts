@@ -35,10 +35,24 @@ export const siteConfig = {
       href: "/calculators",
       children: [
         { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
-        { label: "Потолок Грильято", href: "/calculators/grilyato" },
-        { label: "Грильято GL", href: "/calculators/grilyato-gl" },
-        { label: "Диагональное Грильято", href: "/calculators/diagonalnoe-grilyato" },
-        { label: "Треугольное Грильято", href: "/calculators/treugolnoe-grilyato" },
+        {
+          label: "Грильято",
+          href: "/calculators/grilyato",
+          children: [
+            { label: "Стандартное Грильято", href: "/calculators/grilyato" },
+            { label: "Грильято GL", href: "/calculators/grilyato-gl" },
+            { label: "Диагональное Грильято", href: "/calculators/diagonalnoe-grilyato" },
+            { label: "Треугольное Грильято", href: "/calculators/treugolnoe-grilyato" },
+          ],
+        },
+        {
+          label: "Кассетные потолки",
+          href: "/calculators/kassetnyy-potolok-otkrytaya-sistema",
+          children: [
+            { label: "Открытая подвесная система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
+            { label: "Скрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+          ],
+        },
       ],
     },
     { label: "Статьи", href: "/articles" },
