@@ -3161,3 +3161,12 @@ button.calculatorVisualCard:focus-visible {
     width: fit-content;
   }
 }
+
+
+/* Cassette visual selector v3 */
+.calculatorVisualImageWrap { position: relative; overflow: hidden; background: #eef2f7; border-bottom: 1px solid var(--line); }
+.calculatorVisualImageWrap > img { border-bottom: 0; }
+.calculatorVisualSelected { position: absolute; top: 14px; right: 14px; display: inline-flex; align-items: center; min-height: 34px; padding: 7px 13px; border-radius: 999px; background: #ff6a00; color: #fff; font-size: 13px; font-weight: 900; box-shadow: 0 10px 24px rgba(255,106,0,.28); }
+.calculatorVisualCard img { height: 255px; object-fit: cover; }
+.calculatorVisualCard.active h3 { color: #ff6a00; }
+@media (max-width: 720px) { .calculatorVisualCard img { height: auto; aspect-ratio: 4 / 3; object-fit: cover; } }
