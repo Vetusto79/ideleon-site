@@ -44,12 +44,13 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     return allowed.includes(values[fieldId]);
   }
 
-  function makeExcelBlob() {
-    return buildCalculatorOfferExcel({ calculator, values, rows });
+  async function makeExcelBlob() {
+    return await buildCalculatorOfferExcel({ calculator, values, rows });
   }
 
-  function downloadExcelOffer() {
-    downloadBlob(makeExcelBlob(), calculator.fileName);
+  async function downloadExcelOffer() {
+    const blob = await makeExcelBlob();
+    downloadBlob(blob, calculator.fileName);
   }
 
   async function sendExcelOffer(event: React.FormEvent<HTMLFormElement>) {
@@ -71,7 +72,8 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     setSendStatus("sending");
 
     try {
-      const file = new File([makeExcelBlob()], calculator.fileName, {
+      const blob = await makeExcelBlob();
+      const file = new File([blob], calculator.fileName, {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
