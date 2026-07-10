@@ -109,9 +109,9 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
       {calculator.visuals.length > 0 && (
         <section className="calculatorVisualSection">
           <div className="calculatorVisualHeader">
-            <p className="label">Наглядная схема</p>
-            <h2>Что именно считает калькулятор</h2>
-            <p>Выберите вариант расчёта по кнопке или нажмите на схему — калькулятор переключится автоматически.</p>
+            <p className="label">Внешний вид и конструкция</p>
+            <h2>Выберите вариант по изображению</h2>
+            <p>На каждой карточке показано, как потолок выглядит в помещении, и крупно — профиль кромки. Нажмите на карточку: тип кромки в калькуляторе переключится автоматически.</p>
           </div>
 
           <div className={calculator.visuals.length === 3 ? "calculatorVisualGrid calculatorVisualGridThree" : "calculatorVisualGrid"}>
@@ -128,7 +128,10 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
                     onClick={() => setValue(visual.fieldId!, visual.value!)}
                     aria-pressed={active}
                   >
-                    <img src={visual.image} alt={visual.alt} />
+                    <div className="calculatorVisualImageWrap">
+                      <img src={visual.image} alt={visual.alt} />
+                      {active ? <span className="calculatorVisualSelected">Выбрано</span> : null}
+                    </div>
                     <div>
                       <h3>{visual.title}</h3>
                       <p>{visual.description}</p>
@@ -139,7 +142,9 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
 
               return (
                 <article key={visual.title} className="calculatorVisualCard">
-                  <img src={visual.image} alt={visual.alt} />
+                  <div className="calculatorVisualImageWrap">
+                    <img src={visual.image} alt={visual.alt} />
+                  </div>
                   <div>
                     <h3>{visual.title}</h3>
                     <p>{visual.description}</p>
