@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { getCalculator } from "../data/calculators";
+import type { CalculatorConfig } from "../data/calculators";
 import { buildCalculatorOfferExcel } from "./CalculatorOfferExcel";
 
 function formatNumber(value: number) {
@@ -26,11 +27,7 @@ function downloadBlob(blob: Blob, fileName: string) {
 export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug: string }) {
   const calculator = getCalculator(calculatorSlug);
 
-  if (!calculator) {
-    return null;
-  }
-
-  const [values, setValues] = useState<Record<string, string>>(() => initialValues(calculator));
+  const [values, setValues] = useState<Record<string, string>>(() => (calculator ? initialValues(calculator) : {}));
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
   const [clientEmail, setClientEmail] = useState("");
@@ -38,7 +35,11 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
   const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [sendMessage, setSendMessage] = useState("");
 
-  const rows = useMemo(() => calculator.calculate(values), [calculator, values]);
+  const rows = useMemo(() => (calculator ? calculator.calculate(values) : []), [calculator, values]);
+
+  if (!calculator) {
+    return null;
+  }
 
   function setValue(id: string, value: string) {
     setValues((current) => ({ ...current, [id]: value }));
