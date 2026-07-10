@@ -36,6 +36,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
   const [sendMessage, setSendMessage] = useState("");
 
   const rows = useMemo(() => calculator.calculate(values), [calculator, values]);
+  const calculationWarning = calculator.getWarning?.(values) ?? null;
   function setValue(id: string, value: string) {
     setValues((current) => ({ ...current, [id]: value }));
   }
@@ -202,6 +203,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
         <div className="calculatorPanel calculatorResultPanel">
           <h2>Результат</h2>
 
+          {calculationWarning ? (
+            <div className="calculatorCompatibilityWarning" role="alert">
+              <strong>Нужно изменить параметры</strong>
+              <p>{calculationWarning}</p>
+            </div>
+          ) : (
           <div className="calculatorTableWrap">
             <table className="calculatorResultTable">
               <thead>
@@ -217,6 +224,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
                     <td>
                       <strong>{row.name}</strong>
                       {row.size ? <span>{row.size}</span> : null}
+                      {row.catalogName ? <span className="calculatorCatalogName">По каталогу: {row.catalogName}</span> : null}
                     </td>
                     <td>{row.coefficient}</td>
                     <td>{formatNumber(row.quantity)} {row.unit}</td>
@@ -225,9 +233,10 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
               </tbody>
             </table>
           </div>
+          )}
 
           <div className="calculatorActions">
-            <button className="secondaryButton" type="button" onClick={downloadExcelOffer}>
+            <button className="secondaryButton" type="button" onClick={downloadExcelOffer} disabled={Boolean(calculationWarning)}>
               Скачать КП
             </button>
           </div>
@@ -245,7 +254,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
               <span>Согласен на обработку персональных данных</span>
             </label>
 
-            <button className="primaryButton" type="submit" disabled={sendStatus === "sending"}>
+            <button className="primaryButton" type="submit" disabled={sendStatus === "sending" || Boolean(calculationWarning)}>
               {sendStatus === "sending" ? "Отправляем..." : "Отправить в Иделеон"}
             </button>
 
