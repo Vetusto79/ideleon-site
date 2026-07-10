@@ -23,9 +23,20 @@ export default function SiteHeader() {
               {item.children ? (
                 <div className="navDropdown">
                   {item.children.map((child) => (
-                    <a href={child.href} key={child.href}>
-                      {child.label}
-                    </a>
+                    <div className={child.children ? "navDropdownItem navDropdownItemWithChildren" : "navDropdownItem"} key={child.href}>
+                      <a href={child.href}>
+                        <span>{child.label}</span>
+                        {child.children ? <span className="navSubArrow">›</span> : null}
+                      </a>
+
+                      {child.children ? (
+                        <div className="navSubmenu">
+                          {child.children.map((subchild) => (
+                            <a href={subchild.href} key={subchild.href}>{subchild.label}</a>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
                   ))}
                 </div>
               ) : null}
@@ -35,9 +46,7 @@ export default function SiteHeader() {
 
         <div className="headerContacts">
           {siteConfig.contacts.phones.map((phone) => (
-            <a href={phone.href} key={phone.href}>
-              {phone.label}
-            </a>
+            <a href={phone.href} key={phone.href}>{phone.label}</a>
           ))}
         </div>
       </header>
