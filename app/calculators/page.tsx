@@ -5,9 +5,30 @@ import SiteHeader from "../components/SiteHeader";
 import { calculators } from "../data/calculators";
 
 export const metadata = {
-  title: "Калькуляторы строительных материалов | Иделеон",
-  description: "Онлайн-калькуляторы Иделеон для предварительного расчёта профиля ГКЛ, потолков Грильято, Грильято GL, диагонального и треугольного Грильято.",
+  title: "Калькуляторы строительных материалов",
+  description: "Онлайн-калькуляторы Иделеон для расчёта профиля ГКЛ, потолков Грильято и кассетных потолочных систем.",
 };
+
+const groups = [
+  {
+    id: "gkl",
+    label: "Гипсокартонные конструкции",
+    title: "Профиль для ГКЛ",
+    description: "Потолок, выравнивание стены и перегородка.",
+  },
+  {
+    id: "grilyato",
+    label: "Открытые ячеистые потолки",
+    title: "Потолки Грильято",
+    description: "Стандартное, GL, диагональное и треугольное Грильято.",
+  },
+  {
+    id: "cassette",
+    label: "Модульные металлические потолки",
+    title: "Кассетные потолки",
+    description: "Открытая система Т-15/Т-24 и скрытая система с простым или усиленным монтажом.",
+  },
+] as const;
 
 export default function CalculatorsPage() {
   return (
@@ -18,21 +39,36 @@ export default function CalculatorsPage() {
         <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Калькуляторы" }]} />
         <p className="label">Калькуляторы</p>
         <h1>Калькуляторы строительных материалов</h1>
-        <p>
-          Предварительные расчёты расхода материалов для объектов. Результат можно скачать в Excel
-          и отправить в Иделеон для проверки и подготовки предложения.
-        </p>
+        <p>Выберите направление, получите предварительную комплектацию, скачайте Excel-КП или отправьте расчёт специалисту Иделеон.</p>
       </section>
 
-      <section className="calculatorHub">
-        {calculators.map((calculator) => (
-          <Link key={calculator.slug} href={`/calculators/${calculator.slug}`} className="calculatorHubCard">
-            <span>{calculator.group === "gkl" ? "ГКЛ" : "Грильято"}</span>
-            <h2>{calculator.title}</h2>
-            <p>{calculator.description}</p>
-            <strong>Открыть калькулятор →</strong>
-          </Link>
-        ))}
+      <section className="calculatorGroupedHub">
+        {groups.map((group) => {
+          const groupCalculators = calculators.filter((calculator) => calculator.group === group.id);
+          return (
+            <section className="calculatorGroupBlock" key={group.id}>
+              <header className="calculatorGroupHeader">
+                <div>
+                  <p className="label">{group.label}</p>
+                  <h2>{group.title}</h2>
+                  <p>{group.description}</p>
+                </div>
+                <span>{groupCalculators.length} {groupCalculators.length === 1 ? "калькулятор" : "калькулятора"}</span>
+              </header>
+
+              <div className="calculatorHub calculatorHubGrouped">
+                {groupCalculators.map((calculator) => (
+                  <Link key={calculator.slug} href={`/calculators/${calculator.slug}`} className="calculatorHubCard">
+                    <span>{group.title}</span>
+                    <h3>{calculator.title}</h3>
+                    <p>{calculator.description}</p>
+                    <strong>Открыть калькулятор →</strong>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          );
+        })}
       </section>
 
       <SiteFooter />
