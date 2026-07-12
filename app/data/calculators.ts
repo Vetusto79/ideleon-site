@@ -76,7 +76,7 @@ export type CalculatorResultRow = {
 
 export type CalculatorConfig = {
   slug: string;
-  group: "gkl" | "grilyato" | "cassette" | "metal";
+  group: "gkl" | "grilyato" | "cassette" | "metal" | "sandwich";
   title: string;
   shortTitle: string;
   description: string;
@@ -1142,6 +1142,106 @@ const metalNonRebarValues = metalProductValues.filter((value) => value !== "reba
 const metalLongCondition: CalculatorCondition = { fieldId: "productType", values: metalLongProductTypes };
 
 
+
+const sandwichColumns: OfferColumn[] = [
+  { key: "index", title: "№", width: 6 },
+  { key: "name", title: "Наименование", width: 38 },
+  { key: "size", title: "Параметр", width: 22 },
+  { key: "unit", title: "Ед. изм.", width: 12 },
+  { key: "coefficient", title: "Основание расчёта", width: 30 },
+  { key: "quantity", title: "Количество", width: 15 },
+  { key: "priceUnit", title: "Цена за", width: 12 },
+  { key: "price", title: "Цена", width: 14 },
+  { key: "sum", title: "Сумма", width: 16 },
+];
+
+function sandwichNumber(value: string | undefined) {
+  return toNumber(String(value ?? ""));
+}
+function sandwichScopeLabel(scope: string) {
+  return scope === "wall" ? "Только стены" : scope === "roof" ? "Только кровля" : "Здание целиком";
+}
+function sandwichRoofTypeLabel(type: string) {
+  return type === "single" ? "Односкатная" : "Двускатная";
+}
+function sandwichRoofSlopeLength(values: Record<string, string>) {
+  const width = sandwichNumber(values.buildingWidth);
+  const slopeDeg = Math.max(sandwichNumber(values.roofPitchDeg), 1);
+  const rad = slopeDeg * Math.PI / 180;
+  if ((values.roofType || "gable") === "single") return width / Math.cos(rad);
+  return (width / 2) / Math.cos(rad);
+}
+function sandwichWallAreaNet(values: Record<string, string>) {
+  const length = sandwichNumber(values.buildingLength);
+  const width = sandwichNumber(values.buildingWidth);
+  const height = sandwichNumber(values.wallHeight);
+  return Math.max(2 * (length + width) * height - sandwichNumber(values.openingsArea), 0);
+}
+function sandwichRoofArea(values: Record<string, string>) {
+  const length = sandwichNumber(values.buildingLength);
+  const slopeLen = sandwichRoofSlopeLength(values);
+  return (values.roofType || "gable") === "single" ? length * slopeLen : 2 * length * slopeLen;
+}
+function sandwichTotals(values: Record<string, string>) {
+  const reservePercent = reserve(values);
+  const wallArea = sandwichWallAreaNet(values);
+  const roofArea = sandwichRoofArea(values);
+  const wallWidthM = (sandwichNumber(values.wallUsefulWidth) || 1000) / 1000;
+  const roofWidthM = (sandwichNumber(values.roofUsefulWidth) || 1000) / 1000;
+  const height = sandwichNumber(values.wallHeight);
+  const length = sandwichNumber(values.buildingLength);
+  const width = sandwichNumber(values.buildingWidth);
+  const slopeLen = sandwichRoofSlopeLength(values);
+  const scope = values.scope || "building";
+  const wallAreaReserve = addReserve(wallArea, reservePercent);
+  const roofAreaReserve = addReserve(roofArea, reservePercent);
+  return {
+    scope, height, length, width, slopeLen,
+    wallAreaReserve, roofAreaReserve,
+    wallPanels: Math.ceil(wallAreaReserve / Math.max(height * wallWidthM, 0.0001)),
+    roofPanels: Math.ceil(roofAreaReserve / Math.max(slopeLen * roofWidthM, 0.0001)),
+    cornerTrim: 4 * height,
+    baseTrim: 2 * (length + width),
+    ridge: (values.roofType || "gable") === "single" ? 0 : length,
+    cornice: (values.roofType || "gable") === "single" ? length : 2 * length,
+    gableTrim: (values.roofType || "gable") === "single" ? 2 * (length + slopeLen) : 4 * slopeLen,
+    wallScrews: Math.ceil(wallAreaReserve * 6),
+    roofScrews: Math.ceil(roofAreaReserve * 8),
+  };
+}
+function sandwichCalculate(values: Record<string, string>): CalculatorResultRow[] {
+  const t = sandwichTotals(values);
+  const rows: CalculatorResultRow[] = [];
+  const wallSize = `${values.wallThickness || "100"} мм, полезная ширина ${values.wallUsefulWidth || "1000"} мм`;
+  const roofSize = `${values.roofThickness || "120"} мм, полезная ширина ${values.roofUsefulWidth || "1000"} мм`;
+  if (t.scope !== "roof") {
+    rows.push(resultRow({ name: "Стеновые сэндвич-панели", size: wallSize, unit: "м²", coefficient: `Площадь стен − проёмы + ${reserve(values)}% запас`, quantity: roundUp(t.wallAreaReserve, 0.01), priceUnit: "м²" }));
+    rows.push(resultRow({ name: "Ориентировочное количество стеновых панелей", size: wallSize, unit: "шт.", coefficient: "Оценка по полезной ширине", quantity: t.wallPanels, includeInOffer: false }));
+    rows.push(resultRow({ name: "Угловые доборные элементы", size: "наружные углы", unit: "пог. м", coefficient: `4 угла × ${fmt(t.height)} м`, quantity: roundUp(t.cornerTrim, 0.01), priceUnit: "пог. м" }));
+    rows.push(resultRow({ name: "Стартовая / цокольная планка", size: "по периметру здания", unit: "пог. м", coefficient: `2 × (L + B)`, quantity: roundUp(t.baseTrim, 0.01), priceUnit: "пог. м" }));
+    rows.push(resultRow({ name: "Саморезы для стеновых панелей", size: "ориентировочно", unit: "шт.", coefficient: `6 шт. × площадь стен`, quantity: t.wallScrews, priceUnit: "шт." }));
+  }
+  if (t.scope !== "wall") {
+    rows.push(resultRow({ name: "Кровельные сэндвич-панели", size: roofSize, unit: "м²", coefficient: `Площадь кровли + ${reserve(values)}% запас`, quantity: roundUp(t.roofAreaReserve, 0.01), priceUnit: "м²" }));
+    rows.push(resultRow({ name: "Ориентировочное количество кровельных панелей", size: roofSize, unit: "шт.", coefficient: "Оценка по длине ската и полезной ширине", quantity: t.roofPanels, includeInOffer: false }));
+    if (t.ridge > 0) rows.push(resultRow({ name: "Коньковый элемент", size: sandwichRoofTypeLabel(values.roofType || "gable"), unit: "пог. м", coefficient: "По длине здания", quantity: roundUp(t.ridge, 0.01), priceUnit: "пог. м" }));
+    rows.push(resultRow({ name: "Карнизная планка", size: sandwichRoofTypeLabel(values.roofType || "gable"), unit: "пог. м", coefficient: "По длине здания", quantity: roundUp(t.cornice, 0.01), priceUnit: "пог. м" }));
+    rows.push(resultRow({ name: "Торцевые / фронтонные элементы", size: sandwichRoofTypeLabel(values.roofType || "gable"), unit: "пог. м", coefficient: "По торцам и скатам кровли", quantity: roundUp(t.gableTrim, 0.01), priceUnit: "пог. м" }));
+    rows.push(resultRow({ name: "Саморезы для кровельных панелей", size: "ориентировочно", unit: "шт.", coefficient: `8 шт. × площадь кровли`, quantity: t.roofScrews, priceUnit: "шт." }));
+  }
+  return rows;
+}
+function sandwichParams(values: Record<string, string>) {
+  const t = sandwichTotals(values);
+  return `Режим: ${sandwichScopeLabel(values.scope || "building")}; габариты: ${fmt(sandwichNumber(values.buildingLength))} × ${fmt(sandwichNumber(values.buildingWidth))} м; высота: ${fmt(sandwichNumber(values.wallHeight))} м; кровля: ${sandwichRoofTypeLabel(values.roofType || "gable")}; стеновые панели: ${fmt(t.wallAreaReserve)} м²; кровельные панели: ${fmt(t.roofAreaReserve)} м²`;
+}
+function sandwichWarning(values: Record<string, string>) {
+  if (!sandwichNumber(values.buildingLength) || !sandwichNumber(values.buildingWidth) || !sandwichNumber(values.wallHeight)) return "Укажите длину, ширину и высоту здания больше нуля.";
+  if ((values.scope || "building") !== "roof" && sandwichWallAreaNet(values) <= 0) return "Проверьте площадь проёмов: она не должна полностью превышать площадь стен.";
+  if ((values.scope || "building") !== "wall" && sandwichRoofArea(values) <= 0) return "Проверьте параметры кровли: площадь кровли должна быть больше нуля.";
+  return null;
+}
+
 const commonReserveField: CalculatorField = {
   id: "reserve",
   label: "Запас, %",
@@ -1163,6 +1263,93 @@ const mountSchemeField: CalculatorField = {
 };
 
 export const calculators: CalculatorConfig[] = [
+
+  {
+    slug: "sendvich-paneli",
+    group: "sandwich",
+    title: "Калькулятор сэндвич-панелей",
+    shortTitle: "Сэндвич-панели",
+    description: "Предварительный расчёт стеновых и кровельных сэндвич-панелей, доборных элементов и крепежа для здания.",
+    seoTitle: "Калькулятор сэндвич-панелей — стены, кровля, доборы",
+    seoDescription: "Онлайн-калькулятор IDELEON для предварительного расчёта стеновых и кровельных сэндвич-панелей: площадь стен и кровли, количество панелей, доборные элементы, крепёж и Excel-КП.",
+    h1: "Калькулятор сэндвич-панелей",
+    intro: "Калькулятор помогает быстро оценить потребность в стеновых и кровельных сэндвич-панелях по габаритам здания. Расчёт ориентировочный: он подходит для предварительного бюджета и заявки на коммерческое предложение, а окончательная спецификация уточняется по проекту.",
+    offerTitle: "Коммерческое предложение / сэндвич-панели",
+    fileName: "KP_sendvich_paneli_ideleon.xlsx",
+    visualTitle: "Выберите схему расчёта",
+    visualDescription: "Сначала выберите, что рассчитывать: здание целиком, только стены или только кровлю. Далее укажите тип кровли и размеры здания.",
+    calculatorNote: "Расчёт ориентировочный. Он не заменяет проектную раскладку панелей, расчёт узлов примыканий и подбор крепежа по ветровым и снеговым нагрузкам.",
+    resultTitle: "Результат предварительного расчёта",
+    resultMaterialTitle: "Позиция",
+    resultCoefficientTitle: "Основание",
+    resultQuantityTitle: "Количество",
+    resultMaxFractionDigits: 2,
+    fields: [
+      { id: "scope", label: "Что рассчитываем", type: "buttons", defaultValue: "building", hideInput: true, options: [
+        { label: "Здание целиком", value: "building" },
+        { label: "Только стены", value: "wall" },
+        { label: "Только кровля", value: "roof" },
+      ] },
+      { id: "buildingLength", label: "Длина здания, м", type: "number", defaultValue: "24", step: "any" },
+      { id: "buildingWidth", label: "Ширина здания, м", type: "number", defaultValue: "12", step: "any" },
+      { id: "wallHeight", label: "Высота стен, м", type: "number", defaultValue: "4", step: "any" },
+      { id: "openingsArea", label: "Площадь проёмов, м²", type: "number", defaultValue: "12", step: "any", showWhen: { fieldId: "scope", values: ["building", "wall"] } },
+      { id: "roofType", label: "Тип кровли", type: "buttons", defaultValue: "gable", hideInput: true, showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: [
+        { label: "Двускатная", value: "gable" },
+        { label: "Односкатная", value: "single" },
+      ] },
+      { id: "roofPitchDeg", label: "Уклон кровли, °", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "scope", values: ["building", "roof"] } },
+      { id: "wallThickness", label: "Толщина стеновой панели", type: "select", defaultValue: "100", showWhen: { fieldId: "scope", values: ["building", "wall"] }, options: ["50","80","100","120","150","200"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "wallUsefulWidth", label: "Полезная ширина стеновой панели", type: "select", defaultValue: "1000", showWhen: { fieldId: "scope", values: ["building", "wall"] }, options: ["1000","1190"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "roofThickness", label: "Толщина кровельной панели", type: "select", defaultValue: "120", showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: ["50","80","100","120","150","200"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "roofUsefulWidth", label: "Полезная ширина кровельной панели", type: "select", defaultValue: "1000", showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: ["1000"].map((value) => ({ label: `${value} мм`, value })) },
+      commonReserveField,
+    ],
+    visuals: [],
+    visualGroups: [
+      {
+        title: "Что нужно рассчитать",
+        description: "Выберите режим расчёта. Для полного здания калькулятор покажет и стеновые, и кровельные панели, а также ориентировочный набор доборов и крепежа.",
+        visuals: [
+          { title: "Здание целиком", description: "Стены, кровля, доборные элементы и крепёж для предварительного бюджета.", image: "/images/calculators/sandwich/building.svg", alt: "Расчёт комплекта сэндвич-панелей на здание", fieldId: "scope", value: "building" },
+          { title: "Только стены", description: "Только стеновые панели, проёмы, углы и стартовые элементы.", image: "/images/calculators/sandwich/wall.svg", alt: "Расчёт стеновых сэндвич-панелей", fieldId: "scope", value: "wall" },
+          { title: "Только кровля", description: "Кровельные панели, конёк, карниз и фронтонные элементы.", image: "/images/calculators/sandwich/roof.svg", alt: "Расчёт кровельных сэндвич-панелей", fieldId: "scope", value: "roof" },
+        ],
+      },
+      {
+        title: "Тип кровли",
+        description: "Выберите конструкцию кровли для расчёта площади кровельных панелей и доборных элементов.",
+        showWhen: { fieldId: "scope", values: ["building", "roof"] },
+        visuals: [
+          { title: "Двускатная кровля", description: "Подходит для складов, ангаров, магазинов и производственных зданий.", image: "/images/calculators/sandwich/gable.svg", alt: "Двускатная кровля из сэндвич-панелей", fieldId: "roofType", value: "gable" },
+          { title: "Односкатная кровля", description: "Часто используется для навесов, пристроек и компактных зданий.", image: "/images/calculators/sandwich/single-slope.svg", alt: "Односкатная кровля из сэндвич-панелей", fieldId: "roofType", value: "single" },
+        ],
+      },
+    ],
+    offerColumns: sandwichColumns,
+    calculate: sandwichCalculate,
+    getParamsText: sandwichParams,
+    getWarning: sandwichWarning,
+    relatedLinks: [
+      { label: "Калькулятор чёрного металлопроката", href: "/calculators/chernyy-metalloprokat" },
+      { label: "Каталог сэндвич-панелей", href: "/catalog/sandvich-paneli" },
+      { label: "Все калькуляторы", href: "/calculators" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор", text: "Калькулятор определяет ориентировочную площадь стеновых и кровельных сэндвич-панелей, число панелей по полезной ширине, длину основных доборных элементов и количество крепежа. Расчёт подходит для предварительной оценки бюджета и подготовки заявки в IDELEON." },
+      { title: "Как пользоваться калькулятором", text: "Сначала выберите режим расчёта: всё здание, только стены или только кровлю. Затем задайте габариты здания, высоту стен, площадь проёмов, тип кровли и толщину панелей. При необходимости укажите запас на подрезку и монтаж." },
+      { title: "Какие схемы взаимодействия заложены", text: "Для удобства пользователя калькулятор разбит на две последовательные группы карточек: сначала сценарий расчёта, затем тип кровли. После выбора схема взаимодействия становится короче: показываются только релевантные поля, а результат сразу отражает конкретный сценарий — стены, кровлю или полный комплект на здание." },
+      { title: "Когда нужен точный проектный расчёт", text: "Если у здания есть фонари, воротные порталы, внутренние углы, перепады высот, сложные узлы примыкания, несколько температурных зон или нестандартные пролёты, нужен детальный проектный расчёт. Специалисты IDELEON подготовят точную раскладку панелей, доборов и крепежа." },
+      { title: "Что важно учесть при заказе", text: "Фактическая длина панелей, тип утеплителя, замок панели, цвет, покрытие, ветровой район, снеговая нагрузка и длина доборов уточняются при подготовке коммерческого предложения. Поэтому Excel-КП из калькулятора является предварительным расчётом, а не окончательной спецификацией." },
+    ],
+    faq: [
+      { question: "Считает ли калькулятор панели поштучно?", answer: "Да, калькулятор показывает ориентировочное количество панелей по полезной ширине и расчётной длине. Итоговая раскладка всё равно требует проверки по проекту." },
+      { question: "Учитываются ли окна и ворота?", answer: "Да. Для стенового контура можно указать общую площадь проёмов, и калькулятор уменьшит расчётную площадь стеновых панелей." },
+      { question: "Можно ли считать только кровлю?", answer: "Да. Для этого выберите сценарий «Только кровля» — тогда будут показаны только кровельные панели и связанные с ними доборные элементы." },
+      { question: "Чем отличается двускатная и односкатная кровля в расчёте?", answer: "От типа кровли зависит площадь скатов, длина доборных элементов и, соответственно, ориентировочный расход панелей и крепежа." },
+      { question: "Насколько точен расчёт?", answer: "Это предварительный расчёт для бюджета и быстрой заявки. Для закупки и монтажа нужна итоговая спецификация, подготовленная по проекту." },
+    ],
+  },
 
   {
     slug: "chernyy-metalloprokat",
