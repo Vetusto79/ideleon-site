@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { getCalculator } from "../data/calculators";
-import type { CalculatorConfig } from "../data/calculators";
+import type { CalculatorConfig, CalculatorVisual, CalculatorVisualGroup } from "../data/calculators";
 import { buildCalculatorOfferExcel } from "./CalculatorOfferExcel";
 
 function formatNumber(value: number) {
@@ -10,7 +10,8 @@ function formatNumber(value: number) {
 }
 
 function initialValues(calculator: CalculatorConfig) {
-  return Object.fromEntries(calculator.fields.map((field) => [field.id, field.defaultValue]));
+  const defaults = Object.fromEntries(calculator.fields.map((field) => [field.id, field.defaultValue]));
+  return calculator.normalizeValues ? calculator.normalizeValues(defaults, "__init__") : defaults;
 }
 
 function downloadBlob(blob: Blob, fileName: string) {
@@ -22,6 +23,22 @@ function downloadBlob(blob: Blob, fileName: string) {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+}
+
+function conditionMatches(values: Record<string, string>, condition?: { fieldId: string; values: string[] }) {
+  if (!condition) return true;
+  return condition.values.includes(values[condition.fieldId]);
+}
+
+function visualIsActive(values: Record<string, string>, visual: CalculatorVisual) {
+  if (visual.activeWhen) {
+    return Object.entries(visual.activeWhen).every(([fieldId, value]) => values[fieldId] === value);
+  }
+  return Boolean(visual.fieldId && visual.value && values[visual.fieldId] === visual.value);
+}
+
+function visualIsClickable(visual: CalculatorVisual) {
+  return Boolean((visual.fieldId && visual.value) || visual.setValues);
 }
 
 export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug: string }) {
@@ -37,12 +54,28 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
 
   const rows = useMemo(() => calculator.calculate(values), [calculator, values]);
   const calculationWarning = calculator.getWarning?.(values) ?? null;
-  function setValue(id: string, value: string) {
-    setValues((current) => ({ ...current, [id]: value }));
+
+  function updateValues(nextValues: Record<string, string>, changedFieldId: string) {
+    const normalized = calculator.normalizeValues
+      ? calculator.normalizeValues(nextValues, changedFieldId)
+      : nextValues;
+    setValues(normalized);
   }
 
-  function isFieldVisible(fieldId: string, allowed: string[]) {
-    return allowed.includes(values[fieldId]);
+  function setValue(id: string, value: string) {
+    updateValues({ ...values, [id]: value }, id);
+  }
+
+  function applyVisual(visual: CalculatorVisual) {
+    const changes = visual.setValues
+      ? visual.setValues
+      : visual.fieldId && visual.value
+        ? { [visual.fieldId]: visual.value }
+        : null;
+
+    if (!changes) return;
+    const changedFieldId = visual.fieldId || Object.keys(changes)[0] || "visual";
+    updateValues({ ...values, ...changes }, changedFieldId);
   }
 
   async function makeExcelBlob() {
@@ -93,16 +126,85 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
 
       setSendStatus("success");
       setSendMessage("Расчёт отправлен. Мы свяжемся с вами и подготовим предложение.");
-    } catch (error) {
+    } catch {
       setSendStatus("error");
       setSendMessage("Не удалось отправить заявку. Попробуйте позвонить нам или написать на почту.");
     }
   }
 
   const visibleFields = calculator.fields.filter((field) => {
-    if (!field.showWhen) return true;
-    return isFieldVisible(field.showWhen.fieldId, field.showWhen.values);
+    if (field.hideInput) return false;
+    return conditionMatches(values, field.showWhen);
   });
+
+  const visibleVisualGroups = (calculator.visualGroups || []).filter((group) =>
+    conditionMatches(values, group.showWhen),
+  );
+
+  function renderVisualCard(visual: CalculatorVisual) {
+    if (!conditionMatches(values, visual.showWhen)) return null;
+
+    const active = visualIsActive(values, visual);
+    const clickable = visualIsClickable(visual);
+    const className = active ? "calculatorVisualCard active" : "calculatorVisualCard";
+    const content = (
+      <>
+        <div className="calculatorVisualImageWrap">
+          <img src={visual.image} alt={visual.alt} loading="lazy" />
+          {active ? <span className="calculatorVisualSelected">Выбрано</span> : null}
+        </div>
+        <div className="calculatorVisualText">
+          <h3>{visual.title}</h3>
+          <p>{visual.description}</p>
+        </div>
+      </>
+    );
+
+    if (clickable) {
+      return (
+        <button
+          key={`${visual.title}-${visual.value || "multi"}`}
+          type="button"
+          className={className}
+          onClick={() => applyVisual(visual)}
+          aria-pressed={active}
+        >
+          {content}
+        </button>
+      );
+    }
+
+    return (
+      <article key={visual.title} className={className}>
+        {content}
+      </article>
+    );
+  }
+
+  function renderVisualGroup(group: CalculatorVisualGroup) {
+    const visuals = group.visuals.filter((visual) => conditionMatches(values, visual.showWhen));
+    if (visuals.length === 0) return null;
+
+    const gridClass =
+      visuals.length === 1
+        ? "calculatorVisualGrid calculatorVisualGridSingle"
+        : visuals.length === 2
+          ? "calculatorVisualGrid calculatorVisualGridTwo"
+          : visuals.length === 3
+            ? "calculatorVisualGrid calculatorVisualGridThree"
+            : "calculatorVisualGrid";
+
+    return (
+      <section className="calculatorVisualGroup" key={group.title}>
+        <div className="calculatorVisualHeader">
+          <p className="label">Визуальный выбор</p>
+          <h2>{group.title}</h2>
+          <p>{group.description}</p>
+        </div>
+        <div className={gridClass}>{visuals.map(renderVisualCard)}</div>
+      </section>
+    );
+  }
 
   return (
     <>
@@ -111,52 +213,15 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           <div className="calculatorVisualHeader">
             <p className="label">Внешний вид и конструкция</p>
             <h2>Выберите вариант по изображению</h2>
-            <p>На каждой карточке показано, как потолок выглядит в помещении, и крупно — профиль кромки. Нажмите на карточку: тип кромки в калькуляторе переключится автоматически.</p>
+            <p>Нажмите на карточку, чтобы переключить соответствующий параметр калькулятора.</p>
           </div>
-
           <div className={calculator.visuals.length === 3 ? "calculatorVisualGrid calculatorVisualGridThree" : "calculatorVisualGrid"}>
-            {calculator.visuals.map((visual) => {
-              const active = Boolean(visual.fieldId && visual.value && values[visual.fieldId] === visual.value);
-              const clickable = Boolean(visual.fieldId && visual.value);
-
-              if (clickable && visual.fieldId && visual.value) {
-                return (
-                  <button
-                    key={`${visual.title}-${visual.value}`}
-                    type="button"
-                    className={active ? "calculatorVisualCard active" : "calculatorVisualCard"}
-                    onClick={() => setValue(visual.fieldId!, visual.value!)}
-                    aria-pressed={active}
-                  >
-                    <div className="calculatorVisualImageWrap">
-                      <img src={visual.image} alt={visual.alt} />
-                      {active ? <span className="calculatorVisualSelected">Выбрано</span> : null}
-                    </div>
-                    <div>
-                      <h3>{visual.title}</h3>
-                      <p>{visual.description}</p>
-                    </div>
-                  </button>
-                );
-              }
-
-              return (
-                <article key={visual.title} className="calculatorVisualCard">
-                  <div className="calculatorVisualImageWrap">
-                    <img src={visual.image} alt={visual.alt} />
-                  </div>
-                  <div>
-                    <h3>{visual.title}</h3>
-                    <p>{visual.description}</p>
-                  </div>
-                </article>
-              );
-            })}
+            {calculator.visuals.map(renderVisualCard)}
           </div>
         </section>
       )}
 
-      <section className="calculatorSection">
+      <section className={visibleVisualGroups.length > 0 ? "calculatorSection calculatorSectionStacked" : "calculatorSection"}>
         <div className="calculatorPanel">
           <h2>Параметры расчёта</h2>
 
@@ -170,12 +235,15 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
                     type={field.type === "number" ? "number" : "text"}
                     min={field.type === "number" ? "0" : undefined}
                     value={values[field.id] ?? ""}
-                    onChange={(event) => setValue(field.id, event.target.value)}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => setValue(field.id, event.target.value)}
                   />
                 ) : null}
 
                 {field.type === "select" ? (
-                  <select value={values[field.id] ?? field.defaultValue} onChange={(event) => setValue(field.id, event.target.value)}>
+                  <select
+                    value={values[field.id] ?? field.defaultValue}
+                    onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setValue(field.id, event.target.value)}
+                  >
                     {field.options?.map((option) => (
                       <option key={option.value} value={option.value}>{option.label}</option>
                     ))}
@@ -205,6 +273,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           </p>
         </div>
 
+        {visibleVisualGroups.length > 0 ? (
+          <div className="calculatorVisualGroupsInline">
+            {visibleVisualGroups.map(renderVisualGroup)}
+          </div>
+        ) : null}
+
         <div className="calculatorPanel calculatorResultPanel">
           <h2>Результат</h2>
 
@@ -214,34 +288,39 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
               <p>{calculationWarning}</p>
             </div>
           ) : (
-          <div className="calculatorTableWrap">
-            <table className="calculatorResultTable">
-              <thead>
-                <tr>
-                  <th>Материал</th>
-                  <th>Коэффициент</th>
-                  <th>Количество с запасом</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={`${row.name}-${row.size ?? ""}`}>
-                    <td>
-                      <strong>{row.name}</strong>
-                      {row.size ? <span>{row.size}</span> : null}
-                      {row.catalogName ? <span className="calculatorCatalogName">По каталогу: {row.catalogName}</span> : null}
-                    </td>
-                    <td>{row.coefficient}</td>
-                    <td>{formatNumber(row.quantity)} {row.unit}</td>
+            <div className="calculatorTableWrap">
+              <table className="calculatorResultTable">
+                <thead>
+                  <tr>
+                    <th>Материал</th>
+                    <th>Коэффициент</th>
+                    <th>Количество с запасом</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {rows.map((row) => (
+                    <tr key={`${row.name}-${row.size ?? ""}`}>
+                      <td>
+                        <strong>{row.name}</strong>
+                        {row.size ? <span>{row.size}</span> : null}
+                        {row.catalogName ? <span className="calculatorCatalogName">По каталогу: {row.catalogName}</span> : null}
+                      </td>
+                      <td>{row.coefficient}</td>
+                      <td>{formatNumber(row.quantity)} {row.unit}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           )}
 
           <div className="calculatorActions">
-            <button className="secondaryButton" type="button" onClick={downloadExcelOffer} disabled={Boolean(calculationWarning)}>
+            <button
+              className="secondaryButton"
+              type="button"
+              onClick={downloadExcelOffer}
+              disabled={Boolean(calculationWarning)}
+            >
               Скачать КП
             </button>
           </div>
@@ -250,12 +329,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
             <h3>Отправить расчёт в Иделеон</h3>
             <p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p>
 
-            <input placeholder="Ваше имя" value={clientName} onChange={(event) => setClientName(event.target.value)} />
-            <input placeholder="Телефон" value={clientPhone} onChange={(event) => setClientPhone(event.target.value)} />
-            <input placeholder="E-mail" value={clientEmail} onChange={(event) => setClientEmail(event.target.value)} />
+            <input placeholder="Ваше имя" value={clientName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setClientName(event.target.value)} />
+            <input placeholder="Телефон" value={clientPhone} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setClientPhone(event.target.value)} />
+            <input placeholder="E-mail" value={clientEmail} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setClientEmail(event.target.value)} />
 
             <label className="calculatorConsent">
-              <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} />
+              <input type="checkbox" checked={consent} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setConsent(event.target.checked)} />
               <span>Согласен на обработку персональных данных</span>
             </label>
 
@@ -276,6 +355,17 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           </article>
         ))}
       </section>
+
+      {calculator.relatedLinks && calculator.relatedLinks.length > 0 ? (
+        <nav className="calculatorRelatedLinks" aria-label="Связанные страницы">
+          <h2>Связанные страницы</h2>
+          <div>
+            {calculator.relatedLinks.map((link) => (
+              <a href={link.href} key={link.href}>{link.label}</a>
+            ))}
+          </div>
+        </nav>
+      ) : null}
 
       {calculator.faq.length > 0 && (
         <section className="calculatorFaqSection">
