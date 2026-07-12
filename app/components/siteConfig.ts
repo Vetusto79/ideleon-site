@@ -50,7 +50,7 @@ export const siteConfig = {
           href: "/calculators/kassetnyy-potolok-otkrytaya-sistema",
           children: [
             { label: "Открытая подвесная система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
-            { label: "Скрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+            { label: "Закрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
           ],
         },
       ],
