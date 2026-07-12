@@ -3,6 +3,11 @@ export type CalculatorFieldOption = {
   value: string;
 };
 
+export type CalculatorCondition = {
+  fieldId: string;
+  values: string[];
+};
+
 export type CalculatorField = {
   id: string;
   label: string;
@@ -10,10 +15,8 @@ export type CalculatorField = {
   defaultValue: string;
   unit?: string;
   options?: CalculatorFieldOption[];
-  showWhen?: {
-    fieldId: string;
-    values: string[];
-  };
+  showWhen?: CalculatorCondition;
+  hideInput?: boolean;
 };
 
 export type CalculatorVisual = {
@@ -23,6 +26,16 @@ export type CalculatorVisual = {
   alt: string;
   fieldId?: string;
   value?: string;
+  setValues?: Record<string, string>;
+  activeWhen?: Record<string, string>;
+  showWhen?: CalculatorCondition;
+};
+
+export type CalculatorVisualGroup = {
+  title: string;
+  description: string;
+  visuals: CalculatorVisual[];
+  showWhen?: CalculatorCondition;
 };
 
 export type OfferColumnKey =
@@ -72,10 +85,13 @@ export type CalculatorConfig = {
   fileName: string;
   fields: CalculatorField[];
   visuals: CalculatorVisual[];
+  visualGroups?: CalculatorVisualGroup[];
   offerColumns: OfferColumn[];
   calculate: (values: Record<string, string>) => CalculatorResultRow[];
   getParamsText: (values: Record<string, string>) => string;
   getWarning?: (values: Record<string, string>) => string | null;
+  normalizeValues?: (values: Record<string, string>, changedFieldId: string) => Record<string, string>;
+  relatedLinks?: { label: string; href: string }[];
   seoSections: {
     title: string;
     text: string;
@@ -434,7 +450,7 @@ const cassetteColumns: OfferColumn[] = [
   { key: "index", title: "№", width: 6 },
   { key: "name", title: "Наименование элемента", width: 34 },
   { key: "size", title: "Размер", width: 17 },
-  { key: "catalogName", title: "Название по каталогу", width: 34 },
+  { key: "catalogName", title: "Название по каталогу", width: 38 },
   { key: "unit", title: "Ед. изм.", width: 12 },
   { key: "coefficient", title: "Расход", width: 22 },
   { key: "quantity", title: "Количество", width: 16 },
@@ -444,17 +460,14 @@ const cassetteColumns: OfferColumn[] = [
 ];
 
 const cassetteModules = ["300×300", "300×600", "300×1200", "600×600", "600×1200"];
-const openCassetteSystems = [
-  "T-15 PRIM",
-  "T-15 Албес",
-  "T-15 ALBES STRUNA",
-  "T-24 CLICK PRIM",
-  "T-24 АЛБЕС ЕВРО",
-  "T-24 PRIM LINE",
-  "T-24 Албес Премьер",
-  "Т-24 NORMA",
-  "Т-24 Е",
-];
+const microlookModules = ["300×600", "300×1200", "600×600", "600×1200"];
+
+const systemClassLabels: Record<string, string> = {
+  economy: "Эконом",
+  standard: "Стандарт",
+  premium: "Премиум",
+  designer: "Дизайнерский",
+};
 
 function cassetteAreaCoefficient(module: string) {
   if (module === "300×300") return 11.11;
@@ -481,45 +494,60 @@ function cassetteBaseName(module: string) {
   return "АР 600×1200";
 }
 
-function systemFamily(system: string) {
-  return system.startsWith("T-15") || system.startsWith("Т-15") ? "T-15" : "T-24";
+function microlookCatalogSize(module: string) {
+  if (module === "600×600") return "600";
+  return module.replace("×", "x");
 }
 
-function isAnyT24(system: string) {
-  return systemFamily(system) === "T-24";
+function normalizeOpenCassetteValues(values: Record<string, string>, changedFieldId: string) {
+  const next = { ...values };
+  const designer = next.systemClass === "designer";
+
+  if (designer) {
+    next.edge = "microlook";
+    if (!microlookModules.includes(next.module)) next.module = "600×600";
+    if (next.edgeDrop !== "A6" && next.edgeDrop !== "A8") next.edgeDrop = "A6";
+  } else if (next.edge === "microlook") {
+    next.edge = "board";
+  }
+
+  if (changedFieldId === "edge" && next.edge === "microlook") {
+    next.systemClass = "designer";
+    if (!microlookModules.includes(next.module)) next.module = "600×600";
+  }
+
+  return next;
 }
 
 function isOpenCassetteCombinationValid(values: Record<string, string>) {
   const module = values.module || "600×600";
   const edge = values.edge || "board";
-  const system = values.suspensionSystem || "T-24 АЛБЕС ЕВРО";
-  const scheme = values.mountScheme || "standard";
-  const t15Basic = system === "T-15 PRIM" || system === "T-15 Албес";
-  const t15WithStruna = t15Basic || system === "T-15 ALBES STRUNA";
-  const t24EuroOrPrimLine = system === "T-24 АЛБЕС ЕВРО" || system === "T-24 PRIM LINE";
+  const systemClass = values.systemClass || "standard";
 
-  if (edge === "line") {
-    return module === "600×600" && (system === "T-15 ALBES STRUNA" || system === "T-15 PRIM" || system === "T-24 PRIM LINE");
+  if (systemClass === "designer") {
+    return edge === "microlook" && microlookModules.includes(module);
   }
 
-  if (edge === "tegular45" && module !== "600×600") return false;
-  if (edge !== "board" && edge !== "tegular90" && edge !== "tegular45") return false;
-
-  if (module === "300×300") return (edge !== "tegular45") && (t15Basic || t24EuroOrPrimLine);
-  if (module === "300×600") return (edge !== "tegular45") && (t15Basic || isAnyT24(system));
-  if (module === "300×1200") {
-    if (edge === "tegular45") return false;
-    if (scheme === "reinforced") return t15Basic || system === "T-24 PRIM LINE";
-    return t15Basic || isAnyT24(system);
-  }
-  if (module === "600×600") return t15WithStruna || isAnyT24(system);
-  if (module === "600×1200") return edge !== "tegular45" && (t15Basic || isAnyT24(system));
-  return false;
+  if (edge === "line" || edge === "tegular45") return module === "600×600";
+  return edge === "board" || edge === "tegular90";
 }
 
 function openCassetteWarning(values: Record<string, string>) {
   if (isOpenCassetteCombinationValid(values)) return null;
-  return "Выбранная кассета, кромка, подвесная система и схема монтажа несовместимы. Измените один из параметров — расчёт обновится автоматически.";
+
+  if ((values.systemClass || "standard") === "designer") {
+    return "Для дизайнерской системы STRUNA применяются только специальные кассеты MICROLOOK 15 размеров 300×600, 300×1200, 600×600 и 600×1200 мм с опусканием A6 или A8.";
+  }
+
+  if (values.edge === "line") {
+    return "Кромка LINE в исходном Excel-калькуляторе предусмотрена для кассеты 600×600 мм.";
+  }
+
+  if (values.edge === "tegular45") {
+    return "Кромка TEGULAR 45° в исходном Excel-калькуляторе предусмотрена для кассеты 600×600 мм.";
+  }
+
+  return "Выбранное сочетание размера кассеты и кромки не предусмотрено исходным Excel-калькулятором.";
 }
 
 function openCassetteCatalogName(values: Record<string, string>) {
@@ -527,56 +555,89 @@ function openCassetteCatalogName(values: Record<string, string>) {
   const module = values.module || "600×600";
   const edge = values.edge || "board";
   const drop = values.edgeDrop || "A6";
-  const suffix = systemFamily(values.suspensionSystem || "T-24 АЛБЕС ЕВРО");
   const base = cassetteBaseName(module);
-  if (edge === "board") return `${base} "BOARD", ${suffix}`;
-  if (edge === "line") return `${base} "LINE", ${suffix}`;
-  if (edge === "tegular45") return `${base}${drop}/45, ${suffix}`;
-  return `${base}${drop}/90, ${suffix}`;
+
+  if ((values.systemClass || "standard") === "designer") {
+    return `Панель STRONG MICROLOOK 15 ${microlookCatalogSize(module)}${drop}`;
+  }
+
+  if (edge === "board") return `${base} "BOARD"`;
+  if (edge === "line") return `${base} "LINE"`;
+  if (edge === "tegular45") return `${base}${drop}/45`;
+  return `${base}${drop}/90`;
 }
 
-function openGuideCatalog(system: string, kind: "main" | "cross1200" | "cross600" | "cross300") {
-  const map: Record<string, { main: string; cross1200: string; cross600: string; cross300: string }> = {
-    "T-15 ALBES STRUNA": { main: "Т-15 ALBES STRUNA, 14.5/41.5", cross1200: "Т-15 ALBES STRUNA, 14.5/41.5", cross600: "Т-15 ALBES STRUNA, 14.5/41.5", cross300: "-" },
-    "T-15 PRIM": { main: "Т-15 PRIM, 15/38", cross1200: "Т-15 PRIM, 15/29(38)", cross600: "Т-15 PRIM, 15/29(38)", cross300: "Т-15 PRIM, 15/29(38)" },
-    "T-15 Албес": { main: "Т-15 Албес, 15/38", cross1200: "Т-15 Албес, 15/29(38)", cross600: "Т-15 Албес, 15/29(38)", cross300: "Т-15 Албес, 15/29(38)" },
-    "T-24 CLICK PRIM": { main: "Т-24 CLICK PRIM, 24/38", cross1200: "Т-24 CLICK PRIM, 24/29(38)", cross600: "Т-24 CLICK PRIM, 24/29(38)", cross300: "-" },
-    "T-24 АЛБЕС ЕВРО": { main: "Т-24 АЛБЕС ЕВРО, 24/38", cross1200: "Т-24 АЛБЕС ЕВРО, 24/29", cross600: "Т-24 АЛБЕС ЕВРО, 24/29", cross300: "Т-24 АЛБЕС ЕВРО, 24/29" },
-    "T-24 PRIM LINE": { main: "T-24 PRIM LINE, 24/38", cross1200: "T-24 PRIM LINE, 24/38", cross600: "T-24 PRIM LINE, 24/38", cross300: "T-24 PRIM LINE, 24/38" },
-    "T-24 Албес Премьер": { main: "Т-24 Албес Премьер, 24/29", cross1200: "Т-24 Албес Премьер, 24/29", cross600: "Т-24 Албес Премьер, 24/29", cross300: "-" },
-    "Т-24 NORMA": { main: "Т-24 NORMA, 24/29", cross1200: "Т-24 NORMA, 24/25", cross600: "Т-24 NORMA, 24/18.5", cross300: "-" },
-    "Т-24 Е": { main: "Т-24 Е, 24/25", cross1200: "Т-24 Е, 24/21.5", cross600: "Т-24 Е, 24/18.5", cross300: "-" },
-  };
-  return map[system]?.[kind] ?? system;
+function openSystemCatalogName(systemClass: string, element: string) {
+  const classLabel = systemClassLabels[systemClass] || systemClassLabels.standard;
+  if (systemClass === "designer") {
+    return element === "main"
+      ? "Дизайнерская Т-система 15 мм ALBES STRUNA"
+      : "Поперечный профиль ALBES STRUNA";
+  }
+  return `Т-система класса «${classLabel}»`;
 }
 
 function openCassetteCalculate(values: Record<string, string>): CalculatorResultRow[] {
   if (!isOpenCassetteCombinationValid(values)) return [];
+
   const area = toNumber(values.area);
   const perimeter = toNumber(values.perimeter);
   const module = values.module || "600×600";
   const edge = values.edge || "board";
   const scheme = values.mountScheme || "standard";
-  const system = values.suspensionSystem || "T-24 АЛБЕС ЕВРО";
+  const systemClass = values.systemClass || "standard";
   const reserveValue = reserve(values);
   const rows: CalculatorResultRow[] = [];
 
-  function push(row: CalculatorResultRow) { rows.push(resultRow(row)); }
+  function push(row: CalculatorResultRow) {
+    rows.push(resultRow(row));
+  }
+
   const cassetteCoeff = cassetteAreaCoefficient(module);
-  push({ name: "Кассета", size: module, catalogName: openCassetteCatalogName(values), unit: "шт.", coefficient: `площадь × ${String(cassetteCoeff).replace(".", ",")}`, quantity: orderQuantity(area * cassetteCoeff, reserveValue, 1), priceUnit: "шт.", priceMode: "quantity" });
+  push({
+    name: "Кассета",
+    size: module,
+    catalogName: openCassetteCatalogName(values),
+    unit: "шт.",
+    coefficient: `площадь × ${String(cassetteCoeff).replace(".", ",")}`,
+    quantity: orderQuantity(area * cassetteCoeff, reserveValue, 1),
+    priceUnit: "шт.",
+    priceMode: "quantity",
+  });
 
   let mainCoeff = scheme === "reinforced" ? 1.67 : 0.83;
   if (module === "300×1200" && scheme === "reinforced") mainCoeff = 3.33;
-  const mainLength = system === "T-15 ALBES STRUNA" ? 3.6 : 3.7;
-  push({ name: "Несущая направляющая", size: `${mainLength.toFixed(1).replace(".", ",")} м`, catalogName: openGuideCatalog(system, "main"), lengthM: mainLength, unit: "м.п.", coefficient: `площадь × ${String(mainCoeff).replace(".", ",")}`, quantity: orderQuantity(area * mainCoeff, reserveValue, mainLength), priceUnit: "м.п.", priceMode: "quantity" });
+  const mainLength = systemClass === "designer" ? 3.6 : 3.7;
+
+  push({
+    name: "Несущая направляющая",
+    size: `${mainLength.toFixed(1).replace(".", ",")} м`,
+    catalogName: openSystemCatalogName(systemClass, "main"),
+    lengthM: mainLength,
+    unit: "м.п.",
+    coefficient: `площадь × ${String(mainCoeff).replace(".", ",")}`,
+    quantity: orderQuantity(area * mainCoeff, reserveValue, mainLength),
+    priceUnit: "м.п.",
+    priceMode: "quantity",
+  });
 
   let cross1200: number | null = null;
   if (scheme === "standard") {
     if (module === "300×300" || module === "300×600" || module === "600×600" || module === "600×1200") cross1200 = 1.67;
     if (module === "300×1200") cross1200 = 2.78;
   }
-  if (cross1200 && system !== "T-15 ALBES STRUNA") {
-    push({ name: "Поперечная направляющая", size: "1,2 м", catalogName: openGuideCatalog(system, "cross1200"), lengthM: 1.2, unit: "м.п.", coefficient: `площадь × ${String(cross1200).replace(".", ",")}`, quantity: orderQuantity(area * cross1200, reserveValue, 1.2), priceUnit: "м.п.", priceMode: "quantity" });
+  if (cross1200) {
+    push({
+      name: "Поперечная направляющая",
+      size: "1,2 м",
+      catalogName: openSystemCatalogName(systemClass, "cross"),
+      lengthM: 1.2,
+      unit: "м.п.",
+      coefficient: `площадь × ${String(cross1200).replace(".", ",")}`,
+      quantity: orderQuantity(area * cross1200, reserveValue, 1.2),
+      priceUnit: "м.п.",
+      priceMode: "quantity",
+    });
   }
 
   let cross600: number | null = null;
@@ -584,33 +645,76 @@ function openCassetteCalculate(values: Record<string, string>): CalculatorResult
   if (module === "600×600") cross600 = scheme === "reinforced" ? 1.67 : 0.83;
   if (module === "600×1200" && scheme === "reinforced") cross600 = 0.83;
   if (cross600) {
-    push({ name: "Поперечная направляющая", size: "0,6 м", catalogName: openGuideCatalog(system, "cross600"), lengthM: 0.6, unit: "м.п.", coefficient: `площадь × ${String(cross600).replace(".", ",")}`, quantity: orderQuantity(area * cross600, reserveValue, 0.6), priceUnit: "м.п.", priceMode: "quantity" });
+    push({
+      name: "Поперечная направляющая",
+      size: "0,6 м",
+      catalogName: openSystemCatalogName(systemClass, "cross"),
+      lengthM: 0.6,
+      unit: "м.п.",
+      coefficient: `площадь × ${String(cross600).replace(".", ",")}`,
+      quantity: orderQuantity(area * cross600, reserveValue, 0.6),
+      priceUnit: "м.п.",
+      priceMode: "quantity",
+    });
   }
 
   let cross300: number | null = null;
   if (module === "300×300") cross300 = 1.67;
   if (module === "300×1200" && scheme === "reinforced") cross300 = 0.83;
   if (cross300) {
-    push({ name: "Поперечная направляющая", size: "0,3 м", catalogName: openGuideCatalog(system, "cross300"), lengthM: 0.3, unit: "м.п.", coefficient: `площадь × ${String(cross300).replace(".", ",")}`, quantity: orderQuantity(area * cross300, reserveValue, 0.3), priceUnit: "м.п.", priceMode: "quantity" });
+    push({
+      name: "Поперечная направляющая",
+      size: "0,3 м",
+      catalogName: openSystemCatalogName(systemClass, "cross"),
+      lengthM: 0.3,
+      unit: "м.п.",
+      coefficient: `площадь × ${String(cross300).replace(".", ",")}`,
+      quantity: orderQuantity(area * cross300, reserveValue, 0.3),
+      priceUnit: "м.п.",
+      priceMode: "quantity",
+    });
   }
 
-  const angleCatalog = system === "T-15 ALBES STRUNA" || edge === "board" || edge === "line" ? "PL" : "PLL";
-  push({ name: "Уголок", size: "3 м", catalogName: angleCatalog, lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
+  const angleCatalog = systemClass === "designer" || edge === "board" || edge === "line" ? "PL" : "PLL";
+  push({
+    name: "Уголок",
+    size: "3 м",
+    catalogName: angleCatalog,
+    lengthM: 3,
+    unit: "м.п.",
+    coefficient: "периметр",
+    quantity: orderQuantity(perimeter, reserveValue, 3),
+    priceUnit: "м.п.",
+    priceMode: "quantity",
+  });
 
   const hangerCoeff = module === "300×300" ? 1.39 : 0.83;
-  push({ name: "Подвес", size: "по проекту", catalogName: "АП", unit: "комп.", coefficient: `площадь × ${String(hangerCoeff).replace(".", ",")}`, quantity: orderQuantity(area * hangerCoeff, reserveValue, 10), priceUnit: "комп.", priceMode: "quantity" });
+  push({
+    name: "Подвес",
+    size: "по проекту",
+    catalogName: "АП",
+    unit: "комп.",
+    coefficient: `площадь × ${String(hangerCoeff).replace(".", ",")}`,
+    quantity: orderQuantity(area * hangerCoeff, reserveValue, 10),
+    priceUnit: "комп.",
+    priceMode: "quantity",
+  });
+
   return rows;
 }
 
 function openCassetteParams(values: Record<string, string>) {
   const edgeLabels: Record<string, string> = {
-    board: "кромка прямоугольная приподнятая (BOARD)",
-    line: "кромка прямоугольная одноуровневая (LINE)",
-    tegular45: "кромка скошенная 45° с опусканием (TEGULAR)",
-    tegular90: "кромка прямоугольная 90° с опусканием (TEGULAR)",
+    board: "BOARD — прямоугольная приподнятая",
+    line: "LINE — прямоугольная одноуровневая",
+    tegular45: `TEGULAR 45° — с опусканием ${values.edgeDrop || "A6"}`,
+    tegular90: `TEGULAR 90° — с опусканием ${values.edgeDrop || "A6"}`,
+    microlook: `MICROLOOK 15 — с опусканием ${values.edgeDrop || "A6"}`,
   };
   const scheme = values.mountScheme === "reinforced" ? "усиленная" : "стандартная";
-  return `Открытая подвесная система; площадь: ${values.area} м²; периметр: ${values.perimeter} м; кассета: ${values.module}; кромка: ${edgeLabels[values.edge]}; система: ${values.suspensionSystem}; схема: ${scheme}; запас: ${values.reserve}%`;
+  const classLabel = systemClassLabels[values.systemClass || "standard"];
+
+  return `Открытая подвесная система; площадь: ${values.area} м²; периметр: ${values.perimeter} м; класс системы: ${classLabel}; кассета: ${values.module}; кромка: ${edgeLabels[values.edge]}; схема: ${scheme}; запас: ${values.reserve}%`;
 }
 
 function hiddenCassetteCombinationValid(values: Record<string, string>) {
@@ -620,19 +724,21 @@ function hiddenCassetteCombinationValid(values: Record<string, string>) {
 }
 
 function hiddenCassetteWarning(values: Record<string, string>) {
-  return hiddenCassetteCombinationValid(values) ? null : "Кромка 45° предусмотрена для кассеты 600×600 мм. Выберите кромку 90° или измените размер кассеты.";
+  return hiddenCassetteCombinationValid(values)
+    ? null
+    : "Кромка 45° предусмотрена исходными Excel-калькуляторами только для кассеты 600×600 мм. Выберите кромку 90° или измените размер кассеты.";
 }
 
 function hiddenCassetteCatalogName(values: Record<string, string>) {
   if (!hiddenCassetteCombinationValid(values)) return "";
   const module = values.module || "600×600";
   const edge = values.hiddenEdge || "90";
-  const base = cassetteBaseName(module);
-  return `${base} АС/${edge}`;
+  return `${cassetteBaseName(module)} АС/${edge}`;
 }
 
 function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResultRow[] {
   if (!hiddenCassetteCombinationValid(values)) return [];
+
   const area = toNumber(values.area);
   const perimeter = toNumber(values.perimeter);
   const module = values.module || "600×600";
@@ -640,16 +746,39 @@ function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResu
   const reserveValue = reserve(values);
   const coeff = cassetteStringerCoefficient(module);
   const rows: CalculatorResultRow[] = [];
-  function push(row: CalculatorResultRow) { rows.push(resultRow(row)); }
+
+  function push(row: CalculatorResultRow) {
+    rows.push(resultRow(row));
+  }
 
   const cassetteCoeff = cassetteAreaCoefficient(module);
-  push({ name: "Кассета", size: module, catalogName: hiddenCassetteCatalogName(values), unit: "шт.", coefficient: `площадь × ${String(cassetteCoeff).replace(".", ",")}`, quantity: orderQuantity(area * cassetteCoeff, reserveValue, 1), priceUnit: "шт.", priceMode: "quantity" });
-  push({ name: "Стрингер", size: "3 м", catalogName: "ВТ-600", lengthM: 3, unit: "м.п.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
+  push({
+    name: "Кассета",
+    size: module,
+    catalogName: hiddenCassetteCatalogName(values),
+    unit: "шт.",
+    coefficient: `площадь × ${String(cassetteCoeff).replace(".", ",")}`,
+    quantity: orderQuantity(area * cassetteCoeff, reserveValue, 1),
+    priceUnit: "шт.",
+    priceMode: "quantity",
+  });
+
+  push({
+    name: "Стрингер",
+    size: "4 м",
+    catalogName: "ВТ-600",
+    lengthM: 4,
+    unit: "м.п.",
+    coefficient: `площадь × ${String(coeff).replace(".", ",")}`,
+    quantity: orderQuantity(area * coeff, reserveValue, 4),
+    priceUnit: "м.п.",
+    priceMode: "quantity",
+  });
 
   if (scheme === "reinforced") {
     push({ name: "Потолочный профиль", size: "3 м", catalogName: "ПП-1-2 (47×26)", lengthM: 3, unit: "м.п.", coefficient: "площадь × 1", quantity: orderQuantity(area, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
     push({ name: "Потолочный профиль направляющий", size: "3 м", catalogName: "ППН-2 (30×20)", lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
-    push({ name: "Соединитель двухуровневый", size: "—", catalogName: "Соед. двухур. для ПП-1-2", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 1), priceUnit: "шт.", priceMode: "quantity" });
+    push({ name: "Соединитель двухуровневый", size: "—", catalogName: "Соединитель двухуровневый для ПП-1-2", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 1), priceUnit: "шт.", priceMode: "quantity" });
     push({ name: "Уголок", size: "3 м", catalogName: "PL", lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
     push({ name: "Подвес анкерный", size: "по проекту", catalogName: "Подвес с зажимом для ПП-1-2", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
     push({ name: "Тяга подвеса", size: "по проекту", catalogName: "Ø4", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
@@ -659,12 +788,13 @@ function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResu
     push({ name: "Нижняя часть нониусного подвеса", size: "по проекту", catalogName: "Нижняя часть нониусного подвеса для ВТ-600", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
     push({ name: "Шплинт нониусный", size: "по проекту", catalogName: "Шплинт нониусный", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
   }
+
   return rows;
 }
 
 function hiddenCassetteParams(values: Record<string, string>) {
   const scheme = values.hiddenMountScheme === "reinforced" ? "усиленный монтаж" : "простой монтаж";
-  return `Скрытая подвесная система; ${scheme}; площадь: ${values.area} м²; периметр: ${values.perimeter} м; кассета: ${values.module}; кромка: ${values.hiddenEdge}°; запас: ${values.reserve}%`;
+  return `Закрытая подвесная система; ${scheme}; площадь: ${values.area} м²; периметр: ${values.perimeter} м; кассета: ${values.module}; кромка: ${values.hiddenEdge}°; стрингер ВТ-600 длиной 4 м; запас: ${values.reserve}%`;
 }
 
 const commonReserveField: CalculatorField = {
@@ -920,112 +1050,246 @@ export const calculators: CalculatorConfig[] = [
     group: "cassette",
     title: "Калькулятор кассетного потолка на открытой системе",
     shortTitle: "Открытая подвесная система",
-    description: "Расчёт кассет, направляющих, уголка и подвесов для видимой системы Т-15 или Т-24.",
-    seoTitle: "Калькулятор кассетного потолка на открытой подвесной системе",
-    seoDescription: "Онлайн-расчёт кассетного потолка на открытой системе Т-15 и Т-24: кассеты, направляющие, подвесы и уголок. Скачать Excel-КП.",
+    description: "Расчёт кассет, Т-профилей, уголка и подвесов с выбором класса системы и типа кромки.",
+    seoTitle: "Калькулятор открытого кассетного потолка — BOARD, LINE, TEGULAR и MICROLOOK",
+    seoDescription: "Расчёт открытого кассетного потолка по площади, размеру кассет, классу Т-системы, кромке BOARD, LINE, TEGULAR или MICROLOOK 15 и схеме монтажа.",
     h1: "Калькулятор кассетного потолка на открытой системе",
-    intro: "Выберите размер кассеты, один из четырёх типов кромки, подвесную систему и схему монтажа. Для кромок TEGULAR дополнительно укажите опускание панели A6 или A8. Калькулятор проверит совместимость и рассчитает комплектующие.",
-    offerTitle: "Коммерческое предложение / расчёт кассетного потолка на открытой системе",
+    intro: "Рассчитайте кассеты и комплектующие для открытой подвесной системы. Класс Эконом, Стандарт, Премиум или Дизайнерский помогает выбрать уровень решения, но не меняет коэффициенты расхода. Для STRUNA калькулятор автоматически использует специальные кассеты MICROLOOK 15.",
+    offerTitle: "Коммерческое предложение / открытый кассетный потолок",
     fileName: "KP_kassetnyy_potolok_otkrytaya_sistema_ideleon.xlsx",
     fields: [
       areaField,
       perimeterField,
+      {
+        id: "systemClass",
+        label: "Класс подвесной системы",
+        type: "buttons",
+        defaultValue: "standard",
+        options: [
+          { label: "Эконом", value: "economy" },
+          { label: "Стандарт", value: "standard" },
+          { label: "Премиум", value: "premium" },
+          { label: "Дизайнерский", value: "designer" },
+        ],
+      },
       { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
-      { id: "edge", label: "Тип кромки", type: "buttons", defaultValue: "board", options: [
-        { label: "Кромка прямоугольная приподнятая (BOARD)", value: "board" },
-        { label: "Кромка прямоугольная одноуровневая (LINE)", value: "line" },
-        { label: "Кромка скошенная 45° с опусканием (TEGULAR)", value: "tegular45" },
-        { label: "Кромка прямоугольная 90° с опусканием (TEGULAR)", value: "tegular90" },
-      ] },
-      { id: "edgeDrop", label: "Опускание панели", type: "buttons", defaultValue: "A6", showWhen: { fieldId: "edge", values: ["tegular45", "tegular90"] }, options: [{ label: "A6 — 6,5 мм", value: "A6" }, { label: "A8 — 8,9 мм", value: "A8" }] },
-      { id: "suspensionSystem", label: "Подвесная система", type: "select", defaultValue: "T-24 АЛБЕС ЕВРО", options: openCassetteSystems.map((item) => ({ label: item, value: item })) },
+      {
+        id: "edge",
+        label: "Тип кромки",
+        type: "buttons",
+        defaultValue: "board",
+        hideInput: true,
+        options: [
+          { label: "BOARD", value: "board" },
+          { label: "LINE", value: "line" },
+          { label: "TEGULAR 45°", value: "tegular45" },
+          { label: "TEGULAR 90°", value: "tegular90" },
+          { label: "MICROLOOK 15", value: "microlook" },
+        ],
+      },
+      {
+        id: "edgeDrop",
+        label: "Опускание панели",
+        type: "buttons",
+        defaultValue: "A6",
+        showWhen: { fieldId: "edge", values: ["tegular45", "tegular90", "microlook"] },
+        options: [
+          { label: "A6 — 6,5 мм", value: "A6" },
+          { label: "A8 — 8,9 мм", value: "A8" },
+        ],
+      },
       mountSchemeField,
       commonReserveField,
     ],
-    visuals: [
+    visuals: [],
+    visualGroups: [
       {
-        title: "BOARD — приподнятая кромка",
-        description: "Кассета лежит на видимой Т-системе, а край панели приподнят. Классический аккуратный вариант открытого потолка.",
-        image: "/images/calculators/cassette/cassette-edge-board.png",
-        alt: "Кассетный потолок с кромкой BOARD и увеличенный профиль кромки",
-        fieldId: "edge",
-        value: "board",
+        title: "Выберите тип кромки кассеты",
+        description: "Карточка меняет параметр калькулятора. Класс системы влияет на ассортимент и внешний вид, но не на коэффициенты расхода.",
+        showWhen: { fieldId: "systemClass", values: ["economy", "standard", "premium"] },
+        visuals: [
+          {
+            title: "BOARD",
+            description: "Прямоугольная приподнятая кромка: кассета визуально находится немного выше видимой Т-системы.",
+            image: "/images/calculators/cassette/cassette-edge-board.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой BOARD и схема кромки",
+            fieldId: "edge",
+            value: "board",
+          },
+          {
+            title: "LINE",
+            description: "Прямоугольная одноуровневая кромка: плоскость кассеты и видимая Т-система воспринимаются в одном уровне.",
+            image: "/images/calculators/cassette/cassette-edge-line.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой LINE и схема кромки",
+            fieldId: "edge",
+            value: "line",
+          },
+          {
+            title: "TEGULAR 45°",
+            description: "Кассета опущена ниже Т-профиля, скошенная грань формирует мягкую теневую линию.",
+            image: "/images/calculators/cassette/cassette-edge-tegular45.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 45 градусов и схема кромки",
+            fieldId: "edge",
+            value: "tegular45",
+          },
+          {
+            title: "TEGULAR 90°",
+            description: "Кассета опущена ниже Т-профиля, прямая вертикальная грань создаёт чёткую геометрию.",
+            image: "/images/calculators/cassette/cassette-edge-tegular90.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 90 градусов и схема кромки",
+            fieldId: "edge",
+            value: "tegular90",
+          },
+        ],
       },
       {
-        title: "LINE — одноуровневая кромка",
-        description: "Плоскость кассеты и полка подвесной системы находятся практически в одном уровне — потолок выглядит ровнее и спокойнее.",
-        image: "/images/calculators/cassette/cassette-edge-line.png",
-        alt: "Кассетный потолок с кромкой LINE и увеличенный профиль кромки",
-        fieldId: "edge",
-        value: "line",
-      },
-      {
-        title: "TEGULAR 45° — скошенная кромка",
-        description: "Панель опущена ниже Т-профиля, а скошенная грань создаёт мягкую теневую линию. Доступны опускания A6 и A8.",
-        image: "/images/calculators/cassette/cassette-edge-tegular45.png",
-        alt: "Кассетный потолок с кромкой TEGULAR 45 градусов и увеличенный профиль",
-        fieldId: "edge",
-        value: "tegular45",
-      },
-      {
-        title: "TEGULAR 90° — прямоугольная кромка",
-        description: "Кассета опущена ниже подвесной системы с прямой вертикальной гранью — получается более строгая и выраженная геометрия.",
-        image: "/images/calculators/cassette/cassette-edge-tegular90.png",
-        alt: "Кассетный потолок с прямоугольной кромкой TEGULAR 90 градусов и увеличенный профиль",
-        fieldId: "edge",
-        value: "tegular90",
+        title: "Дизайнерская система STRUNA",
+        description: "Для профиля шириной 15 мм применяются специальные кассеты MICROLOOK 15. Доступны опускания A6 и A8.",
+        showWhen: { fieldId: "systemClass", values: ["designer"] },
+        visuals: [
+          {
+            title: "MICROLOOK 15",
+            description: "Специальная кромка для дизайнерской системы STRUNA. Размеры: 300×600, 300×1200, 600×600 и 600×1200 мм.",
+            image: "/images/calculators/cassette/cassette-edge-microlook15.webp",
+            alt: "Интерьер кассетного потолка STRUNA с кромкой MICROLOOK 15 и схема кромки",
+            fieldId: "edge",
+            value: "microlook",
+          },
+        ],
       },
     ],
     offerColumns: cassetteColumns,
     calculate: openCassetteCalculate,
     getParamsText: openCassetteParams,
     getWarning: openCassetteWarning,
+    normalizeValues: normalizeOpenCassetteValues,
+    relatedLinks: [
+      { label: "Калькулятор закрытой кассетной системы", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог кассетных потолков", href: "/catalog" },
+    ],
     seoSections: [
-      { title: "Четыре типа кромок открытой системы", text: "Калькулятор учитывает четыре исполнения кассеты: прямоугольную приподнятую кромку BOARD, прямоугольную одноуровневую кромку LINE, скошенную кромку 45° с опусканием TEGULAR и прямоугольную кромку 90° с опусканием TEGULAR. Для двух кромок TEGULAR выбирается опускание панели A6 — 6,5 мм или A8 — 8,9 мм." },
-      { title: "Что рассчитывает калькулятор открытого кассетного потолка", text: "В расчёт входят кассеты, несущие и поперечные направляющие, пристенный уголок и подвесы. Состав и расход меняются в зависимости от модуля кассеты, типа кромки, выбранной системы Т-15 или Т-24 и схемы монтажа." },
-      { title: "Чем этот расчёт удобнее обычной таблицы", text: "Результат пересчитывается сразу после выбора параметров. Если сочетание кассеты, кромки и подвесной системы невозможно, калькулятор показывает понятное предупреждение вместо строк со знаком «—»." },
-      { title: "Что важно учесть перед заказом", text: "Онлайн-расчёт является предварительным. На реальный расход влияют раскладка кассет, геометрия помещения, подрезка, светильники, вентиляционные решётки и другие инженерные элементы." },
+      { title: "Что считает калькулятор открытой системы", text: "Калькулятор определяет количество кассет, несущих и поперечных направляющих, пристенного уголка и подвесов. Формулы и коэффициенты перенесены из Excel-калькулятора IDELEON. Количество кассет зависит от площади и размера панели; тип кромки сам по себе количество кассет не меняет." },
+      { title: "Как выбрать класс подвесной системы", text: "Эконом и Стандарт подходят для объектов с жёстким бюджетом. Премиум выбирают при повышенных требованиях к качеству исполнения и внешнему виду. Дизайнерский класс — система STRUNA с видимым профилем 15 мм и специальными кассетами MICROLOOK 15. Коэффициенты расхода для классов одинаковы." },
+      { title: "Как выбрать кромку кассеты", text: "BOARD немного приподнимает кассету над Т-системой, LINE создаёт одноуровневую плоскость, TEGULAR 45° формирует мягкий скошенный край, TEGULAR 90° — строгий прямоугольный край. Для TEGULAR и MICROLOOK выбирается опускание A6 — 6,5 мм или A8 — 8,9 мм." },
+      { title: "Когда нужен точный проектный расчёт", text: "Предварительный результат нужно проверить по раскладке, если помещение имеет сложную геометрию, много подрезки, светильников, вентиляционных решёток, люков или перепадов высоты. Специалисты IDELEON уточнят совместимость и подготовят спецификацию по проекту." },
     ],
     faq: [
-      { question: "Чем стандартная схема отличается от усиленной?", answer: "В усиленной схеме меняется шаг несущих и поперечных элементов. Поэтому расход направляющих может существенно увеличиться." },
-      { question: "Почему некоторые сочетания недоступны?", answer: "Не каждый размер и тип кромки совместим со всеми системами Т-15 и Т-24. Калькулятор проверяет эти ограничения до формирования КП." },
+      { question: "Меняет ли класс Эконом, Стандарт или Премиум расход материалов?", answer: "Нет. Класс нужен для понятного выбора уровня цены и внешнего вида. Коэффициенты расхода одинаковы." },
+      { question: "Какие кассеты подходят к STRUNA?", answer: "Только специальные кассеты с кромкой MICROLOOK 15. Калькулятор учитывает размеры 300×600, 300×1200, 600×600 и 600×1200 мм, а также опускания A6 и A8." },
+      { question: "Почему LINE и TEGULAR 45° ограничены размером 600×600?", answer: "Такое ограничение заложено в исходном Excel-калькуляторе и ассортиментной совместимости." },
+      { question: "Можно ли сразу использовать расчёт для заказа?", answer: "Расчёт предварительный. Перед заказом лучше проверить раскладку и инженерные элементы по проекту." },
     ],
   },
   {
     slug: "kassetnyy-potolok-skrytaya-sistema",
     group: "cassette",
-    title: "Калькулятор кассетного потолка на скрытой системе",
-    shortTitle: "Скрытая подвесная система",
-    description: "Единый расчёт скрытой системы: простой или усиленный монтаж.",
-    seoTitle: "Калькулятор кассетного потолка на скрытой подвесной системе",
-    seoDescription: "Онлайн-расчёт кассетного потолка на скрытой системе: простой и усиленный монтаж, кассеты АС, стрингеры ВТ-600, подвесы и профили.",
-    h1: "Калькулятор кассетного потолка на скрытой системе",
-    intro: "Простой и усиленный монтаж объединены на одной странице. Переключите схему — состав комплектующих и Excel-КП обновятся автоматически.",
-    offerTitle: "Коммерческое предложение / расчёт кассетного потолка на скрытой системе",
+    title: "Калькулятор кассетного потолка на закрытой системе",
+    shortTitle: "Закрытая подвесная система",
+    description: "Расчёт закрытой системы без видимой Т-сетки: простой или усиленный монтаж.",
+    seoTitle: "Калькулятор закрытого кассетного потолка — простой и усиленный монтаж",
+    seoDescription: "Расчёт закрытого кассетного потолка: кассеты АС, стрингер ВТ-600 длиной 4 м, простой или усиленный монтаж, подвесы, профили и Excel-КП.",
+    h1: "Калькулятор кассетного потолка на закрытой системе",
+    intro: "В закрытой системе несущая конструкция не образует видимую Т-образную сетку между кассетами. Выберите простой или усиленный монтаж, размер панели и кромку 45° или 90° — состав Excel-КП изменится автоматически.",
+    offerTitle: "Коммерческое предложение / закрытый кассетный потолок",
     fileName: "KP_kassetnyy_potolok_skrytaya_sistema_ideleon.xlsx",
     fields: [
       areaField,
       perimeterField,
-      { id: "hiddenMountScheme", label: "Схема монтажа", type: "buttons", defaultValue: "simple", options: [{ label: "Простой монтаж", value: "simple" }, { label: "Усиленный монтаж", value: "reinforced" }] },
+      {
+        id: "hiddenMountScheme",
+        label: "Схема монтажа",
+        type: "buttons",
+        defaultValue: "simple",
+        hideInput: true,
+        options: [
+          { label: "Простой монтаж", value: "simple" },
+          { label: "Усиленный монтаж", value: "reinforced" },
+        ],
+      },
       { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
-      { id: "hiddenEdge", label: "Тип кромки", type: "buttons", defaultValue: "90", options: [{ label: "90°", value: "90" }, { label: "45°", value: "45" }] },
+      {
+        id: "hiddenEdge",
+        label: "Тип кромки",
+        type: "buttons",
+        defaultValue: "90",
+        hideInput: true,
+        options: [
+          { label: "45°", value: "45" },
+          { label: "90°", value: "90" },
+        ],
+      },
       commonReserveField,
     ],
     visuals: [],
+    visualGroups: [
+      {
+        title: "Выберите схему монтажа",
+        description: "Простой монтаж использует стрингер ВТ-600 и нониусные подвесы. В усиленной схеме добавляется отдельный каркас из профилей.",
+        visuals: [
+          {
+            title: "Простой монтаж",
+            description: "Стрингер ВТ-600 длиной 4 м, уголок PL и комплект нониусного подвеса. Подходит для большинства типовых помещений.",
+            image: "/images/calculators/cassette/cassette-hidden-simple.webp",
+            alt: "Закрытый кассетный потолок и схема простого монтажа на стрингере ВТ-600",
+            fieldId: "hiddenMountScheme",
+            value: "simple",
+          },
+          {
+            title: "Усиленный монтаж",
+            description: "Дополнительный каркас ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги.",
+            image: "/images/calculators/cassette/cassette-hidden-reinforced.webp",
+            alt: "Закрытый кассетный потолок и схема усиленного монтажа с дополнительным каркасом",
+            fieldId: "hiddenMountScheme",
+            value: "reinforced",
+          },
+        ],
+      },
+      {
+        title: "Выберите кромку кассеты",
+        description: "Кромка влияет на внешний вид и совместимость, но не меняет количество кассет при одинаковом размере панели.",
+        visuals: [
+          {
+            title: "Кромка 45°",
+            description: "Скошенная грань создаёт более мягкий стык. По исходному Excel доступна для кассеты 600×600 мм.",
+            image: "/images/calculators/cassette/cassette-hidden-edge45.webp",
+            alt: "Закрытый кассетный потолок с кромкой 45 градусов и схема кромки",
+            fieldId: "hiddenEdge",
+            value: "45",
+          },
+          {
+            title: "Кромка 90°",
+            description: "Прямоугольная грань и чёткий стык. Доступна для всех размеров кассет, предусмотренных калькулятором.",
+            image: "/images/calculators/cassette/cassette-hidden-edge90.webp",
+            alt: "Закрытый кассетный потолок с кромкой 90 градусов и схема кромки",
+            fieldId: "hiddenEdge",
+            value: "90",
+          },
+        ],
+      },
+    ],
     offerColumns: cassetteColumns,
     calculate: hiddenCassetteCalculate,
     getParamsText: hiddenCassetteParams,
     getWarning: hiddenCassetteWarning,
+    relatedLinks: [
+      { label: "Калькулятор открытой кассетной системы", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог кассетных потолков", href: "/catalog" },
+    ],
     seoSections: [
-      { title: "Простой монтаж скрытого кассетного потолка", text: "В простой схеме используются кассеты АС, стрингеры ВТ-600, пристенный уголок и комплект нониусного подвеса. Такой вариант удобен для типовых помещений и понятной геометрии потолка." },
-      { title: "Усиленный монтаж скрытой системы", text: "В усиленной схеме добавляются потолочные профили ПП-1-2, направляющие ППН-2, двухуровневые соединители, анкерные подвесы и тяги. Состав переключается автоматически без перехода на другую страницу." },
-      { title: "Почему размер и кромку нужно выбирать вместе", text: "Кромка 45° предусмотрена не для всех модулей. Калькулятор проверяет совместимость и не формирует ошибочную комплектацию." },
+      { title: "Что считает калькулятор закрытой системы", text: "Для обеих схем рассчитываются кассеты, стрингеры ВТ-600 длиной 4 м и пристенный уголок. В простом монтаже дополнительно считаются верхняя и нижняя части нониусного подвеса и шплинт. В усиленном монтаже добавляются профили ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги." },
+      { title: "Как выбрать простой или усиленный монтаж", text: "Простой монтаж подходит для большинства типовых помещений и использует меньше элементов. Усиленный выбирают при повышенной нагрузке, сложной геометрии, больших пролётах или требованиях проекта к дополнительному каркасу." },
+      { title: "Как выбрать кромку закрытой кассеты", text: "Кромка 90° подходит для всех размеров, заложенных в исходных таблицах. Кромка 45° предусмотрена для панели 600×600 мм. В обоих случаях Т-образная сетка между кассетами не видна." },
+      { title: "Когда нужен точный проектный расчёт", text: "Раскладку необходимо проверить по проекту при большом количестве светильников, вентиляции, люков, нестандартных примыканий и подрезки. Для усиленной схемы особенно важно подтвердить шаг дополнительного каркаса и точки подвеса." },
     ],
     faq: [
-      { question: "Нужно ли выбирать отдельный калькулятор для усиленного монтажа?", answer: "Нет. Простой и усиленный монтаж объединены на одной странице и переключаются одной кнопкой." },
-      { question: "Можно ли использовать результат как финальную спецификацию?", answer: "Это предварительный расчёт. Перед заказом рекомендуется проверить раскладку потолка и инженерные элементы по проекту." },
+      { question: "Какой длины стрингер ВТ-600 используется в расчёте?", answer: "Четыре метра. Количество округляется до целых четырёхметровых элементов с последующим учётом запаса." },
+      { question: "Чем усиленная схема отличается по составу?", answer: "В ней появляются ПП-1-2, ППН-2, двухуровневые соединители, анкерные подвесы и тяги. Простая схема использует нониусный подвес." },
+      { question: "Видна ли Т-система у закрытого потолка?", answer: "Нет. Между кассетами остаются аккуратные стыки, а несущая конструкция скрыта." },
+      { question: "Можно ли выбрать кромку 45° для панели 300×600?", answer: "Нет. Исходные Excel-калькуляторы разрешают кромку 45° только для панели 600×600 мм." },
     ],
-  },
+  }
 ];
 
 export function getCalculator(slug: string) {
