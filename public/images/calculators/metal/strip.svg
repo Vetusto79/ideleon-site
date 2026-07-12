@@ -1,15 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#e8eef6"/></linearGradient>
-    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#53657b"/><stop offset="0.5" stop-color="#15243a"/><stop offset="1" stop-color="#718197"/></linearGradient>
-  </defs>
-  <rect width="1200" height="675" fill="url(#bg)"/>
-  <path d="M0 565 C280 505 430 620 715 550 C910 502 1060 518 1200 470 V675 H0Z" fill="#dce5f0"/>
-  <circle cx="1010" cy="115" r="78" fill="#ff6a00" opacity=".11"/>
-
-  <g transform="translate(145 115)">
-    <path d="M115 345L690 90l310 145-575 255z" fill="url(#steel)" stroke="#0f1b33" stroke-width="10"/>
-    <path d="M115 345v92l310 145v-92z" fill="#26374d" stroke="#0f1b33" stroke-width="10"/>
-    <path d="M425 490l575-255v92L425 582z" fill="#64768d" stroke="#0f1b33" stroke-width="10"/>
-    <path d="M235 360l575-255" stroke="#ff6a00" stroke-width="10" opacity=".85"/>
-  </g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#0F172A"/>
+    <stop offset="1" stop-color="#1E293B"/>
+  </linearGradient>
+  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.2" stop-color="#CBD5E1"/>
+    <stop offset="0.5" stop-color="#94A3B8"/>
+    <stop offset="0.8" stop-color="#E2E8F0"/>
+    <stop offset="1" stop-color="#64748B"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/></filter>
+</defs>
+<rect width="1200" height="675" rx="36" fill="url(#bg)"/>
+<g opacity="0.08" stroke="#E2E8F0">
+  <path d="M60 70H1140"/><path d="M60 150H1140"/><path d="M60 230H1140"/><path d="M60 310H1140"/><path d="M60 390H1140"/><path d="M60 470H1140"/><path d="M60 550H1140"/>
+  <path d="M120 40V635"/><path d="M240 40V635"/><path d="M360 40V635"/><path d="M480 40V635"/><path d="M600 40V635"/><path d="M720 40V635"/><path d="M840 40V635"/><path d="M960 40V635"/><path d="M1080 40V635"/>
+</g>
+<rect x="66" y="54" width="300" height="44" rx="22" fill="#1f293733" stroke="#FB923C"/>
+<text x="92" y="83" fill="#FDBA74" font-size="24" font-family="Arial, Helvetica, sans-serif" font-weight="700">IDELEON • METAL</text>
+<g filter="url(#shadow)" transform="translate(225 170)"><polygon points="180,120 820,120 900,170 260,170" fill="#CBD5E1"/><polygon points="260,170 900,170 900,240 260,240" fill="url(#steel)"/><polygon points="180,120 260,170 260,240 180,190" fill="#94A3B8"/><line x1="160" y1="265" x2="910" y2="265" stroke="#FB923C" stroke-width="10"/><line x1="940" y1="165" x2="940" y2="245" stroke="#FB923C" stroke-width="10"/></g><text x="76" y="588" fill="#F8FAFC" font-size="46" font-family="Arial, Helvetica, sans-serif" font-weight="700">Полоса</text>
+<text x="78" y="624" fill="#CBD5E1" font-size="24" font-family="Arial, Helvetica, sans-serif">Плоский стальной прокат по ширине и толщине.</text>
+<text x="1100" y="622" text-anchor="end" fill="#94A3B8" font-size="20" font-family="Arial, Helvetica, sans-serif">ширина × толщина</text></svg>
