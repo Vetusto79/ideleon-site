@@ -1,12 +1,12 @@
-"use client";
+use client";
 
 import { useMemo, useState } from "react";
 import { getCalculator } from "../data/calculators";
 import type { CalculatorConfig, CalculatorVisual, CalculatorVisualGroup } from "../data/calculators";
 import { buildCalculatorOfferExcel } from "./CalculatorOfferExcel";
 
-function formatNumber(value: number) {
-  return new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(value);
+function formatNumber(value: number, maximumFractionDigits = 2) {
+  return new Intl.NumberFormat("ru-RU", { maximumFractionDigits }).format(value);
 }
 
 function initialValues(calculator: CalculatorConfig) {
@@ -256,6 +256,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
                   <input
                     type={field.type === "number" ? "number" : "text"}
                     min={field.type === "number" ? "0" : undefined}
+                    step={field.type === "number" ? field.step || "any" : undefined}
                     value={values[field.id] ?? ""}
                     onChange={(event: React.ChangeEvent<HTMLInputElement>) => setValue(field.id, event.target.value)}
                   />
@@ -291,12 +292,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           </div>
 
           <p className="calculatorNote">
-            Расчёт предварительный. На расход могут влиять раскладка, проёмы, светильники, подрезка, высота и требования проекта.
+            {calculator.calculatorNote || "Расчёт предварительный. На расход могут влиять раскладка, проёмы, светильники, подрезка, высота и требования проекта."}
           </p>
         </div>
 
         <div className="calculatorPanel calculatorResultPanel">
-          <h2>Результат</h2>
+          <h2>{calculator.resultTitle || "Результат"}</h2>
 
           {calculationWarning ? (
             <div className="calculatorCompatibilityWarning" role="alert">
@@ -308,9 +309,9 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
               <table className="calculatorResultTable">
                 <thead>
                   <tr>
-                    <th>Материал</th>
-                    <th>Коэффициент</th>
-                    <th>Количество с запасом</th>
+                    <th>{calculator.resultMaterialTitle || "Материал"}</th>
+                    <th>{calculator.resultCoefficientTitle || "Коэффициент"}</th>
+                    <th>{calculator.resultQuantityTitle || "Количество с запасом"}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -322,7 +323,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
                         {row.catalogName ? <span className="calculatorCatalogName">По каталогу: {row.catalogName}</span> : null}
                       </td>
                       <td>{row.coefficient}</td>
-                      <td>{formatNumber(row.quantity)} {row.unit}</td>
+                      <td>{formatNumber(row.quantity, calculator.resultMaxFractionDigits ?? 2)} {row.unit}</td>
                     </tr>
                   ))}
                 </tbody>
