@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img">
+<defs>
+  <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="14" stroke="#cbd5e1" stroke-width="4"/>
+  </pattern>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+    <path d="M0,0 L8,4 L0,8 z" fill="#ff6a00"/>
+  </marker>
+</defs>
+<rect width="100%" height="100%" rx="24" fill="#f8fafc"/>
+
+<g fill="none" stroke="#0f1b33" stroke-width="7" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M600 48 V245"/>
+  <rect x="589" y="26" width="22" height="22" rx="4" fill="#fff"/>
+  <path d="M577 245 H623"/>
+  <path d="M120 276 H510 V248 H560 V230 H583"/>
+  <path d="M1080 276 H690 V248 H640 V230 H617"/>
+</g>
+<g stroke="#ff6a00" stroke-width="4" fill="none">
+  <path d="M650 245 V276" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+</g>
+<text x="682" y="270" fill="#ff6a00" font-family="Arial, sans-serif" font-size="22" font-weight="800">A6 / A8</text>
+<text x="600" y="326" text-anchor="middle" fill="#334155" font-family="Arial, sans-serif" font-size="26" font-weight="700">Специальная кассета MICROLOOK 15 для узкого профиля STRUNA</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" role="img">
+<defs>
+  <pattern id="hatch" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(35)">
+    <line x1="0" y1="0" x2="0" y2="14" stroke="#cbd5e1" stroke-width="4"/>
+  </pattern>
+  <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+    <path d="M0,0 L8,4 L0,8 z" fill="#ff6a00"/>
+  </marker>
+</defs>
+<rect width="100%" height="100%" rx="24" fill="#f8fafc"/>
+
+    <g fill="none" stroke="#0f1b33" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M120 54 V250"/>
+      <path d="M78 250 H162"/>
+      <rect x="107" y="28" width="26" height="26" rx="4" fill="#ffffff"/>
+    </g>
+    <g fill="none" stroke="#0f1b33" stroke-width="8" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M1080 54 V250"/>
+      <path d="M1038 250 H1122"/>
+      <rect x="1067" y="28" width="26" height="26" rx="4" fill="#ffffff"/>
+    </g>
+<g fill="none" stroke="#0f1b33" stroke-width="9" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M160 246 H1040"/>
+  <path d="M160 246 V126"/>
+  <path d="M1040 246 V126"/>
+</g>
+<g stroke="#ff6a00" stroke-width="4" fill="none">
+  <path d="M145 270 V246" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+  <path d="M1055 270 V246" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+</g>
+<text x="600" y="326" text-anchor="middle" fill="#334155" font-family="Arial, sans-serif" font-size="26" font-weight="700">Плоскость кассеты немного выше видимой Т-системы</text>
+</svg>
