@@ -24,6 +24,8 @@ export type CalculatorVisual = {
   description: string;
   image: string;
   alt: string;
+  diagram?: string;
+  diagramAlt?: string;
   fieldId?: string;
   value?: string;
   setValues?: Record<string, string>;
@@ -85,6 +87,8 @@ export type CalculatorConfig = {
   fileName: string;
   fields: CalculatorField[];
   visuals: CalculatorVisual[];
+  visualTitle?: string;
+  visualDescription?: string;
   visualGroups?: CalculatorVisualGroup[];
   offerColumns: OfferColumn[];
   calculate: (values: Record<string, string>) => CalculatorResultRow[];
@@ -830,6 +834,8 @@ export const calculators: CalculatorConfig[] = [
     intro: "Введите параметры конструкции, чтобы получить предварительный расход профилей и комплектующих. Расчёт можно скачать в Excel и отправить в Иделеон.",
     offerTitle: "Коммерческое предложение / расчёт профиля для ГКЛ",
     fileName: "KP_profil_GKL_ideleon.xlsx",
+    visualTitle: "Выберите тип конструкции",
+    visualDescription: "Карточка переключает тип конструкции и связанные параметры расчёта.",
     fields: [
       {
         id: "constructionType",
@@ -922,6 +928,8 @@ export const calculators: CalculatorConfig[] = [
     intro: "Выберите тип Грильято, размер ячейки, площадь и периметр помещения. Калькулятор рассчитает предварительную комплектацию и сформирует Excel-файл.",
     offerTitle: "Коммерческое предложение / расчёт потолка Грильято",
     fileName: "KP_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант потолка Грильято",
+    visualDescription: "Карточка переключает тип системы и сразу обновляет параметры расчёта.",
     fields: [
       areaField, perimeterField,
       {
@@ -969,6 +977,8 @@ export const calculators: CalculatorConfig[] = [
     intro: "Калькулятор помогает предварительно рассчитать систему Грильято GL15 или GL24 и сформировать Excel-файл для дальнейшей работы.",
     offerTitle: "Коммерческое предложение / расчёт потолка Грильято GL",
     fileName: "KP_grilyato_GL_ideleon.xlsx",
+    visualTitle: "Выберите вариант системы Грильято GL",
+    visualDescription: "Визуальный выбор работает вместе с полями калькулятора и обновляет результат.",
     fields: [
       areaField, perimeterField,
       { id: "glType", label: "Тип системы", type: "buttons", defaultValue: "GL15", options: [{ label: "GL15", value: "GL15" }, { label: "GL24", value: "GL24" }] },
@@ -1004,6 +1014,8 @@ export const calculators: CalculatorConfig[] = [
     intro: "Диагональное Грильято имеет отдельный состав элементов, поэтому вынесено в отдельный расчёт.",
     offerTitle: "Коммерческое предложение / расчёт диагонального Грильято",
     fileName: "KP_diagonalnoe_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант диагонального Грильято",
+    visualDescription: "Карточка помогает выбрать исполнение перед вводом параметров объекта.",
     fields: [areaField, perimeterField, mountSchemeField, commonReserveField],
     visuals: [
       { title: "Диагональное D-15", description: "Система с диагональными элементами в ячейке.", image: "/images/calculators/grilyato/grilyato-dl15.png", alt: "Схема диагонального Грильято D-15" },
@@ -1030,6 +1042,8 @@ export const calculators: CalculatorConfig[] = [
     intro: "Треугольное Грильято имеет собственную геометрию ячейки и отдельный состав элементов. Калькулятор формирует предварительный расчёт и Excel-КП.",
     offerTitle: "Коммерческое предложение / расчёт треугольного Грильято",
     fileName: "KP_treugolnoe_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант треугольного Грильято",
+    visualDescription: "Карточка переключает вариант системы и сохраняет единый порядок работы калькулятора.",
     fields: [areaField, perimeterField, commonReserveField],
     visuals: [
       { title: "Треугольное STA-150", description: "Система с треугольной геометрией ячейки.", image: "/images/calculators/grilyato/grilyato-triangle.png", alt: "Схема треугольного Грильято STA-150" },
@@ -1112,7 +1126,9 @@ export const calculators: CalculatorConfig[] = [
             title: "BOARD",
             description: "Прямоугольная приподнятая кромка: кассета визуально находится немного выше видимой Т-системы.",
             image: "/images/calculators/cassette/cassette-edge-board.webp",
-            alt: "Интерьер открытого кассетного потолка с кромкой BOARD и схема кромки",
+            alt: "Интерьер открытого кассетного потолка с кромкой BOARD",
+            diagram: "/images/calculators/cassette/cassette-edge-board-diagram.svg",
+            diagramAlt: "Техническая схема прямоугольной приподнятой кромки BOARD",
             fieldId: "edge",
             value: "board",
           },
@@ -1120,7 +1136,9 @@ export const calculators: CalculatorConfig[] = [
             title: "LINE",
             description: "Прямоугольная одноуровневая кромка: плоскость кассеты и видимая Т-система воспринимаются в одном уровне.",
             image: "/images/calculators/cassette/cassette-edge-line.webp",
-            alt: "Интерьер открытого кассетного потолка с кромкой LINE и схема кромки",
+            alt: "Интерьер открытого кассетного потолка с кромкой LINE",
+            diagram: "/images/calculators/cassette/cassette-edge-line-diagram.svg",
+            diagramAlt: "Техническая схема прямоугольной одноуровневой кромки LINE",
             fieldId: "edge",
             value: "line",
           },
@@ -1128,7 +1146,9 @@ export const calculators: CalculatorConfig[] = [
             title: "TEGULAR 45°",
             description: "Кассета опущена ниже Т-профиля, скошенная грань формирует мягкую теневую линию.",
             image: "/images/calculators/cassette/cassette-edge-tegular45.webp",
-            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 45 градусов и схема кромки",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 45 градусов",
+            diagram: "/images/calculators/cassette/cassette-edge-tegular45-diagram.svg",
+            diagramAlt: "Техническая схема кромки TEGULAR 45 градусов с опусканием",
             fieldId: "edge",
             value: "tegular45",
           },
@@ -1136,7 +1156,9 @@ export const calculators: CalculatorConfig[] = [
             title: "TEGULAR 90°",
             description: "Кассета опущена ниже Т-профиля, прямая вертикальная грань создаёт чёткую геометрию.",
             image: "/images/calculators/cassette/cassette-edge-tegular90.webp",
-            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 90 градусов и схема кромки",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 90 градусов",
+            diagram: "/images/calculators/cassette/cassette-edge-tegular90-diagram.svg",
+            diagramAlt: "Техническая схема кромки TEGULAR 90 градусов с опусканием",
             fieldId: "edge",
             value: "tegular90",
           },
@@ -1151,7 +1173,9 @@ export const calculators: CalculatorConfig[] = [
             title: "MICROLOOK 15",
             description: "Специальная кромка для дизайнерской системы STRUNA. Размеры: 300×600, 300×1200, 600×600 и 600×1200 мм.",
             image: "/images/calculators/cassette/cassette-edge-microlook15.webp",
-            alt: "Интерьер кассетного потолка STRUNA с кромкой MICROLOOK 15 и схема кромки",
+            alt: "Интерьер кассетного потолка STRUNA с кромкой MICROLOOK 15",
+            diagram: "/images/calculators/cassette/cassette-edge-microlook15-diagram.svg",
+            diagramAlt: "Техническая схема кромки MICROLOOK 15 для профиля STRUNA",
             fieldId: "edge",
             value: "microlook",
           },
@@ -1231,7 +1255,9 @@ export const calculators: CalculatorConfig[] = [
             title: "Простой монтаж",
             description: "Стрингер ВТ-600 длиной 4 м, уголок PL и комплект нониусного подвеса. Подходит для большинства типовых помещений.",
             image: "/images/calculators/cassette/cassette-hidden-simple.webp",
-            alt: "Закрытый кассетный потолок и схема простого монтажа на стрингере ВТ-600",
+            alt: "Монтаж кассеты закрытого потолка на простой системе",
+            diagram: "/images/calculators/cassette/cassette-hidden-simple-diagram.svg",
+            diagramAlt: "Техническая схема простого монтажа закрытой системы на стрингере ВТ-600",
             fieldId: "hiddenMountScheme",
             value: "simple",
           },
@@ -1239,7 +1265,9 @@ export const calculators: CalculatorConfig[] = [
             title: "Усиленный монтаж",
             description: "Дополнительный каркас ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги.",
             image: "/images/calculators/cassette/cassette-hidden-reinforced.webp",
-            alt: "Закрытый кассетный потолок и схема усиленного монтажа с дополнительным каркасом",
+            alt: "Интерьер закрытого кассетного потолка с усиленной системой",
+            diagram: "/images/calculators/cassette/cassette-hidden-reinforced-diagram.svg",
+            diagramAlt: "Техническая схема усиленного монтажа закрытой системы с профилем ПП-1-2",
             fieldId: "hiddenMountScheme",
             value: "reinforced",
           },
@@ -1253,7 +1281,9 @@ export const calculators: CalculatorConfig[] = [
             title: "Кромка 45°",
             description: "Скошенная грань создаёт более мягкий стык. По исходному Excel доступна для кассеты 600×600 мм.",
             image: "/images/calculators/cassette/cassette-hidden-edge45.webp",
-            alt: "Закрытый кассетный потолок с кромкой 45 градусов и схема кромки",
+            alt: "Интерьер закрытого кассетного потолка с кромкой 45 градусов",
+            diagram: "/images/calculators/cassette/cassette-hidden-edge45-diagram.svg",
+            diagramAlt: "Техническая схема закрытой кассеты с кромкой AC 45 градусов",
             fieldId: "hiddenEdge",
             value: "45",
           },
@@ -1261,7 +1291,9 @@ export const calculators: CalculatorConfig[] = [
             title: "Кромка 90°",
             description: "Прямоугольная грань и чёткий стык. Доступна для всех размеров кассет, предусмотренных калькулятором.",
             image: "/images/calculators/cassette/cassette-hidden-edge90.webp",
-            alt: "Закрытый кассетный потолок с кромкой 90 градусов и схема кромки",
+            alt: "Интерьер закрытого кассетного потолка с кромкой 90 градусов",
+            diagram: "/images/calculators/cassette/cassette-hidden-edge90-diagram.svg",
+            diagramAlt: "Техническая схема закрытой кассеты с кромкой AC 90 градусов",
             fieldId: "hiddenEdge",
             value: "90",
           },
