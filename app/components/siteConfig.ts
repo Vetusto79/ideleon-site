@@ -53,6 +53,13 @@ export const siteConfig = {
             { label: "Закрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
           ],
         },
+        {
+          label: "Металлопрокат",
+          href: "/calculators/chernyy-metalloprokat",
+          children: [
+            { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
+          ],
+        },
       ],
     },
     { label: "Статьи", href: "/articles" },
