@@ -137,9 +137,20 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     return conditionMatches(values, field.showWhen);
   });
 
-  const visibleVisualGroups = (calculator.visualGroups || []).filter((group) =>
-    conditionMatches(values, group.showWhen),
-  );
+  const baseVisualGroup: CalculatorVisualGroup | null = calculator.visuals.length > 0
+    ? {
+        title: calculator.visualTitle || "Выберите вариант по изображению",
+        description:
+          calculator.visualDescription ||
+          "Нажмите на карточку, чтобы переключить соответствующий параметр калькулятора.",
+        visuals: calculator.visuals,
+      }
+    : null;
+
+  const visibleVisualGroups = [
+    ...(baseVisualGroup ? [baseVisualGroup] : []),
+    ...(calculator.visualGroups || []),
+  ].filter((group) => conditionMatches(values, group.showWhen));
 
   function renderVisualCard(visual: CalculatorVisual) {
     if (!conditionMatches(values, visual.showWhen)) return null;
@@ -149,9 +160,27 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     const className = active ? "calculatorVisualCard active" : "calculatorVisualCard";
     const content = (
       <>
-        <div className="calculatorVisualImageWrap">
-          <img src={visual.image} alt={visual.alt} loading="lazy" />
-          {active ? <span className="calculatorVisualSelected">Выбрано</span> : null}
+        <div
+          className={
+            visual.diagram
+              ? "calculatorVisualImageWrap calculatorVisualImageWrapWithDiagram"
+              : "calculatorVisualImageWrap"
+          }
+        >
+          <div className="calculatorVisualPhotoWrap">
+            <img className="calculatorVisualPhoto" src={visual.image} alt={visual.alt} loading="lazy" />
+            {active ? <span className="calculatorVisualSelected">Выбрано</span> : null}
+          </div>
+          {visual.diagram ? (
+            <div className="calculatorVisualDiagramWrap">
+              <img
+                className="calculatorVisualDiagram"
+                src={visual.diagram}
+                alt={visual.diagramAlt || `Техническая схема: ${visual.title}`}
+                loading="lazy"
+              />
+            </div>
+          ) : null}
         </div>
         <div className="calculatorVisualText">
           <h3>{visual.title}</h3>
@@ -208,19 +237,6 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
 
   return (
     <>
-      {calculator.visuals.length > 0 && (
-        <section className="calculatorVisualSection">
-          <div className="calculatorVisualHeader">
-            <p className="label">Внешний вид и конструкция</p>
-            <h2>Выберите вариант по изображению</h2>
-            <p>Нажмите на карточку, чтобы переключить соответствующий параметр калькулятора.</p>
-          </div>
-          <div className={calculator.visuals.length === 3 ? "calculatorVisualGrid calculatorVisualGridThree" : "calculatorVisualGrid"}>
-            {calculator.visuals.map(renderVisualCard)}
-          </div>
-        </section>
-      )}
-
       <section className={visibleVisualGroups.length > 0 ? "calculatorSection calculatorSectionStacked" : "calculatorSection"}>
         <div className="calculatorPanel">
           <h2>Параметры расчёта</h2>
