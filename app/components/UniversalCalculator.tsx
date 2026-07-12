@@ -238,6 +238,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
   return (
     <>
       <section className={visibleVisualGroups.length > 0 ? "calculatorSection calculatorSectionStacked" : "calculatorSection"}>
+        {visibleVisualGroups.length > 0 ? (
+          <div className="calculatorVisualGroupsInline">
+            {visibleVisualGroups.map(renderVisualGroup)}
+          </div>
+        ) : null}
+
         <div className="calculatorPanel">
           <h2>Параметры расчёта</h2>
 
@@ -288,12 +294,6 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
             Расчёт предварительный. На расход могут влиять раскладка, проёмы, светильники, подрезка, высота и требования проекта.
           </p>
         </div>
-
-        {visibleVisualGroups.length > 0 ? (
-          <div className="calculatorVisualGroupsInline">
-            {visibleVisualGroups.map(renderVisualGroup)}
-          </div>
-        ) : null}
 
         <div className="calculatorPanel calculatorResultPanel">
           <h2>Результат</h2>
