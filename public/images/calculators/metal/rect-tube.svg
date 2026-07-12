@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f8fafc"/><stop offset="1" stop-color="#e8eef6"/></linearGradient>
+    <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#53657b"/><stop offset="0.5" stop-color="#15243a"/><stop offset="1" stop-color="#718197"/></linearGradient>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/>
+  <path d="M0 565 C280 505 430 620 715 550 C910 502 1060 518 1200 470 V675 H0Z" fill="#dce5f0"/>
+  <circle cx="1010" cy="115" r="78" fill="#ff6a00" opacity=".11"/>
+
+  <g transform="translate(125 120)">
+    <path d="M145 330L625 80l390 145-480 250z" fill="url(#steel)" stroke="#0f1b33" stroke-width="10"/>
+    <path d="M145 330v155l390 145V475z" fill="#26374d" stroke="#0f1b33" stroke-width="10"/>
+    <path d="M535 475l480-250v155L535 630z" fill="#66788e" stroke="#0f1b33" stroke-width="10"/>
+    <path d="M230 350l300 112 385-200-300-112z" fill="#eef3f8" stroke="#ff6a00" stroke-width="12"/>
+  </g></svg>
