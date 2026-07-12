@@ -60,6 +60,13 @@ export const siteConfig = {
             { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
           ],
         },
+        {
+          label: "Сэндвич-панели",
+          href: "/calculators/sendvich-paneli",
+          children: [
+            { label: "Калькулятор сэндвич-панелей", href: "/calculators/sendvich-paneli" },
+          ],
+        },
       ],
     },
     { label: "Статьи", href: "/articles" },
