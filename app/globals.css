@@ -3306,3 +3306,74 @@ button.calculatorVisualCard:focus-visible {
     margin-right: 16px;
   }
 }
+
+/* IDELEON: exact technical SVG diagrams and unified stacked calculator layout */
+.calculatorVisualImageWrap {
+  aspect-ratio: auto;
+  background: #eef2f7;
+}
+
+.calculatorVisualPhotoWrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #e2e8f0;
+}
+
+.calculatorVisualPhotoWrap .calculatorVisualPhoto {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 0;
+}
+
+.calculatorVisualDiagramWrap {
+  height: 152px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: #f8fafc;
+}
+
+.calculatorVisualDiagramWrap .calculatorVisualDiagram {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: 0;
+  background: transparent;
+}
+
+.calculatorVisualGridTwo .calculatorVisualDiagramWrap {
+  height: 205px;
+  padding: 14px 18px;
+}
+
+.calculatorVisualGridSingle .calculatorVisualDiagramWrap {
+  height: 230px;
+}
+
+.calculatorVisualImageWrapWithDiagram {
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+@media (max-width: 900px) {
+  .calculatorVisualDiagramWrap,
+  .calculatorVisualGridTwo .calculatorVisualDiagramWrap {
+    height: 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  .calculatorVisualPhotoWrap {
+    aspect-ratio: 16 / 10;
+  }
+
+  .calculatorVisualDiagramWrap,
+  .calculatorVisualGridTwo .calculatorVisualDiagramWrap,
+  .calculatorVisualGridSingle .calculatorVisualDiagramWrap {
+    height: 170px;
+    padding: 10px;
+  }
+}
