@@ -17,6 +17,7 @@ export type CalculatorField = {
   options?: CalculatorFieldOption[];
   showWhen?: CalculatorCondition;
   hideInput?: boolean;
+  step?: string;
 };
 
 export type CalculatorVisual = {
@@ -75,7 +76,7 @@ export type CalculatorResultRow = {
 
 export type CalculatorConfig = {
   slug: string;
-  group: "gkl" | "grilyato" | "cassette";
+  group: "gkl" | "grilyato" | "cassette" | "metal";
   title: string;
   shortTitle: string;
   description: string;
@@ -90,6 +91,12 @@ export type CalculatorConfig = {
   visualTitle?: string;
   visualDescription?: string;
   visualGroups?: CalculatorVisualGroup[];
+  calculatorNote?: string;
+  resultTitle?: string;
+  resultMaterialTitle?: string;
+  resultCoefficientTitle?: string;
+  resultQuantityTitle?: string;
+  resultMaxFractionDigits?: number;
   offerColumns: OfferColumn[];
   calculate: (values: Record<string, string>) => CalculatorResultRow[];
   getParamsText: (values: Record<string, string>) => string;
@@ -801,6 +808,340 @@ function hiddenCassetteParams(values: Record<string, string>) {
   return `Закрытая подвесная система; ${scheme}; площадь: ${values.area} м²; периметр: ${values.perimeter} м; кассета: ${values.module}; кромка: ${values.hiddenEdge}°; стрингер ВТ-600 длиной 4 м; запас: ${values.reserve}%`;
 }
 
+
+
+const metalLongProductTypes = [
+  "rebar", "round", "square", "hexagon", "strip", "roundPipe",
+  "squareTube", "rectTube", "angle", "channel", "beam",
+];
+
+const rebarMassKgM: Record<string, number> = {
+  "6": 0.222, "8": 0.395, "10": 0.617, "12": 0.888, "14": 1.208,
+  "16": 1.578, "18": 1.998, "20": 2.466, "22": 2.984, "25": 3.853,
+  "28": 4.834, "32": 6.313, "36": 7.99, "40": 9.865,
+};
+
+const equalAngleMassKgM: Record<string, number> = {
+  "20×20×3": 0.89, "20×20×4": 1.15, "25×25×3": 1.12, "25×25×4": 1.46,
+  "32×32×3": 1.46, "32×32×4": 1.91, "35×35×4": 2.10,
+  "40×40×3": 1.85, "40×40×4": 2.42, "40×40×5": 2.98,
+  "45×45×4": 2.73, "45×45×5": 3.37,
+  "50×50×4": 3.05, "50×50×5": 3.77, "50×50×6": 4.47,
+  "63×63×5": 4.81, "63×63×6": 5.72, "63×63×8": 7.46,
+  "70×70×5": 5.38, "70×70×6": 6.39, "70×70×7": 7.39, "70×70×8": 8.37,
+  "75×75×5": 5.80, "75×75×6": 6.89, "75×75×8": 9.02,
+  "80×80×6": 7.36, "80×80×8": 9.65,
+  "90×90×6": 8.33, "90×90×7": 9.64, "90×90×8": 10.93,
+  "100×100×7": 10.79, "100×100×8": 12.25, "100×100×10": 15.10,
+};
+
+const channelPMassKgM: Record<string, number> = {
+  "5П": 4.84, "6,5П": 5.90, "8П": 7.05, "10П": 8.59,
+  "12П": 10.40, "14П": 12.30, "16П": 14.20, "18П": 16.30,
+  "20П": 18.40, "22П": 21.00, "24П": 24.00, "27П": 27.70,
+  "30П": 31.80, "33П": 36.50, "36П": 41.90, "40П": 48.30,
+};
+
+const iBeamMassKgM: Record<string, number> = {
+  "10": 9.46, "12": 11.50, "14": 13.70, "16": 15.90,
+  "18": 18.40, "20": 21.00, "22": 24.00, "24": 27.30,
+  "27": 31.50, "30": 36.50, "33": 42.20, "36": 48.60,
+  "40": 57.00, "45": 66.50, "50": 78.50, "55": 92.60, "60": 108.00,
+};
+
+const metalProductLabels: Record<string, string> = {
+  rebar: "Арматура А500С",
+  round: "Круг стальной",
+  square: "Квадрат стальной",
+  hexagon: "Шестигранник стальной",
+  strip: "Полоса стальная",
+  sheet: "Лист стальной горячекатаный",
+  roundPipe: "Труба стальная круглая",
+  squareTube: "Труба профильная квадратная",
+  rectTube: "Труба профильная прямоугольная",
+  angle: "Уголок равнополочный",
+  channel: "Швеллер серии П",
+  beam: "Двутавр горячекатаный",
+};
+
+function metalProductName(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  if (product === "rebar") return `Арматура ${values.rebarClass || "А500С"}`;
+  return metalProductLabels[product] || "Металлопрокат";
+}
+
+function metalStandardLabel(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  const standard = metalProductStandards[product] || "теоретический расчёт";
+  if (product === "rebar") return standard;
+  return `${standard}; сталь: ${values.steelGrade || "Ст3сп/пс5"}`;
+}
+
+const metalProductStandards: Record<string, string> = {
+  rebar: "ГОСТ 34028-2016",
+  round: "геометрический расчёт, ρ=7850 кг/м³",
+  square: "геометрический расчёт, ρ=7850 кг/м³",
+  hexagon: "геометрический расчёт, ρ=7850 кг/м³",
+  strip: "геометрический расчёт, ρ=7850 кг/м³",
+  sheet: "геометрический расчёт, ρ=7850 кг/м³",
+  roundPipe: "формула теоретической массы круглой трубы",
+  squareTube: "формула теоретической массы профильной трубы",
+  rectTube: "формула теоретической массы профильной трубы",
+  angle: "ГОСТ 8509-93",
+  channel: "ГОСТ 8240-97, серия П",
+  beam: "ГОСТ 8239-89",
+};
+
+function metalNumber(value: string | undefined) {
+  const n = Number(String(value ?? "").replace(",", "."));
+  return Number.isFinite(n) && n > 0 ? n : 0;
+}
+
+function metalRound(value: number, digits = 3) {
+  if (!Number.isFinite(value) || value <= 0) return 0;
+  const factor = 10 ** digits;
+  return Math.round(value * factor) / factor;
+}
+
+function metalSizeLabel(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  if (product === "rebar") return `Ø${values.rebarDiameter || "12"} мм`;
+  if (product === "round") return `Ø${values.roundDiameter || "20"} мм`;
+  if (product === "square") return `${values.squareSide || "20"}×${values.squareSide || "20"} мм`;
+  if (product === "hexagon") return `S=${values.hexAcrossFlats || "20"} мм`;
+  if (product === "strip") return `${values.stripWidth || "40"}×${values.stripThickness || "4"} мм`;
+  if (product === "sheet") return `${values.sheetThickness || "4"}×${values.sheetWidth || "1500"}×${values.sheetLength || "6000"} мм`;
+  if (product === "roundPipe") return `Ø${values.roundPipeDiameter || "57"}×${values.roundPipeWall || "3,5"} мм`;
+  if (product === "squareTube") return `${values.squareTubeSide || "40"}×${values.squareTubeSide || "40"}×${values.squareTubeWall || "2"} мм`;
+  if (product === "rectTube") return `${values.rectTubeWidth || "60"}×${values.rectTubeHeight || "40"}×${values.rectTubeWall || "2"} мм`;
+  if (product === "angle") return values.angleSize || "50×50×5";
+  if (product === "channel") return values.channelSize || "12П";
+  return `№${values.beamSize || "20"}`;
+}
+
+function metalKgPerMeter(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  if (product === "rebar") return rebarMassKgM[values.rebarDiameter || "12"] || 0;
+  if (product === "round") {
+    const d = metalNumber(values.roundDiameter);
+    return 0.006165 * d * d;
+  }
+  if (product === "square") {
+    const a = metalNumber(values.squareSide);
+    return 0.00785 * a * a;
+  }
+  if (product === "hexagon") {
+    const s = metalNumber(values.hexAcrossFlats);
+    return 0.006798 * s * s;
+  }
+  if (product === "strip") {
+    return 0.00785 * metalNumber(values.stripWidth) * metalNumber(values.stripThickness);
+  }
+  if (product === "roundPipe") {
+    const d = metalNumber(values.roundPipeDiameter);
+    const t = metalNumber(values.roundPipeWall);
+    return 0.02466 * t * (d - t);
+  }
+  if (product === "squareTube") {
+    const a = metalNumber(values.squareTubeSide);
+    const t = metalNumber(values.squareTubeWall);
+    return 0.0157 * t * (2 * a - 2.86 * t);
+  }
+  if (product === "rectTube") {
+    const a = metalNumber(values.rectTubeWidth);
+    const b = metalNumber(values.rectTubeHeight);
+    const t = metalNumber(values.rectTubeWall);
+    return 0.0157 * t * (a + b - 2.86 * t);
+  }
+  if (product === "angle") return equalAngleMassKgM[values.angleSize || "50×50×5"] || 0;
+  if (product === "channel") return channelPMassKgM[values.channelSize || "12П"] || 0;
+  if (product === "beam") return iBeamMassKgM[values.beamSize || "20"] || 0;
+  return 0;
+}
+
+function metalLongTotals(values: Record<string, string>) {
+  const kgPerM = metalKgPerMeter(values);
+  const pieceLength = metalNumber(values.pieceLength) || 12;
+  const mode = values.longInputMode || "length";
+  let exactLengthM = 0;
+  let exactWeightT = 0;
+  let exactPieces = 0;
+
+  if (mode === "weight") {
+    exactWeightT = metalNumber(values.inputWeightT);
+    exactLengthM = kgPerM > 0 ? exactWeightT * 1000 / kgPerM : 0;
+    exactPieces = pieceLength > 0 ? exactLengthM / pieceLength : 0;
+  } else if (mode === "pieces") {
+    exactPieces = metalNumber(values.inputPieces);
+    exactLengthM = exactPieces * pieceLength;
+    exactWeightT = exactLengthM * kgPerM / 1000;
+  } else {
+    exactLengthM = metalNumber(values.inputLengthM);
+    exactWeightT = exactLengthM * kgPerM / 1000;
+    exactPieces = pieceLength > 0 ? exactLengthM / pieceLength : 0;
+  }
+
+  const orderPieces = Math.ceil(exactPieces - 1e-9);
+  const orderLengthM = orderPieces * pieceLength;
+  const orderWeightT = orderLengthM * kgPerM / 1000;
+  return { kgPerM, pieceLength, exactLengthM, exactWeightT, exactPieces, orderPieces, orderLengthM, orderWeightT };
+}
+
+function metalSheetTotals(values: Record<string, string>) {
+  const thickness = metalNumber(values.sheetThickness);
+  const widthM = metalNumber(values.sheetWidth) / 1000;
+  const lengthM = metalNumber(values.sheetLength) / 1000;
+  const areaPerSheet = widthM * lengthM;
+  const kgPerSheet = thickness * areaPerSheet * 7.85;
+  const mode = values.sheetInputMode || "sheets";
+  let exactSheets = 0;
+  let exactAreaM2 = 0;
+  let exactWeightT = 0;
+
+  if (mode === "area") {
+    exactAreaM2 = metalNumber(values.inputAreaM2);
+    exactSheets = areaPerSheet > 0 ? exactAreaM2 / areaPerSheet : 0;
+    exactWeightT = exactAreaM2 * thickness * 7.85 / 1000;
+  } else if (mode === "weight") {
+    exactWeightT = metalNumber(values.inputSheetWeightT);
+    exactSheets = kgPerSheet > 0 ? exactWeightT * 1000 / kgPerSheet : 0;
+    exactAreaM2 = exactSheets * areaPerSheet;
+  } else {
+    exactSheets = metalNumber(values.inputSheetCount);
+    exactAreaM2 = exactSheets * areaPerSheet;
+    exactWeightT = exactSheets * kgPerSheet / 1000;
+  }
+
+  const orderSheets = Math.ceil(exactSheets - 1e-9);
+  const orderAreaM2 = orderSheets * areaPerSheet;
+  const orderWeightT = orderSheets * kgPerSheet / 1000;
+  return { thickness, areaPerSheet, kgPerSheet, exactSheets, exactAreaM2, exactWeightT, orderSheets, orderAreaM2, orderWeightT };
+}
+
+const metalColumns: OfferColumn[] = [
+  { key: "index", title: "№", width: 6 },
+  { key: "name", title: "Наименование", width: 38 },
+  { key: "size", title: "Размер", width: 24 },
+  { key: "catalogName", title: "Норматив / метод", width: 30 },
+  { key: "coefficient", title: "Расчётные параметры", width: 42 },
+  { key: "unit", title: "Ед. изм.", width: 12 },
+  { key: "quantity", title: "Количество", width: 16 },
+  { key: "priceUnit", title: "Цена за", width: 12 },
+  { key: "price", title: "Цена", width: 14 },
+  { key: "sum", title: "Сумма", width: 16 },
+];
+
+function metalCalculate(values: Record<string, string>): CalculatorResultRow[] {
+  const product = values.productType || "rebar";
+  const productName = metalProductName(values);
+  const size = metalSizeLabel(values);
+  const standard = metalStandardLabel(values);
+
+  if (product === "sheet") {
+    const totals = metalSheetTotals(values);
+    const rows: CalculatorResultRow[] = [
+      resultRow({
+        name: productName,
+        size,
+        catalogName: standard,
+        unit: "т",
+        coefficient: `1 лист = ${fmt(totals.kgPerSheet)} кг; к заказу ${totals.orderSheets} шт.`,
+        quantity: metalRound(totals.orderWeightT, 4),
+        priceUnit: "т",
+        priceMode: "quantity",
+      }),
+      resultRow({ name: "Масса одного листа", size, unit: "кг", coefficient: "толщина × площадь × 7,85", quantity: metalRound(totals.kgPerSheet, 3), includeInOffer: false }),
+      resultRow({ name: "Площадь одного листа", size, unit: "м²", coefficient: "ширина × длина", quantity: metalRound(totals.areaPerSheet, 3), includeInOffer: false }),
+      resultRow({ name: "Расчётное количество листов", size, unit: "шт.", coefficient: "без округления", quantity: metalRound(totals.exactSheets, 3), includeInOffer: false }),
+      resultRow({ name: "Количество целых листов к заказу", size, unit: "шт.", coefficient: "округление вверх", quantity: totals.orderSheets, includeInOffer: false }),
+      resultRow({ name: "Расчётная площадь", size, unit: "м²", coefficient: "без округления", quantity: metalRound(totals.exactAreaM2, 3), includeInOffer: false }),
+      resultRow({ name: "Расчётная масса", size, unit: "т", coefficient: "без округления до целых листов", quantity: metalRound(totals.exactWeightT, 4), includeInOffer: false }),
+    ];
+    return rows;
+  }
+
+  const totals = metalLongTotals(values);
+  return [
+    resultRow({
+      name: productName,
+      size,
+      catalogName: standard,
+      unit: "т",
+      coefficient: `1 м = ${fmt(totals.kgPerM)} кг; ${totals.orderPieces} шт. × ${fmt(totals.pieceLength)} м`,
+      quantity: metalRound(totals.orderWeightT, 4),
+      priceUnit: "т",
+      priceMode: "quantity",
+    }),
+    resultRow({ name: "Теоретическая масса одного метра", size, unit: "кг/м", coefficient: standard, quantity: metalRound(totals.kgPerM, 3), includeInOffer: false }),
+    resultRow({ name: "Расчётная общая длина", size, unit: "м", coefficient: "без округления до целых штук", quantity: metalRound(totals.exactLengthM, 3), includeInOffer: false }),
+    resultRow({ name: "Расчётная масса", size, unit: "т", coefficient: "без округления до целых штук", quantity: metalRound(totals.exactWeightT, 4), includeInOffer: false }),
+    resultRow({ name: "Расчётное количество штук", size, unit: "шт.", coefficient: `длина одной штуки ${fmt(totals.pieceLength)} м`, quantity: metalRound(totals.exactPieces, 3), includeInOffer: false }),
+    resultRow({ name: "Количество целых штук к заказу", size, unit: "шт.", coefficient: "округление вверх", quantity: totals.orderPieces, includeInOffer: false }),
+    resultRow({ name: "Длина целых штук к заказу", size, unit: "м", coefficient: `${totals.orderPieces} шт. × ${fmt(totals.pieceLength)} м`, quantity: metalRound(totals.orderLengthM, 3), includeInOffer: false }),
+  ];
+}
+
+function metalParams(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  const productName = metalProductName(values);
+  const size = metalSizeLabel(values);
+  if (product === "sheet") {
+    const totals = metalSheetTotals(values);
+    return `${productName}; марка стали: ${values.steelGrade || "Ст3сп/пс5"}; размер: ${size}; расчётно ${fmt(totals.exactSheets)} лист.; к заказу ${totals.orderSheets} лист.; площадь ${fmt(totals.exactAreaM2)} м²; масса к заказу ${fmt(totals.orderWeightT)} т.`;
+  }
+  const totals = metalLongTotals(values);
+  const gradeText = product === "rebar" ? `класс ${values.rebarClass || "А500С"}` : `марка стали ${values.steelGrade || "Ст3сп/пс5"}`;
+  return `${productName}; ${gradeText}; размер: ${size}; теоретическая масса ${fmt(totals.kgPerM)} кг/м; длина одной штуки ${fmt(totals.pieceLength)} м; расчётная длина ${fmt(totals.exactLengthM)} м; к заказу ${totals.orderPieces} шт.; масса к заказу ${fmt(totals.orderWeightT)} т.`;
+}
+
+function metalWarning(values: Record<string, string>) {
+  const product = values.productType || "rebar";
+  if (product === "sheet") {
+    if (!metalNumber(values.sheetThickness) || !metalNumber(values.sheetWidth) || !metalNumber(values.sheetLength)) {
+      return "Укажите положительные значения толщины, ширины и длины листа.";
+    }
+    return null;
+  }
+  if (!metalNumber(values.pieceLength)) return "Укажите длину одной штуки больше нуля.";
+  if (product === "roundPipe") {
+    const d = metalNumber(values.roundPipeDiameter);
+    const t = metalNumber(values.roundPipeWall);
+    if (!d || !t || t * 2 >= d) return "Толщина стенки круглой трубы должна быть меньше половины наружного диаметра.";
+  }
+  if (product === "squareTube") {
+    const a = metalNumber(values.squareTubeSide);
+    const t = metalNumber(values.squareTubeWall);
+    if (!a || !t || t * 2 >= a) return "Толщина стенки квадратной трубы должна быть меньше половины стороны.";
+  }
+  if (product === "rectTube") {
+    const a = metalNumber(values.rectTubeWidth);
+    const b = metalNumber(values.rectTubeHeight);
+    const t = metalNumber(values.rectTubeWall);
+    if (!a || !b || !t || t * 2 >= Math.min(a, b)) return "Толщина стенки прямоугольной трубы должна быть меньше половины меньшей стороны.";
+  }
+  if (metalKgPerMeter(values) <= 0) return "Проверьте размеры изделия: теоретическая масса должна быть больше нуля.";
+  return null;
+}
+
+
+function normalizeMetalValues(values: Record<string, string>) {
+  const next = { ...values };
+  const product = next.productType || "rebar";
+  if (product === "sheet") {
+    next.longInputMode = "none";
+    if (!["sheets", "area", "weight"].includes(next.sheetInputMode)) next.sheetInputMode = "sheets";
+  } else {
+    next.sheetInputMode = "none";
+    if (!["length", "weight", "pieces"].includes(next.longInputMode)) next.longInputMode = "length";
+  }
+  return next;
+}
+
+const metalProductValues = ["rebar", "round", "square", "hexagon", "strip", "sheet", "roundPipe", "squareTube", "rectTube", "angle", "channel", "beam"];
+const metalNonRebarValues = metalProductValues.filter((value) => value !== "rebar");
+const metalLongCondition: CalculatorCondition = { fieldId: "productType", values: metalLongProductTypes };
+
+
 const commonReserveField: CalculatorField = {
   id: "reserve",
   label: "Запас, %",
@@ -822,6 +1163,144 @@ const mountSchemeField: CalculatorField = {
 };
 
 export const calculators: CalculatorConfig[] = [
+
+  {
+    slug: "chernyy-metalloprokat",
+    group: "metal",
+    title: "Калькулятор чёрного металлопроката",
+    shortTitle: "Чёрный металлопрокат",
+    description: "Пересчёт массы, длины, количества штук и площади для 12 видов стального проката.",
+    seoTitle: "Калькулятор веса металлопроката — масса, метры и количество",
+    seoDescription: "Онлайн-калькулятор чёрного металлопроката IDELEON: арматура, круг, квадрат, шестигранник, полоса, лист, трубы, уголок, швеллер и двутавр. Перевод тонн в метры и штуки, Excel-КП.",
+    h1: "Калькулятор чёрного металлопроката",
+    intro: "Выберите вид проката, укажите размер и исходную величину. Калькулятор пересчитает массу, общую длину и количество целых изделий, а затем сформирует Excel-КП в фирменном формате IDELEON.",
+    offerTitle: "Коммерческое предложение / чёрный металлопрокат",
+    fileName: "KP_chernyy_metalloprokat_ideleon.xlsx",
+    visualTitle: "Выберите вид металлопроката",
+    visualDescription: "Двенадцать основных видов чёрного металлопроката. После выбора карточки ниже появятся только относящиеся к изделию размеры и параметры пересчёта.",
+    calculatorNote: "Расчёт показывает теоретическую массу. Фактическая масса партии может отличаться в пределах производственных допусков; наличие размеров и длину поставки подтвердит менеджер IDELEON.",
+    resultTitle: "Результат пересчёта",
+    resultMaterialTitle: "Показатель",
+    resultCoefficientTitle: "Основание расчёта",
+    resultQuantityTitle: "Значение",
+    resultMaxFractionDigits: 4,
+    fields: [
+      {
+        id: "productType", label: "Вид проката", type: "buttons", defaultValue: "rebar", hideInput: true,
+        options: metalProductValues.map((value) => ({ label: metalProductLabels[value], value })),
+      },
+      {
+        id: "longInputMode", label: "Что известно", type: "buttons", defaultValue: "length", showWhen: metalLongCondition,
+        options: [
+          { label: "Общая длина", value: "length" },
+          { label: "Масса", value: "weight" },
+          { label: "Количество штук", value: "pieces" },
+        ],
+      },
+      {
+        id: "sheetInputMode", label: "Что известно", type: "buttons", defaultValue: "sheets", showWhen: { fieldId: "productType", values: ["sheet"] },
+        options: [
+          { label: "Количество листов", value: "sheets" },
+          { label: "Общая площадь", value: "area" },
+          { label: "Масса", value: "weight" },
+        ],
+      },
+      {
+        id: "rebarClass", label: "Класс арматуры", type: "buttons", defaultValue: "А500С", showWhen: { fieldId: "productType", values: ["rebar"] },
+        options: [
+          { label: "А500С", value: "А500С" },
+          { label: "А400 / А-III", value: "А400 (А-III)" },
+          { label: "А240 / А-I", value: "А240 (А-I)" },
+        ],
+      },
+      {
+        id: "steelGrade", label: "Марка стали", type: "select", defaultValue: "Ст3сп/пс5", showWhen: { fieldId: "productType", values: metalNonRebarValues },
+        options: [
+          { label: "Ст3сп/пс5", value: "Ст3сп/пс5" },
+          { label: "09Г2С", value: "09Г2С" },
+          { label: "Ст20", value: "Ст20" },
+          { label: "S235JR", value: "S235JR" },
+          { label: "Уточнить по заявке", value: "уточнить" },
+        ],
+      },
+      {
+        id: "rebarDiameter", label: "Диаметр арматуры", type: "select", defaultValue: "12", showWhen: { fieldId: "productType", values: ["rebar"] },
+        options: Object.keys(rebarMassKgM).map((value) => ({ label: `Ø${value} мм`, value })),
+      },
+      { id: "roundDiameter", label: "Диаметр круга, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["round"] } },
+      { id: "squareSide", label: "Сторона квадрата, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["square"] } },
+      { id: "hexAcrossFlats", label: "Размер шестигранника под ключ S, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["hexagon"] } },
+      { id: "stripWidth", label: "Ширина полосы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["strip"] } },
+      { id: "stripThickness", label: "Толщина полосы, мм", type: "number", defaultValue: "4", step: "any", showWhen: { fieldId: "productType", values: ["strip"] } },
+      { id: "sheetThickness", label: "Толщина листа, мм", type: "number", defaultValue: "4", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "sheetWidth", label: "Ширина листа, мм", type: "number", defaultValue: "1500", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "sheetLength", label: "Длина листа, мм", type: "number", defaultValue: "6000", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "roundPipeDiameter", label: "Наружный диаметр трубы, мм", type: "number", defaultValue: "57", step: "any", showWhen: { fieldId: "productType", values: ["roundPipe"] } },
+      { id: "roundPipeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "3,5", step: "any", showWhen: { fieldId: "productType", values: ["roundPipe"] } },
+      { id: "squareTubeSide", label: "Наружная сторона трубы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["squareTube"] } },
+      { id: "squareTubeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "2", step: "any", showWhen: { fieldId: "productType", values: ["squareTube"] } },
+      { id: "rectTubeWidth", label: "Ширина трубы, мм", type: "number", defaultValue: "60", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      { id: "rectTubeHeight", label: "Высота трубы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      { id: "rectTubeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "2", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      {
+        id: "angleSize", label: "Размер равнополочного уголка", type: "select", defaultValue: "50×50×5", showWhen: { fieldId: "productType", values: ["angle"] },
+        options: Object.entries(equalAngleMassKgM).map(([value, mass]) => ({ label: `${value} мм — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      {
+        id: "channelSize", label: "Номер швеллера с параллельными полками", type: "select", defaultValue: "12П", showWhen: { fieldId: "productType", values: ["channel"] },
+        options: Object.entries(channelPMassKgM).map(([value, mass]) => ({ label: `${value} — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      {
+        id: "beamSize", label: "Номер двутавра", type: "select", defaultValue: "20", showWhen: { fieldId: "productType", values: ["beam"] },
+        options: Object.entries(iBeamMassKgM).map(([value, mass]) => ({ label: `№${value} — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      { id: "pieceLength", label: "Длина одной штуки, м", type: "number", defaultValue: "12", step: "any", showWhen: metalLongCondition },
+      { id: "inputLengthM", label: "Общая длина, м", type: "number", defaultValue: "100", step: "any", showWhen: { fieldId: "longInputMode", values: ["length"] } },
+      { id: "inputWeightT", label: "Масса, т", type: "number", defaultValue: "1", step: "any", showWhen: { fieldId: "longInputMode", values: ["weight"] } },
+      { id: "inputPieces", label: "Количество штук", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "longInputMode", values: ["pieces"] } },
+      { id: "inputSheetCount", label: "Количество листов", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["sheets"] } },
+      { id: "inputAreaM2", label: "Общая площадь, м²", type: "number", defaultValue: "100", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["area"] } },
+      { id: "inputSheetWeightT", label: "Масса, т", type: "number", defaultValue: "1", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["weight"] } },
+    ],
+    visuals: [
+      { title: "Арматура", description: "Периодический профиль А500С. Масса по ГОСТ 34028-2016.", image: "/images/calculators/metal/rebar.svg", alt: "Арматура стальная", fieldId: "productType", value: "rebar" },
+      { title: "Круг", description: "Круглый стальной пруток произвольного диаметра.", image: "/images/calculators/metal/round.svg", alt: "Круг стальной", fieldId: "productType", value: "round" },
+      { title: "Квадрат", description: "Стальной квадрат сплошного сечения.", image: "/images/calculators/metal/square.svg", alt: "Квадрат стальной", fieldId: "productType", value: "square" },
+      { title: "Шестигранник", description: "Пруток шестигранного сечения, размер под ключ.", image: "/images/calculators/metal/hexagon.svg", alt: "Шестигранник стальной", fieldId: "productType", value: "hexagon" },
+      { title: "Полоса", description: "Плоский стальной прокат по ширине и толщине.", image: "/images/calculators/metal/strip.svg", alt: "Полоса стальная", fieldId: "productType", value: "strip" },
+      { title: "Лист", description: "Листовой прокат: масса, площадь и количество листов.", image: "/images/calculators/metal/sheet.svg", alt: "Лист стальной", fieldId: "productType", value: "sheet" },
+      { title: "Труба круглая", description: "Наружный диаметр и толщина стенки.", image: "/images/calculators/metal/round-pipe.svg", alt: "Труба стальная круглая", fieldId: "productType", value: "roundPipe" },
+      { title: "Труба квадратная", description: "Квадратная профильная труба.", image: "/images/calculators/metal/square-tube.svg", alt: "Труба профильная квадратная", fieldId: "productType", value: "squareTube" },
+      { title: "Труба прямоугольная", description: "Прямоугольная профильная труба.", image: "/images/calculators/metal/rect-tube.svg", alt: "Труба профильная прямоугольная", fieldId: "productType", value: "rectTube" },
+      { title: "Уголок", description: "Горячекатаный равнополочный уголок по ГОСТ 8509-93.", image: "/images/calculators/metal/angle.svg", alt: "Уголок стальной", fieldId: "productType", value: "angle" },
+      { title: "Швеллер", description: "Горячекатаный швеллер серии П по ГОСТ 8240-97.", image: "/images/calculators/metal/channel.svg", alt: "Швеллер стальной", fieldId: "productType", value: "channel" },
+      { title: "Двутавр", description: "Горячекатаная двутавровая балка по ГОСТ 8239-89.", image: "/images/calculators/metal/i-beam.svg", alt: "Двутавр стальной", fieldId: "productType", value: "beam" },
+    ],
+    offerColumns: metalColumns,
+    calculate: metalCalculate,
+    getParamsText: metalParams,
+    getWarning: metalWarning,
+    normalizeValues: normalizeMetalValues,
+    relatedLinks: [
+      { label: "Каталог металлопроката", href: "/catalog/metal-roll" },
+      { label: "Арматура", href: "/catalog/rebar" },
+      { label: "Все калькуляторы", href: "/calculators" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор металлопроката", text: "Калькулятор переводит массу в длину и количество штук, длину — в массу и количество, а для листового проката дополнительно считает площадь и число листов. Для сортаментных профилей используются табличные теоретические массы, для простых геометрических сечений — расчёт при плотности стали 7850 кг/м³." },
+      { title: "Какие виды проката доступны", text: "В одном калькуляторе собраны арматура, круг, квадрат, шестигранник, полоса, стальной лист, круглая труба, квадратная и прямоугольная профильная труба, равнополочный уголок, швеллер серии П и горячекатаный двутавр." },
+      { title: "Как пользоваться пересчётом", text: "Выберите изделие, задайте размеры и длину одной штуки. Затем укажите, что известно: общая длина, масса или количество штук. Для листа можно исходить из количества, площади или массы. Результат показывает как точный пересчёт, так и количество целых изделий к заказу." },
+      { title: "Почему фактическая масса может отличаться", text: "Теоретическая масса определяется по номинальным размерам. Реальная партия может отличаться из-за допусков по толщине, диаметру, геометрии профиля и длине. Перед выставлением счёта менеджер IDELEON проверит сортамент, длину поставки и наличие на складе." },
+      { title: "Когда нужен расчёт специалиста", text: "Обратитесь в IDELEON, если требуется смешанная спецификация, резка в размер, нестандартная длина, несколько марок стали, подбор аналогов или расчёт доставки. Скачанный Excel можно использовать как основу запроса цены." },
+    ],
+    faq: [
+      { question: "Какую плотность стали использует калькулятор?", answer: "Для геометрических формул используется 7850 кг/м³ — стандартное значение для расчёта теоретической массы углеродистой стали." },
+      { question: "Почему калькулятор показывает расчётное и целое количество штук?", answer: "Пересчёт массы или длины может дать дробное число изделий. Для заказа калькулятор отдельно округляет количество полных прутков, труб или балок вверх." },
+      { question: "Какие швеллеры включены?", answer: "В первой версии используется наиболее понятный сортамент горячекатаных швеллеров серии П с параллельными гранями полок по ГОСТ 8240-97." },
+      { question: "Какие уголки включены?", answer: "Калькулятор содержит распространённые равнополочные горячекатаные уголки по ГОСТ 8509-93." },
+      { question: "Можно ли использовать Excel-КП для запроса цены?", answer: "Да. В файле уже будут изделие, размер, норматив, расчётная масса и поле для цены за тонну. Окончательное предложение формируется после проверки наличия и условий поставки." },
+    ],
+  },
   {
     slug: "profil-gkl",
     group: "gkl",
