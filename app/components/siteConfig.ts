@@ -67,6 +67,13 @@ export const siteConfig = {
             { label: "Калькулятор сэндвич-панелей", href: "/calculators/sendvich-paneli" },
           ],
         },
+        {
+          label: "Стеновые блоки",
+          href: "/calculators/stenovye-bloki",
+          children: [
+            { label: "Газобетон и полистиролбетон", href: "/calculators/stenovye-bloki" },
+          ],
+        },
       ],
     },
     { label: "Статьи", href: "/articles" },
