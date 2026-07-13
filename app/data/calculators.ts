@@ -76,7 +76,7 @@ export type CalculatorResultRow = {
 
 export type CalculatorConfig = {
   slug: string;
-  group: "gkl" | "grilyato" | "cassette" | "metal" | "sandwich";
+  group: "gkl" | "grilyato" | "cassette" | "metal" | "sandwich" | "blocks";
   title: string;
   shortTitle: string;
   description: string;
@@ -1242,6 +1242,192 @@ function sandwichWarning(values: Record<string, string>) {
   return null;
 }
 
+
+const blocksColumns: OfferColumn[] = [
+  { key: "index", title: "№", width: 6 },
+  { key: "name", title: "Наименование", width: 38 },
+  { key: "size", title: "Размер / характеристика", width: 26 },
+  { key: "unit", title: "Ед. изм.", width: 12 },
+  { key: "coefficient", title: "Основание расчёта", width: 32 },
+  { key: "quantity", title: "Количество", width: 16 },
+  { key: "priceUnit", title: "Цена за", width: 12 },
+  { key: "price", title: "Цена", width: 14 },
+  { key: "sum", title: "Сумма", width: 16 },
+];
+
+function blocksNumber(value: string | undefined) {
+  return toNumber(String(value ?? ""));
+}
+
+function blocksMaterialLabel(value: string) {
+  return value === "polystyrene" ? "Полистиролбетон" : "Газобетон";
+}
+
+function blocksWallTypeLabel(value: string) {
+  if (value === "bearing") return "Внутренние несущие стены";
+  if (value === "partition") return "Перегородки";
+  return "Наружные стены";
+}
+
+function blocksOpeningsArea(values: Record<string, string>) {
+  if ((values.openingsMode || "area") === "count") {
+    const windowArea = blocksNumber(values.windowCount) * blocksNumber(values.windowWidth) * blocksNumber(values.windowHeight);
+    const doorArea = blocksNumber(values.doorCount) * blocksNumber(values.doorWidth) * blocksNumber(values.doorHeight);
+    return windowArea + doorArea;
+  }
+  return blocksNumber(values.openingsArea);
+}
+
+function blocksTotals(values: Record<string, string>) {
+  const material = values.blockMaterial || "gas";
+  const wallLength = blocksNumber(values.wallLength);
+  const wallHeight = blocksNumber(values.wallHeight);
+  const floors = Math.max(Math.round(blocksNumber(values.floors) || 1), 1);
+  const openingsArea = blocksOpeningsArea(values);
+  const grossArea = wallLength * wallHeight * floors;
+  const netArea = Math.max(grossArea - openingsArea, 0);
+  const thicknessM = blocksNumber(values.blockThickness) / 1000;
+  const blockLengthM = blocksNumber(values.blockLength) / 1000;
+  const blockHeightM = blocksNumber(values.blockHeight) / 1000;
+  const blockVolume = blockLengthM * blockHeightM * thicknessM;
+  const volume = netArea * thicknessM;
+  const volumeWithReserve = addReserve(volume, reserve(values));
+  const blockCountExact = blockVolume > 0 ? volumeWithReserve / blockVolume : 0;
+  const blockCount = Math.ceil(blockCountExact);
+  const density = blocksNumber(values.blockDensity) || 500;
+  const weightT = volumeWithReserve * density / 1000;
+  const glueKgM3 = blocksNumber(values.glueConsumption) || 25;
+  const bagWeight = blocksNumber(values.glueBagWeight) || 25;
+  const glueKg = volumeWithReserve * glueKgM3;
+  const glueBags = Math.ceil(glueKg / bagWeight);
+  return {
+    material,
+    wallLength,
+    wallHeight,
+    floors,
+    openingsArea,
+    grossArea,
+    netArea,
+    thicknessM,
+    blockLengthM,
+    blockHeightM,
+    blockVolume,
+    volume,
+    volumeWithReserve,
+    blockCountExact,
+    blockCount,
+    density,
+    weightT,
+    glueKgM3,
+    bagWeight,
+    glueKg,
+    glueBags,
+  };
+}
+
+function blocksCalculate(values: Record<string, string>): CalculatorResultRow[] {
+  const t = blocksTotals(values);
+  const material = blocksMaterialLabel(t.material);
+  const blockSize = `${values.blockLength || "625"}×${values.blockHeight || "250"}×${values.blockThickness || "300"} мм, D${values.blockDensity || "500"}`;
+  return [
+    resultRow({
+      name: `${material}ные блоки`,
+      size: blockSize,
+      unit: "м³",
+      coefficient: `Чистая площадь стен × толщина + ${reserve(values)}% запас`,
+      quantity: roundUp(t.volumeWithReserve, 0.01),
+      priceUnit: "м³",
+    }),
+    resultRow({
+      name: `Кладочная смесь, мешок ${fmt(t.bagWeight)} кг`,
+      size: `${fmt(t.glueKgM3)} кг на 1 м³ кладки`,
+      unit: "меш.",
+      coefficient: `Объём блоков × ${fmt(t.glueKgM3)} кг/м³`,
+      quantity: t.glueBags,
+      priceUnit: "меш.",
+    }),
+    resultRow({
+      name: "Расчётное количество блоков",
+      size: blockSize,
+      unit: "шт.",
+      coefficient: "Объём с запасом / объём одного блока",
+      quantity: t.blockCount,
+      includeInOffer: false,
+    }),
+    resultRow({
+      name: "Чистая площадь кладки",
+      size: blocksWallTypeLabel(values.wallType || "exterior"),
+      unit: "м²",
+      coefficient: "Площадь стен − оконные и дверные проёмы",
+      quantity: roundUp(t.netArea, 0.01),
+      includeInOffer: false,
+    }),
+    resultRow({
+      name: "Объём кладки без запаса",
+      size: `${fmt(t.thicknessM)} м толщина стены`,
+      unit: "м³",
+      coefficient: "Чистая площадь × толщина",
+      quantity: roundUp(t.volume, 0.01),
+      includeInOffer: false,
+    }),
+    resultRow({
+      name: "Теоретическая масса блоков",
+      size: `Плотность D${fmt(t.density)}`,
+      unit: "т",
+      coefficient: "Объём с запасом × плотность",
+      quantity: roundUp(t.weightT, 0.001),
+      includeInOffer: false,
+    }),
+  ];
+}
+
+function blocksParams(values: Record<string, string>) {
+  const t = blocksTotals(values);
+  return [
+    `Материал: ${blocksMaterialLabel(values.blockMaterial || "gas")}`,
+    `Тип стен: ${blocksWallTypeLabel(values.wallType || "exterior")}`,
+    `Размер блока: ${values.blockLength}×${values.blockHeight}×${values.blockThickness} мм`,
+    `Плотность: D${values.blockDensity}`,
+    `Длина стен: ${fmt(t.wallLength)} м`,
+    `Высота: ${fmt(t.wallHeight)} м`,
+    `Этажей: ${t.floors}`,
+    `Проёмы: ${fmt(t.openingsArea)} м²`,
+    `Объём с запасом: ${fmt(t.volumeWithReserve)} м³`,
+  ].join("; ");
+}
+
+function blocksWarning(values: Record<string, string>) {
+  const t = blocksTotals(values);
+  if (!t.wallLength || !t.wallHeight) return "Укажите общую длину и высоту стен больше нуля.";
+  if (!t.blockLengthM || !t.blockHeightM || !t.thicknessM) return "Проверьте длину, высоту и толщину блока.";
+  if (t.openingsArea >= t.grossArea) return "Площадь проёмов должна быть меньше общей площади стен.";
+  if (!t.volumeWithReserve || !t.blockCount) return "Проверьте исходные параметры расчёта.";
+  return null;
+}
+
+function normalizeBlocksValues(values: Record<string, string>, changedFieldId: string) {
+  const next = { ...values };
+  if (changedFieldId === "__init__") {
+    next.blockMaterial = next.blockMaterial || "gas";
+    next.wallType = next.wallType || "exterior";
+  }
+  if (changedFieldId === "blockMaterial" || changedFieldId === "__init__") {
+    if ((next.blockMaterial || "gas") === "polystyrene") {
+      next.blockLength = "600";
+      next.blockHeight = "300";
+      next.blockDensity = "500";
+    } else {
+      next.blockLength = "625";
+      next.blockHeight = "250";
+      next.blockDensity = "500";
+    }
+  }
+  if (changedFieldId === "wallType" || changedFieldId === "blockMaterial" || changedFieldId === "__init__") {
+    next.blockThickness = next.wallType === "partition" ? "100" : next.wallType === "bearing" ? "200" : "300";
+  }
+  return next;
+}
+
 const commonReserveField: CalculatorField = {
   id: "reserve",
   label: "Запас, %",
@@ -1263,6 +1449,99 @@ const mountSchemeField: CalculatorField = {
 };
 
 export const calculators: CalculatorConfig[] = [
+
+  {
+    slug: "stenovye-bloki",
+    group: "blocks",
+    title: "Калькулятор газобетона и полистиролбетона",
+    shortTitle: "Стеновые блоки",
+    description: "Расчёт объёма и количества газобетонных или полистиролбетонных блоков, веса и кладочной смеси.",
+    seoTitle: "Калькулятор газобетона и полистиролбетона — блоки на дом",
+    seoDescription: "Онлайн-калькулятор IDELEON для расчёта газобетонных и полистиролбетонных блоков: площадь стен, проёмы, объём кладки, количество блоков, масса и кладочная смесь.",
+    h1: "Калькулятор газобетона и полистиролбетона",
+    intro: "Выберите материал и тип стен, задайте размеры блока и геометрию здания. Калькулятор рассчитает чистую площадь кладки, объём материала, ориентировочное количество блоков, теоретический вес и расход кладочной смеси.",
+    offerTitle: "Коммерческое предложение / стеновые блоки",
+    fileName: "KP_stenovye_bloki_ideleon.xlsx",
+    visualTitle: "Выберите материал",
+    visualDescription: "Карточка переключает материал и устанавливает типовые размеры блока. Любой размер можно затем скорректировать вручную.",
+    calculatorNote: "Расчёт предварительный. Фактическое количество зависит от раскладки, перевязки, фронтонов, армопоясов, подрезки, упаковки производителя и геометрии проекта.",
+    resultTitle: "Результат расчёта стеновых блоков",
+    resultMaterialTitle: "Показатель",
+    resultCoefficientTitle: "Основание расчёта",
+    resultQuantityTitle: "Количество",
+    resultMaxFractionDigits: 3,
+    fields: [
+      { id: "blockMaterial", label: "Материал", type: "buttons", defaultValue: "gas", hideInput: true, options: [
+        { label: "Газобетон", value: "gas" },
+        { label: "Полистиролбетон", value: "polystyrene" },
+      ] },
+      { id: "wallType", label: "Тип стен", type: "buttons", defaultValue: "exterior", hideInput: true, options: [
+        { label: "Наружные стены", value: "exterior" },
+        { label: "Внутренние несущие", value: "bearing" },
+        { label: "Перегородки", value: "partition" },
+      ] },
+      { id: "blockLength", label: "Длина блока, мм", type: "number", defaultValue: "625", step: "any" },
+      { id: "blockHeight", label: "Высота блока, мм", type: "number", defaultValue: "250", step: "any" },
+      { id: "blockThickness", label: "Толщина блока / стены, мм", type: "number", defaultValue: "300", step: "any" },
+      { id: "blockDensity", label: "Плотность блока, кг/м³", type: "select", defaultValue: "500", options: ["300","350","400","450","500","600"].map((value) => ({ label: `D${value}`, value })) },
+      { id: "wallLength", label: "Общая длина стен, м", type: "number", defaultValue: "40", step: "any" },
+      { id: "wallHeight", label: "Средняя высота стен одного этажа, м", type: "number", defaultValue: "3", step: "any" },
+      { id: "floors", label: "Количество этажей", type: "number", defaultValue: "1", step: "1" },
+      { id: "openingsMode", label: "Как задать проёмы", type: "buttons", defaultValue: "area", options: [
+        { label: "Общей площадью", value: "area" },
+        { label: "Окна и двери", value: "count" },
+      ] },
+      { id: "openingsArea", label: "Общая площадь окон и дверей, м²", type: "number", defaultValue: "18", step: "any", showWhen: { fieldId: "openingsMode", values: ["area"] } },
+      { id: "windowCount", label: "Количество окон", type: "number", defaultValue: "8", step: "1", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "windowWidth", label: "Средняя ширина окна, м", type: "number", defaultValue: "1,4", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "windowHeight", label: "Средняя высота окна, м", type: "number", defaultValue: "1,4", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorCount", label: "Количество дверей", type: "number", defaultValue: "2", step: "1", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorWidth", label: "Средняя ширина двери, м", type: "number", defaultValue: "0,9", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorHeight", label: "Средняя высота двери, м", type: "number", defaultValue: "2,1", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "glueConsumption", label: "Расход кладочной смеси, кг/м³", type: "number", defaultValue: "25", step: "any" },
+      { id: "glueBagWeight", label: "Вес мешка кладочной смеси, кг", type: "select", defaultValue: "25", options: ["20","25"].map((value) => ({ label: `${value} кг`, value })) },
+      commonReserveField,
+    ],
+    visuals: [
+      { title: "Газобетон", description: "Автоклавные ячеистые блоки. Типовой размер в калькуляторе — 625×250 мм.", image: "/images/calculators/blocks/gas-concrete.png", alt: "Газобетонный стеновой блок", fieldId: "blockMaterial", value: "gas" },
+      { title: "Полистиролбетон", description: "Лёгкие блоки с гранулами вспененного полистирола. Типовой размер — 600×300 мм.", image: "/images/calculators/blocks/polystyrene-concrete.png", alt: "Полистиролбетонный стеновой блок", fieldId: "blockMaterial", value: "polystyrene" },
+    ],
+    visualGroups: [
+      {
+        title: "Выберите тип стен",
+        description: "Тип стены устанавливает стартовую толщину блока. После выбора толщину можно изменить вручную по проекту.",
+        visuals: [
+          { title: "Наружные стены", description: "Внешний контур здания. Стартовая толщина — 300 мм.", image: "/images/calculators/blocks/exterior-walls.png", alt: "Наружные стены здания", fieldId: "wallType", value: "exterior" },
+          { title: "Внутренние несущие", description: "Несущие стены внутри здания. Стартовая толщина — 200 мм.", image: "/images/calculators/blocks/bearing-walls.png", alt: "Внутренняя несущая стена", fieldId: "wallType", value: "bearing" },
+          { title: "Перегородки", description: "Ненесущие разделительные стены. Стартовая толщина — 100 мм.", image: "/images/calculators/blocks/partitions.png", alt: "Перегородка из строительных блоков", fieldId: "wallType", value: "partition" },
+        ],
+      },
+    ],
+    offerColumns: blocksColumns,
+    calculate: blocksCalculate,
+    getParamsText: blocksParams,
+    getWarning: blocksWarning,
+    normalizeValues: normalizeBlocksValues,
+    relatedLinks: [
+      { label: "Калькулятор сэндвич-панелей", href: "/calculators/sendvich-paneli" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог строительных материалов", href: "/catalog" },
+    ],
+    seoSections: [
+      { title: "Что рассчитывает калькулятор", text: "Калькулятор определяет чистую площадь стен после вычета оконных и дверных проёмов, объём кладки, количество блоков, теоретическую массу и ориентировочное количество мешков кладочной смеси." },
+      { title: "Как задать проёмы", text: "Проёмы можно указать одной общей площадью либо через количество и средние размеры окон и дверей. Второй способ удобен на ранней стадии, когда точной ведомости проёмов ещё нет." },
+      { title: "Газобетон или полистиролбетон", text: "Выбор материала в калькуляторе меняет типовые размеры блока, но все параметры доступны для ручной корректировки. Для закупки важны фактический формат, плотность, класс прочности и упаковка конкретного производителя." },
+      { title: "Как учитывается кладочная смесь", text: "Расход задаётся пользователем в килограммах на кубометр кладки. По умолчанию установлено 25 кг/м³, но фактическое значение нужно сверять с инструкцией производителя смеси, толщиной шва и качеством геометрии блоков." },
+      { title: "Когда требуется проектный расчёт", text: "Точный расчёт требуется для фронтонов, эркеров, армопоясов, перемычек, сложной перевязки, нескольких толщин стен и нестандартных блоков. В таких случаях результат калькулятора используется как предварительная основа спецификации." },
+    ],
+    faq: [
+      { question: "Учитывает ли калькулятор запас?", answer: "Да. Запас применяется к объёму блоков и затем влияет на количество блоков, вес и расход кладочной смеси." },
+      { question: "Можно ли задать нестандартный размер блока?", answer: "Да. Длина, высота и толщина блока вводятся вручную, поэтому калькулятор подходит для разных производителей." },
+      { question: "Почему количество блоков округляется вверх?", answer: "Поставить дробную часть блока нельзя, поэтому ориентировочное количество изделий округляется до целого блока в большую сторону." },
+      { question: "Считает ли калькулятор поддоны?", answer: "Нет. Количество блоков или объём на поддоне различаются у производителей, поэтому упаковку нужно уточнять при запросе коммерческого предложения." },
+      { question: "Можно ли сразу заказать по этому расчёту?", answer: "Расчёт подходит для предварительной заявки. Перед выставлением счёта менеджер проверит размеры, плотность, упаковку, наличие и условия доставки." },
+    ],
+  },
 
   {
     slug: "sendvich-paneli",
