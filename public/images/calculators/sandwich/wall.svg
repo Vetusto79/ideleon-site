@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" fill="none">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="675" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#0F172A"/>
+    <stop offset="1" stop-color="#1E293B"/>
+  </linearGradient>
+  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#F8FAFC"/>
+    <stop offset="0.2" stop-color="#CBD5E1"/>
+    <stop offset="0.5" stop-color="#94A3B8"/>
+    <stop offset="0.8" stop-color="#E2E8F0"/>
+    <stop offset="1" stop-color="#64748B"/>
+  </linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.35"/></filter>
+</defs>
+<rect width="1200" height="675" rx="36" fill="url(#bg)"/>
+<g opacity="0.08" stroke="#E2E8F0">
+  <path d="M60 70H1140"/><path d="M60 150H1140"/><path d="M60 230H1140"/><path d="M60 310H1140"/><path d="M60 390H1140"/><path d="M60 470H1140"/><path d="M60 550H1140"/>
+  <path d="M120 40V635"/><path d="M240 40V635"/><path d="M360 40V635"/><path d="M480 40V635"/><path d="M600 40V635"/><path d="M720 40V635"/><path d="M840 40V635"/><path d="M960 40V635"/><path d="M1080 40V635"/>
+</g>
+<rect x="66" y="54" width="300" height="44" rx="22" fill="#1f293733" stroke="#FB923C"/>
+<text x="92" y="83" fill="#FDBA74" font-size="24" font-family="Arial, Helvetica, sans-serif" font-weight="700">IDELEON • SANDWICH</text>
+<g filter="url(#shadow)" transform="translate(180 135)"><rect x="160" y="120" width="540" height="320" rx="18" fill="#E5E7EB"/><line x1="160" y1="200" x2="700" y2="200" stroke="#94A3B8" stroke-width="10"/><line x1="160" y1="280" x2="700" y2="280" stroke="#94A3B8" stroke-width="10"/><line x1="160" y1="360" x2="700" y2="360" stroke="#94A3B8" stroke-width="10"/><line x1="250" y1="120" x2="250" y2="440" stroke="#94A3B8" stroke-width="10"/><line x1="340" y1="120" x2="340" y2="440" stroke="#94A3B8" stroke-width="10"/><line x1="430" y1="120" x2="430" y2="440" stroke="#94A3B8" stroke-width="10"/><line x1="520" y1="120" x2="520" y2="440" stroke="#94A3B8" stroke-width="10"/><line x1="610" y1="120" x2="610" y2="440" stroke="#94A3B8" stroke-width="10"/></g><text x="76" y="588" fill="#F8FAFC" font-size="44" font-family="Arial, Helvetica, sans-serif" font-weight="700">Стеновые панели</text><text x="78" y="624" fill="#CBD5E1" font-size="24" font-family="Arial, Helvetica, sans-serif">Расчёт только стенового контура с учётом проёмов.</text></svg>
