@@ -117,15 +117,33 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
       const raw = window.localStorage.getItem(GKL_PROJECT_STORAGE_KEY);
       if (raw) {
         const saved = JSON.parse(raw) as { projectName?: string; items?: CalculatorProjectItem[] };
+        const defaults = initialValues(calculator);
+        const recalculatedItems = Array.isArray(saved.items)
+          ? saved.items.map((item) => {
+              const restoredValues = { ...defaults, ...(item.values || {}) };
+              const normalizedValues = calculator.normalizeValues
+                ? calculator.normalizeValues(restoredValues, "__restore__")
+                : restoredValues;
+
+              return {
+                ...item,
+                title: gklProjectTitle(normalizedValues),
+                paramsText: calculator.getParamsText(normalizedValues),
+                values: normalizedValues,
+                rows: cloneRows(calculator.calculate(normalizedValues)),
+              };
+            })
+          : [];
+
         setProjectName(saved.projectName || "");
-        setProjectItems(Array.isArray(saved.items) ? saved.items : []);
+        setProjectItems(recalculatedItems);
       }
     } catch {
       setProjectItems([]);
     } finally {
       setProjectLoaded(true);
     }
-  }, [projectEnabled]);
+  }, [projectEnabled, calculator]);
 
   useEffect(() => {
     if (!projectEnabled || !projectLoaded || typeof window === "undefined") return;
