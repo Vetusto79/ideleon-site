@@ -3380,3 +3380,624 @@ button.calculatorVisualCard:focus-visible {
     padding: 10px;
   }
 }
+
+
+/* =========================================================
+   IDELEON — MOBILE SITE AND CALCULATORS FIX 2026-07-14
+   ========================================================= */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+body.mobileMenuLocked {
+  overflow: hidden;
+  touch-action: none;
+}
+
+.mobileHeaderControls,
+.mobileNavToggle,
+.mobileChildToggle,
+.mobileNavContacts {
+  display: none;
+}
+
+.navItemRow {
+  display: flex;
+  align-items: center;
+}
+
+/* Touch targets and iOS form stability */
+button,
+a,
+input,
+select,
+textarea {
+  touch-action: manipulation;
+}
+
+@media (max-width: 1100px) {
+  .header {
+    min-height: 72px;
+    height: 72px;
+    padding: 8px 14px;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 120;
+    flex-wrap: nowrap;
+  }
+
+  .logo {
+    width: min(190px, 52vw);
+    min-width: 0;
+    flex: 0 1 190px;
+  }
+
+  .mobileHeaderControls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-left: auto;
+  }
+
+  .mobileCallButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 13px;
+    border: 1px solid rgba(255, 106, 0, 0.32);
+    border-radius: 12px;
+    background: #fff7ed;
+    color: #d95400;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .mobileMenuButton {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 1px solid #dbe2ea;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #0f172a;
+    cursor: pointer;
+  }
+
+  .mobileMenuButton span {
+    display: block;
+    width: 21px;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    transition: transform 0.18s ease, opacity 0.18s ease;
+  }
+
+  .headerMobileOpen .mobileMenuButton span:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+
+  .headerMobileOpen .mobileMenuButton span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .headerMobileOpen .mobileMenuButton span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .headerContacts {
+    display: none;
+  }
+
+  .nav {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 72px;
+    bottom: 0;
+    z-index: 110;
+    width: 100%;
+    max-width: none;
+    padding: 10px 14px 34px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: #f6f8fb;
+    font-size: 16px;
+    white-space: normal;
+    box-shadow: inset 0 1px 0 #e5e7eb;
+  }
+
+  .nav.navMobileOpen {
+    display: block;
+  }
+
+  .navItem {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    width: 100%;
+    margin: 0 0 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .navItem > .navLink {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 54px;
+    padding: 14px 16px;
+    color: #0f172a;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .navItem > .navLink:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .navItem .navArrow,
+  .navItem .navSubArrow {
+    display: none;
+  }
+
+  .mobileNavToggle,
+  .mobileChildToggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0;
+    border: 0;
+    border-left: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #0f172a;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .mobileNavToggle span,
+  .mobileChildToggle span {
+    display: inline-block;
+    transition: transform 0.18s ease;
+  }
+
+  .navItem.mobileExpanded > .mobileNavToggle span,
+  .navDropdownItemWithChildren.mobileChildExpanded > .mobileChildToggle span {
+    transform: rotate(180deg);
+  }
+
+  .navDropdown,
+  .navSubmenu {
+    position: static;
+    left: auto;
+    top: auto;
+    min-width: 0;
+    width: 100%;
+    margin: 0;
+    padding: 8px;
+    border: 0;
+    border-top: 1px solid #e2e8f0;
+    border-radius: 0;
+    background: #f8fafc;
+    box-shadow: none;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    transition: none;
+  }
+
+  .navItem > .navDropdown {
+    display: none;
+    grid-column: 1 / -1;
+  }
+
+  .navItem.mobileExpanded > .navDropdown {
+    display: block;
+  }
+
+  .navDropdown::before,
+  .navSubmenu::before {
+    display: none;
+  }
+
+  .navDropdownItem {
+    display: block;
+    margin: 0 0 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 13px;
+    background: #ffffff;
+    overflow: hidden;
+  }
+
+  .navDropdownItem:last-child {
+    margin-bottom: 0;
+  }
+
+  .navDropdownItem > a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 14px;
+    border-radius: 0;
+    color: #1e293b;
+    font-size: 15px;
+    font-weight: 900;
+    white-space: normal;
+  }
+
+  .navDropdownItemWithChildren {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 46px;
+  }
+
+  .navDropdownItemWithChildren > a {
+    grid-column: 1;
+  }
+
+  .navDropdownItemWithChildren > .mobileChildToggle {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 46px;
+    min-height: 48px;
+  }
+
+  .navDropdownItemWithChildren > .navSubmenu {
+    display: none;
+    grid-column: 1 / -1;
+  }
+
+  .navDropdownItemWithChildren.mobileChildExpanded > .navSubmenu {
+    display: block;
+  }
+
+  .navSubmenu a {
+    display: flex;
+    align-items: center;
+    min-height: 46px;
+    margin-bottom: 5px;
+    padding: 11px 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    background: #ffffff;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 800;
+    white-space: normal;
+  }
+
+  .navSubmenu a:last-child {
+    margin-bottom: 0;
+  }
+
+  .mobileNavContacts {
+    display: grid;
+    gap: 8px;
+    margin-top: 14px;
+    padding: 15px;
+    border-radius: 16px;
+    background: #0f1b33;
+  }
+
+  .mobileNavContacts strong {
+    color: #ffffff;
+    font-size: 14px;
+  }
+
+  .mobileNavContacts a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 12px;
+    border-radius: 11px;
+    background: rgba(255,255,255,0.08);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 900;
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 34px;
+    padding: 56px 22px 54px;
+  }
+
+  .heroText,
+  .heroVisual,
+  .pageHero > *,
+  .calculatorPanel,
+  .calculatorVisualGroup {
+    min-width: 0;
+  }
+
+  .hero h1 {
+    font-size: clamp(38px, 8vw, 58px);
+    line-height: 1.06;
+  }
+
+  .lead {
+    font-size: 18px;
+  }
+
+  .pageHero {
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .calculatorSection,
+  .calculatorVisualSection,
+  .calculatorSeoSection,
+  .calculatorFaqSection,
+  .calculatorGroupedHub,
+  .articleHubSection {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .calculatorGrid,
+  .calculatorSection:not(.calculatorSectionStacked) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calculatorResultPanel {
+    position: static;
+    top: auto;
+  }
+
+  .calculatorVisualGrid,
+  .calculatorVisualGridThree {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calculatorVisualGridTwo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calculatorFields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .calculatorActions > *,
+  .gklProjectFooter > * {
+    min-height: 50px;
+  }
+
+  .calculatorTableWrap {
+    position: relative;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .calculatorResultTable {
+    min-width: 720px;
+  }
+}
+
+@media (max-width: 700px) {
+  .header {
+    padding: 8px 10px;
+  }
+
+  .logo {
+    width: min(172px, 48vw);
+    flex-basis: 172px;
+  }
+
+  .mobileCallButton {
+    min-height: 40px;
+    padding: 0 10px;
+    font-size: 13px;
+  }
+
+  .mobileMenuButton {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+  }
+
+  .hero {
+    padding: 42px 16px 44px;
+  }
+
+  .hero h1,
+  .pageHero h1 {
+    overflow-wrap: anywhere;
+  }
+
+  .heroButtons,
+  .calculatorActions,
+  .gklProjectFooter,
+  .calculatorSendFormActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .heroButtons > *,
+  .calculatorActions > *,
+  .gklProjectFooter > *,
+  .calculatorSendFormActions > *,
+  .primaryButton,
+  .secondaryButton,
+  .danger {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .calculatorSection,
+  .calculatorVisualSection,
+  .calculatorSeoSection,
+  .calculatorFaqSection,
+  .calculatorGroupedHub,
+  .articleHubSection {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .calculatorPanel,
+  .calculatorVisualGroup,
+  .calculatorRelatedLinks,
+  .calculatorGroupBlock {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .calculatorPanel h2,
+  .calculatorVisualHeader h2,
+  .calculatorGroupHeader h2 {
+    font-size: clamp(25px, 7vw, 32px);
+    line-height: 1.12;
+  }
+
+  .calculatorVisualGrid,
+  .calculatorVisualGridThree,
+  .calculatorVisualGridTwo,
+  .calculatorVisualGridSingle,
+  .calculatorHub,
+  .calculatorHubGrouped,
+  .calculatorFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calculatorVisualCard {
+    border-radius: 18px;
+  }
+
+  .calculatorVisualPhotoWrap {
+    aspect-ratio: 16 / 9;
+  }
+
+  .calculatorVisualPhotoWrap .calculatorVisualPhoto {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .calculatorVisualSelected {
+    top: 10px !important;
+    right: 10px !important;
+    min-height: 30px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .calculatorField input,
+  .calculatorField select,
+  .calculatorSendForm input,
+  .calculatorSendForm textarea {
+    min-height: 52px;
+    font-size: 16px;
+  }
+
+  .calculatorToggleGroup {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calculatorToggleGroup button {
+    width: 100%;
+    min-height: 50px;
+    border-radius: 14px;
+  }
+
+  .calculatorTableWrap {
+    margin-left: -4px;
+    margin-right: -4px;
+    padding-top: 34px;
+    border-radius: 16px;
+  }
+
+  .calculatorTableWrap::before {
+    content: "Таблицу можно прокручивать влево и вправо →";
+    position: absolute;
+    left: 12px;
+    top: 8px;
+    z-index: 2;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+
+  .calculatorResultTable {
+    min-width: 660px;
+  }
+
+  .calculatorResultTable th,
+  .calculatorResultTable td {
+    padding: 13px 12px;
+    font-size: 14px;
+  }
+
+  .calculatorSendForm {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calculatorConsent {
+    align-items: flex-start;
+  }
+
+  .gklProjectHeader,
+  .gklProjectItemContent,
+  .gklProjectItemActions {
+    min-width: 0;
+  }
+
+  .gklProjectItemActions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+  }
+
+  .gklProjectItemActions button {
+    width: 100%;
+  }
+
+  .footer,
+  .footerGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 390px) {
+  .mobileCallButton {
+    width: 42px;
+    padding: 0;
+    overflow: hidden;
+    color: transparent;
+    font-size: 0;
+  }
+
+  .mobileCallButton::before {
+    content: "☎";
+    color: #d95400;
+    font-size: 20px;
+  }
+
+  .logo {
+    width: min(168px, 54vw);
+    flex-basis: 168px;
+  }
+}
