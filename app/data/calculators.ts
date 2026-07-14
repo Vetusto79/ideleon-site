@@ -179,6 +179,34 @@ const grilyatoColumns: OfferColumn[] = [
   { key: "sum", title: "Сумма", width: 16 },
 ];
 
+function gklWallArea(values: Record<string, string>) {
+  if ((values.wallInputMode || "area") === "area") {
+    return toNumber(values.wallArea);
+  }
+  return toNumber(values.wallHeight) * toNumber(values.wallLength);
+}
+
+function gklWallLength(values: Record<string, string>) {
+  const height = toNumber(values.wallHeight);
+  if ((values.wallInputMode || "area") === "area") {
+    return height > 0 ? gklWallArea(values) / height : 0;
+  }
+  return toNumber(values.wallLength);
+}
+
+function normalizeGklValues(values: Record<string, string>, changedFieldId: string) {
+  const next = { ...values };
+  const type = next.constructionType || "ceiling";
+
+  if (type === "ceiling") {
+    next.wallInputMode = "none";
+  } else if (changedFieldId === "constructionType" || next.wallInputMode === "none" || !next.wallInputMode) {
+    next.wallInputMode = "area";
+  }
+
+  return next;
+}
+
 function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
   const type = values.constructionType || "ceiling";
   const rows: CalculatorResultRow[] = [];
@@ -214,7 +242,7 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
   }
 
   if (type === "cladding") {
-    const area = toNumber(values.wallHeight) * toNumber(values.wallLength);
+    const area = gklWallArea(values);
     const length = values.ceilingProfileLengthMm || "3000";
     push("Лист ГКЛ", "м²", "Площадь стены × 1", area);
     push(`Профиль ПП 60×27, ${profileLengthLabel(length)}`, "пог. м", "Площадь стены × 2", area * 2, length);
@@ -223,7 +251,7 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
   }
 
   if (type === "partition") {
-    const area = toNumber(values.wallHeight) * toNumber(values.wallLength);
+    const area = gklWallArea(values);
     const width = values.partitionWidth || "50";
     const length = values.studProfileLengthMm || "3000";
     const guideName = width === "50" ? "Профиль ПН 50×40" : width === "75" ? "Профиль ПН 75×40" : "Профиль ПН 100×40";
@@ -241,12 +269,16 @@ function gklParams(values: Record<string, string>) {
   if (type === "ceiling") {
     return `Потолок из ГКЛ; площадь потолка: ${values.ceilingArea} м²; периметр: ${values.ceilingPerimeter} м; подвес: ${(values.suspensionType || "direct") === "direct" ? "прямой" : "анкерный с тягой"}; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
   }
+
+  const area = gklWallArea(values);
+  const length = gklWallLength(values);
+  const inputMode = (values.wallInputMode || "area") === "area" ? "по площади и высоте" : "по длине и высоте";
+
   if (type === "cladding") {
-    const area = toNumber(values.wallHeight) * toNumber(values.wallLength);
-    return `Выравнивание стены ГКЛ; высота: ${values.wallHeight} м; длина: ${values.wallLength} м; площадь: ${fmt(area)} м²; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
+    return `Выравнивание стены ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь: ${fmt(area)} м²; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
   }
-  const area = toNumber(values.wallHeight) * toNumber(values.wallLength);
-  return `Перегородка из ГКЛ; высота: ${values.wallHeight} м; длина: ${values.wallLength} м; площадь: ${fmt(area)} м²; профиль: ${values.partitionWidth} мм; длина стоечного профиля: ${values.studProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
+
+  return `Перегородка из ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь перегородки по одной стороне: ${fmt(area)} м²; профиль: ${values.partitionWidth} мм; длина стоечного профиля: ${values.studProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
 }
 
 const standardCellOptions = [
@@ -1776,7 +1808,7 @@ export const calculators: CalculatorConfig[] = [
     seoTitle: "Калькулятор профиля для ГКЛ — расчёт расхода онлайн",
     seoDescription: "Онлайн-калькулятор профиля для гипсокартона: потолок, выравнивание стены и перегородка. Расчёт ПП, ППН, ПН, ПС, подвесов и соединителей.",
     h1: "Калькулятор профиля для ГКЛ",
-    intro: "Введите параметры конструкции, чтобы получить предварительный расход профилей и комплектующих. Расчёт можно скачать в Excel и отправить в Иделеон.",
+    intro: "Введите параметры конструкции, чтобы получить предварительный расход профилей и комплектующих. Для перегородок и выравнивания стен можно считать как по длине и высоте, так и сразу по площади в квадратных метрах. Расчёт можно скачать в Excel и отправить в Иделеон.",
     offerTitle: "Коммерческое предложение / расчёт профиля для ГКЛ",
     fileName: "KP_profil_GKL_ideleon.xlsx",
     visualTitle: "Выберите тип конструкции",
@@ -1806,8 +1838,41 @@ export const calculators: CalculatorConfig[] = [
           { label: "Анкерный + тяга", value: "anchor" },
         ],
       },
-      { id: "wallHeight", label: "Высота, м", type: "number", defaultValue: "3", showWhen: { fieldId: "constructionType", values: ["cladding", "partition"] } },
-      { id: "wallLength", label: "Длина, м", type: "number", defaultValue: "10", showWhen: { fieldId: "constructionType", values: ["cladding", "partition"] } },
+      {
+        id: "wallInputMode",
+        label: "Как задать размеры стены",
+        type: "buttons",
+        defaultValue: "none",
+        showWhen: { fieldId: "constructionType", values: ["cladding", "partition"] },
+        options: [
+          { label: "По площади", value: "area" },
+          { label: "По длине", value: "dimensions" },
+        ],
+      },
+      {
+        id: "wallArea",
+        label: "Площадь стены / перегородки по одной стороне, м²",
+        type: "number",
+        defaultValue: "100",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["area"] },
+      },
+      {
+        id: "wallHeight",
+        label: "Высота стены / перегородки, м",
+        type: "number",
+        defaultValue: "3",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["area", "dimensions"] },
+      },
+      {
+        id: "wallLength",
+        label: "Общая длина стены / перегородки, м",
+        type: "number",
+        defaultValue: "10",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["dimensions"] },
+      },
       {
         id: "partitionWidth",
         label: "Ширина профиля перегородки",
@@ -1852,11 +1917,13 @@ export const calculators: CalculatorConfig[] = [
     offerColumns: gklColumns,
     calculate: gklCalculate,
     getParamsText: gklParams,
+    normalizeValues: normalizeGklValues,
     seoSections: [
-      { title: "Что считает калькулятор профиля для ГКЛ", text: "Калькулятор помогает предварительно оценить расход листов, профилей, подвесов и соединителей для типовых конструкций из гипсокартона. Итоговый расчёт лучше проверять по проекту, потому что на расход влияют высота, шаг профилей, количество слоёв, проёмы и требования к конструкции." },
+      { title: "Что считает калькулятор профиля для ГКЛ", text: "Калькулятор помогает предварительно оценить расход листов, профилей, подвесов и соединителей для типовых конструкций из гипсокартона. Для выравнивания стен и перегородок исходные данные можно задать двумя способами: площадью и высотой либо длиной и высотой. Итоговый расчёт лучше проверять по проекту, потому что на расход влияют шаг профилей, количество слоёв, проёмы и требования к конструкции." },
       { title: "Когда стоит отправить расчёт в Иделеон", text: "Если у вас есть ведомость, проект или список материалов, отправьте расчёт нам. Мы проверим комплектность, подберём позиции под объект и подготовим коммерческое предложение." },
     ],
     faq: [
+      { question: "Можно ли считать перегородку или обшивку сразу по квадратным метрам?", answer: "Да. Выберите способ «По площади», укажите площадь конструкции по одной стороне и её высоту. Калькулятор самостоятельно определит расчётную длину и выполнит дальнейший расчёт." },
       { question: "Можно ли использовать расчёт как финальную спецификацию?", answer: "Нет. Это предварительный расчёт для оценки расхода. Финальную комплектацию лучше проверять по проекту." },
       { question: "Почему выравнивание стены считается через ПП 60×27?", answer: "Потому что в этом варианте каркас крепится к стене на прямых подвесах и собирается на потолочной паре ПП 60×27 и ППН 27×28." },
     ],
