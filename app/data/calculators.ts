@@ -155,6 +155,24 @@ function profileLengthLabel(mm: string) {
   return `L=${mm} мм`;
 }
 
+function gklProfileQuantityWithReserve(quantityMeters: number, values: Record<string, string>, profileLengthMm?: string | null) {
+  const quantityWithReserve = addReserve(quantityMeters, reserve(values));
+  const profileLengthM = profileLengthMm ? toNumber(profileLengthMm) / 1000 : 0;
+
+  if (profileLengthM > 0) {
+    return roundUp(quantityWithReserve, profileLengthM);
+  }
+
+  return roundUp(quantityWithReserve, 0.01);
+}
+
+function gklProfileCoefficient(baseCoefficient: string, profileLengthMm?: string | null) {
+  const profileLengthM = profileLengthMm ? toNumber(profileLengthMm) / 1000 : 0;
+  return profileLengthM > 0
+    ? `${baseCoefficient}; округление до целых профилей по ${fmt(profileLengthM)} м`
+    : baseCoefficient;
+}
+
 const gklColumns: OfferColumn[] = [
   { key: "index", title: "№", width: 6 },
   { key: "name", title: "Наименование", width: 38 },
@@ -213,12 +231,17 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
   const reserveValue = reserve(values);
 
   function push(name: string, unit: string, coefficient: string, quantity: number, profileLengthMm?: string | null) {
+    const isProfileInMeters = unit === "пог. м" && Boolean(profileLengthMm);
+    const finalQuantity = isProfileInMeters
+      ? gklProfileQuantityWithReserve(quantity, values, profileLengthMm)
+      : roundUp(addReserve(quantity, reserveValue), unit === "шт." ? 1 : 0.01);
+
     rows.push(resultRow({
       name,
       unit,
-      coefficient,
-      quantity: roundUp(addReserve(quantity, reserveValue), unit === "шт." ? 1 : 0.01),
-      lengthM: profileLengthMm ? Number(profileLengthMm) / 1000 : null,
+      coefficient: isProfileInMeters ? gklProfileCoefficient(coefficient, profileLengthMm) : coefficient,
+      quantity: finalQuantity,
+      lengthM: profileLengthMm ? toNumber(profileLengthMm) / 1000 : null,
       priceUnit: unit === "пог. м" ? "м.п." : unit,
       priceMode: "quantity",
     }));
@@ -228,9 +251,10 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
     const area = toNumber(values.ceilingArea);
     const perimeter = toNumber(values.ceilingPerimeter);
     const length = values.ceilingProfileLengthMm || "3000";
+    const guideLength = values.ceilingGuideProfileLengthMm || "3000";
     push("Лист ГКЛ", "м²", "Площадь потолка × 1", area);
     push(`Профиль ПП 60×27, ${profileLengthLabel(length)}`, "пог. м", "Площадь потолка × 2,9", area * 2.9, length);
-    push("Профиль ППН 27×28", "пог. м", "Периметр потолка × 1", perimeter);
+    push(`Профиль ППН 27×28, ${profileLengthLabel(guideLength)}`, "пог. м", "Периметр потолка × 1", perimeter, guideLength);
     push("Удлинитель ПП", "шт.", "Площадь потолка × 0,2", area * 0.2);
     push("Соединитель одноуровневый / краб", "шт.", "Площадь потолка × 1,7", area * 1.7);
     if ((values.suspensionType || "direct") === "direct") {
@@ -244,9 +268,10 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
   if (type === "cladding") {
     const area = gklWallArea(values);
     const length = values.ceilingProfileLengthMm || "3000";
+    const guideLength = values.ceilingGuideProfileLengthMm || "3000";
     push("Лист ГКЛ", "м²", "Площадь стены × 1", area);
     push(`Профиль ПП 60×27, ${profileLengthLabel(length)}`, "пог. м", "Площадь стены × 2", area * 2, length);
-    push("Профиль ППН 27×28", "пог. м", "Площадь стены × 0,7", area * 0.7);
+    push(`Профиль ППН 27×28, ${profileLengthLabel(guideLength)}`, "пог. м", "Площадь стены × 0,7", area * 0.7, guideLength);
     push("Прямой подвес", "шт.", "Площадь стены × 0,7", area * 0.7);
   }
 
@@ -254,10 +279,11 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
     const area = gklWallArea(values);
     const width = values.partitionWidth || "50";
     const length = values.studProfileLengthMm || "3000";
+    const guideLength = values.partitionGuideProfileLengthMm || "3000";
     const guideName = width === "50" ? "Профиль ПН 50×40" : width === "75" ? "Профиль ПН 75×40" : "Профиль ПН 100×40";
     const studName = width === "50" ? "Профиль ПС 50×50" : width === "75" ? "Профиль ПС 75×50" : "Профиль ПС 100×50";
     push("Лист ГКЛ", "м²", "Площадь перегородки × 2,1", area * 2.1);
-    push(guideName, "пог. м", "Площадь перегородки × 0,7", area * 0.7);
+    push(`${guideName}, ${profileLengthLabel(guideLength)}`, "пог. м", "Площадь перегородки × 0,7", area * 0.7, guideLength);
     push(`${studName}, ${profileLengthLabel(length)}`, "пог. м", "Площадь перегородки × 2", area * 2, length);
   }
 
@@ -267,7 +293,7 @@ function gklCalculate(values: Record<string, string>): CalculatorResultRow[] {
 function gklParams(values: Record<string, string>) {
   const type = values.constructionType || "ceiling";
   if (type === "ceiling") {
-    return `Потолок из ГКЛ; площадь потолка: ${values.ceilingArea} м²; периметр: ${values.ceilingPerimeter} м; подвес: ${(values.suspensionType || "direct") === "direct" ? "прямой" : "анкерный с тягой"}; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
+    return `Потолок из ГКЛ; площадь потолка: ${values.ceilingArea} м²; периметр: ${values.ceilingPerimeter} м; подвес: ${(values.suspensionType || "direct") === "direct" ? "прямой" : "анкерный с тягой"}; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; длина ППН 27×28: ${values.ceilingGuideProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
   }
 
   const area = gklWallArea(values);
@@ -275,10 +301,10 @@ function gklParams(values: Record<string, string>) {
   const inputMode = (values.wallInputMode || "area") === "area" ? "по площади и высоте" : "по длине и высоте";
 
   if (type === "cladding") {
-    return `Выравнивание стены ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь: ${fmt(area)} м²; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
+    return `Выравнивание стены ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь: ${fmt(area)} м²; длина ПП 60×27: ${values.ceilingProfileLengthMm || "3000"} мм; длина ППН 27×28: ${values.ceilingGuideProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
   }
 
-  return `Перегородка из ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь перегородки по одной стороне: ${fmt(area)} м²; профиль: ${values.partitionWidth} мм; длина стоечного профиля: ${values.studProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
+  return `Перегородка из ГКЛ; исходные данные: ${inputMode}; высота: ${values.wallHeight} м; расчётная длина: ${fmt(length)} м; площадь перегородки по одной стороне: ${fmt(area)} м²; профиль: ${values.partitionWidth} мм; длина стоечного профиля: ${values.studProfileLengthMm || "3000"} мм; длина направляющего профиля: ${values.partitionGuideProfileLengthMm || "3000"} мм; запас: ${values.reserve}%`;
 }
 
 const standardCellOptions = [
@@ -1888,24 +1914,34 @@ export const calculators: CalculatorConfig[] = [
       {
         id: "ceilingProfileLengthMm",
         label: "Длина ПП 60×27, мм",
-        type: "select",
+        type: "number",
         defaultValue: "3000",
+        step: "1",
         showWhen: { fieldId: "constructionType", values: ["ceiling", "cladding"] },
-        options: [
-          { label: "3000 мм", value: "3000" },
-          { label: "4000 мм", value: "4000" },
-        ],
+      },
+      {
+        id: "ceilingGuideProfileLengthMm",
+        label: "Длина ППН 27×28, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["ceiling", "cladding"] },
       },
       {
         id: "studProfileLengthMm",
-        label: "Длина стоечного профиля, мм",
-        type: "select",
+        label: "Длина стоечного профиля ПС, мм",
+        type: "number",
         defaultValue: "3000",
+        step: "1",
         showWhen: { fieldId: "constructionType", values: ["partition"] },
-        options: [
-          { label: "3000 мм", value: "3000" },
-          { label: "4000 мм", value: "4000" },
-        ],
+      },
+      {
+        id: "partitionGuideProfileLengthMm",
+        label: "Длина направляющего профиля ПН, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["partition"] },
       },
       commonReserveField,
     ],
@@ -1926,6 +1962,7 @@ export const calculators: CalculatorConfig[] = [
     faq: [
       { question: "Можно ли считать перегородку или обшивку сразу по квадратным метрам?", answer: "Да. Выберите способ «По площади», укажите площадь конструкции по одной стороне и её высоту. Калькулятор самостоятельно определит расчётную длину и выполнит дальнейший расчёт." },
       { question: "Можно ли включить несколько разных перегородок в одно КП?", answer: "Да. Добавляйте каждый выполненный расчёт в проект. Затем скачайте единое КП: на одном листе будут отдельные блоки по каждой конструкции и общая сводная спецификация в конце." },
+      { question: "Как учитывается длина профиля?", answer: "Длину основного и направляющего профиля можно ввести вручную в миллиметрах. Расчётное количество погонных метров округляется вверх до целого количества профилей выбранной длины." },
       { question: "Можно ли использовать расчёт как финальную спецификацию?", answer: "Нет. Это предварительный расчёт для оценки расхода. Финальную комплектацию лучше проверять по проекту." },
       { question: "Почему выравнивание стены считается через ПП 60×27?", answer: "Потому что в этом варианте каркас крепится к стене на прямых подвесах и собирается на потолочной паре ПП 60×27 и ППН 27×28." },
     ],
