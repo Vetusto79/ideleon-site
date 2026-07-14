@@ -1,9 +1,20 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getCalculator } from "../data/calculators";
-import type { CalculatorConfig, CalculatorVisual, CalculatorVisualGroup } from "../data/calculators";
-import { buildCalculatorOfferExcel } from "./CalculatorOfferExcel";
+import type {
+  CalculatorConfig,
+  CalculatorResultRow,
+  CalculatorVisual,
+  CalculatorVisualGroup,
+} from "../data/calculators";
+import {
+  buildCalculatorOfferExcel,
+  buildCalculatorProjectOfferExcel,
+  type CalculatorProjectItem,
+} from "./CalculatorOfferExcel";
+
+const GKL_PROJECT_STORAGE_KEY = "ideleon:gkl-project:v1";
 
 function formatNumber(value: number, maximumFractionDigits = 2) {
   return new Intl.NumberFormat("ru-RU", { maximumFractionDigits }).format(value);
@@ -41,8 +52,44 @@ function visualIsClickable(visual: CalculatorVisual) {
   return Boolean((visual.fieldId && visual.value) || visual.setValues);
 }
 
+function positiveNumber(value: string | undefined) {
+  const parsed = Number(String(value ?? "").replace(",", "."));
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+}
+
+function gklArea(values: Record<string, string>) {
+  if ((values.constructionType || "ceiling") === "ceiling") {
+    return positiveNumber(values.ceilingArea);
+  }
+  if ((values.wallInputMode || "area") === "area") {
+    return positiveNumber(values.wallArea);
+  }
+  return positiveNumber(values.wallHeight) * positiveNumber(values.wallLength);
+}
+
+function gklProjectTitle(values: Record<string, string>) {
+  const type = values.constructionType || "ceiling";
+  const area = formatNumber(gklArea(values), 2);
+  if (type === "ceiling") return `Потолок из ГКЛ — ${area} м²`;
+
+  const height = formatNumber(positiveNumber(values.wallHeight), 2);
+  if (type === "cladding") return `Обшивка / выравнивание стены — ${area} м², H=${height} м`;
+
+  const width = values.partitionWidth || "50";
+  return `Перегородка ПС/ПН ${width} — ${area} м², H=${height} м`;
+}
+
+function makeProjectItemId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function cloneRows(rows: CalculatorResultRow[]) {
+  return rows.map((row) => ({ ...row }));
+}
+
 export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug: string }) {
   const calculator = getCalculator(calculatorSlug)!;
+  const projectEnabled = calculator.slug === "profil-gkl";
 
   const [values, setValues] = useState<Record<string, string>>(() => initialValues(calculator));
   const [clientName, setClientName] = useState("");
@@ -51,9 +98,42 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
   const [consent, setConsent] = useState(true);
   const [sendStatus, setSendStatus] = useState<"idle" | "sending" | "success" | "error">("idle");
   const [sendMessage, setSendMessage] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectItems, setProjectItems] = useState<CalculatorProjectItem[]>([]);
+  const [projectLoaded, setProjectLoaded] = useState(false);
+  const [editingProjectItemId, setEditingProjectItemId] = useState<string | null>(null);
+  const [projectMessage, setProjectMessage] = useState("");
 
   const rows = useMemo(() => calculator.calculate(values), [calculator, values]);
   const calculationWarning = calculator.getWarning?.(values) ?? null;
+
+  useEffect(() => {
+    if (!projectEnabled || typeof window === "undefined") {
+      setProjectLoaded(true);
+      return;
+    }
+
+    try {
+      const raw = window.localStorage.getItem(GKL_PROJECT_STORAGE_KEY);
+      if (raw) {
+        const saved = JSON.parse(raw) as { projectName?: string; items?: CalculatorProjectItem[] };
+        setProjectName(saved.projectName || "");
+        setProjectItems(Array.isArray(saved.items) ? saved.items : []);
+      }
+    } catch {
+      setProjectItems([]);
+    } finally {
+      setProjectLoaded(true);
+    }
+  }, [projectEnabled]);
+
+  useEffect(() => {
+    if (!projectEnabled || !projectLoaded || typeof window === "undefined") return;
+    window.localStorage.setItem(
+      GKL_PROJECT_STORAGE_KEY,
+      JSON.stringify({ projectName, items: projectItems }),
+    );
+  }, [projectEnabled, projectLoaded, projectName, projectItems]);
 
   function updateValues(nextValues: Record<string, string>, changedFieldId: string) {
     const normalized = calculator.normalizeValues
@@ -78,13 +158,104 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     updateValues({ ...values, ...changes }, changedFieldId);
   }
 
-  async function makeExcelBlob() {
+  function createCurrentProjectItem(id = makeProjectItemId()): CalculatorProjectItem {
+    return {
+      id,
+      title: gklProjectTitle(values),
+      paramsText: calculator.getParamsText(values),
+      values: { ...values },
+      rows: cloneRows(rows),
+      createdAt: new Date().toISOString(),
+    };
+  }
+
+  function addOrUpdateProjectItem() {
+    setProjectMessage("");
+    if (calculationWarning) {
+      setProjectMessage("Сначала исправьте параметры текущего расчёта.");
+      return;
+    }
+
+    if (editingProjectItemId) {
+      const updated = createCurrentProjectItem(editingProjectItemId);
+      setProjectItems((items) => items.map((item) => (item.id === editingProjectItemId ? updated : item)));
+      setEditingProjectItemId(null);
+      setProjectMessage("Расчёт в проекте обновлён.");
+      return;
+    }
+
+    setProjectItems((items) => [...items, createCurrentProjectItem()]);
+    setValues(initialValues(calculator));
+    setProjectMessage("Расчёт добавлен. Можно вводить следующую конструкцию.");
+  }
+
+  function editProjectItem(item: CalculatorProjectItem) {
+    setValues({ ...item.values });
+    setEditingProjectItemId(item.id);
+    setProjectMessage("Редактируется сохранённый расчёт. После изменений нажмите «Сохранить изменения». ");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function cancelProjectEdit() {
+    setEditingProjectItemId(null);
+    setValues(initialValues(calculator));
+    setProjectMessage("Редактирование отменено.");
+  }
+
+  function duplicateProjectItem(item: CalculatorProjectItem) {
+    const copy: CalculatorProjectItem = {
+      ...item,
+      id: makeProjectItemId(),
+      title: `${item.title} — копия`,
+      values: { ...item.values },
+      rows: cloneRows(item.rows),
+      createdAt: new Date().toISOString(),
+    };
+    setProjectItems((items) => [...items, copy]);
+    setProjectMessage("Расчёт продублирован.");
+  }
+
+  function removeProjectItem(id: string) {
+    setProjectItems((items) => items.filter((item) => item.id !== id));
+    if (editingProjectItemId === id) {
+      setEditingProjectItemId(null);
+      setValues(initialValues(calculator));
+    }
+    setProjectMessage("Расчёт удалён из проекта.");
+  }
+
+  function clearProject() {
+    if (typeof window !== "undefined" && !window.confirm("Удалить все сохранённые расчёты проекта?")) return;
+    setProjectItems([]);
+    setProjectName("");
+    setEditingProjectItemId(null);
+    setValues(initialValues(calculator));
+    setProjectMessage("Проект очищен.");
+  }
+
+  async function makeExcelBlob(useProject: boolean) {
+    if (useProject && projectEnabled && projectItems.length > 0) {
+      return await buildCalculatorProjectOfferExcel({
+        calculator,
+        projectName: projectName.trim() || "Проект ГКЛ",
+        items: projectItems,
+      });
+    }
     return await buildCalculatorOfferExcel({ calculator, values, rows });
   }
 
-  async function downloadExcelOffer() {
-    const blob = await makeExcelBlob();
+  async function downloadCurrentExcelOffer() {
+    const blob = await makeExcelBlob(false);
     downloadBlob(blob, calculator.fileName);
+  }
+
+  async function downloadProjectExcelOffer() {
+    if (projectItems.length === 0) {
+      setProjectMessage("Сначала добавьте хотя бы один расчёт в проект.");
+      return;
+    }
+    const blob = await makeExcelBlob(true);
+    downloadBlob(blob, "KP_profil_GKL_proekt_ideleon.xlsx");
   }
 
   async function sendExcelOffer(event: React.FormEvent<HTMLFormElement>) {
@@ -106,8 +277,10 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
     setSendStatus("sending");
 
     try {
-      const blob = await makeExcelBlob();
-      const file = new File([blob], calculator.fileName, {
+      const useProject = projectEnabled && projectItems.length > 0;
+      const blob = await makeExcelBlob(useProject);
+      const fileName = useProject ? "KP_profil_GKL_proekt_ideleon.xlsx" : calculator.fileName;
+      const file = new File([blob], fileName, {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
 
@@ -117,7 +290,12 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
       formData.append("phone", clientPhone.trim());
       formData.append("email", clientEmail.trim());
       formData.append("sourcePage", `/calculators/${calculator.slug}`);
-      formData.append("message", `${calculator.offerTitle}\n${calculator.getParamsText(values)}\nФайл КП приложен.`);
+      formData.append(
+        "message",
+        useProject
+          ? `${calculator.offerTitle}\nПроект: ${projectName.trim() || "Проект ГКЛ"}\nРасчётов: ${projectItems.length}\nЕдиное КП приложено.`
+          : `${calculator.offerTitle}\n${calculator.getParamsText(values)}\nФайл КП приложен.`,
+      );
       formData.append("file", file);
       formData.append("consent", "on");
 
@@ -125,7 +303,11 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
       if (!response.ok) throw new Error("request failed");
 
       setSendStatus("success");
-      setSendMessage("Расчёт отправлен. Мы свяжемся с вами и подготовим предложение.");
+      setSendMessage(
+        useProject
+          ? `Проект из ${projectItems.length} расчётов отправлен. Мы подготовим единое предложение.`
+          : "Расчёт отправлен. Мы свяжемся с вами и подготовим предложение.",
+      );
     } catch {
       setSendStatus("error");
       setSendMessage("Не удалось отправить заявку. Попробуйте позвонить нам или написать на почту.");
@@ -332,19 +514,100 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           )}
 
           <div className="calculatorActions">
+            {projectEnabled ? (
+              <>
+                <button
+                  className="primaryButton"
+                  type="button"
+                  onClick={addOrUpdateProjectItem}
+                  disabled={Boolean(calculationWarning)}
+                >
+                  {editingProjectItemId ? "Сохранить изменения" : "Добавить в проект и начать следующий"}
+                </button>
+                {editingProjectItemId ? (
+                  <button className="secondaryButton" type="button" onClick={cancelProjectEdit}>
+                    Отменить редактирование
+                  </button>
+                ) : null}
+              </>
+            ) : null}
             <button
               className="secondaryButton"
               type="button"
-              onClick={downloadExcelOffer}
+              onClick={downloadCurrentExcelOffer}
               disabled={Boolean(calculationWarning)}
             >
-              Скачать КП
+              {projectEnabled ? "Скачать текущее КП" : "Скачать КП"}
             </button>
           </div>
 
+          {projectEnabled ? (
+            <section className="gklProjectPanel" aria-label="Проект расчётов ГКЛ">
+              <div className="gklProjectHeader">
+                <div>
+                  <p className="label">Единое коммерческое предложение</p>
+                  <h3>Проект расчётов ГКЛ</h3>
+                  <p>Добавляйте перегородки, обшивку и потолки по очереди. Все расчёты сохраняются в браузере и попадают в один Excel-лист отдельными блоками.</p>
+                </div>
+                <span className="gklProjectCount">{projectItems.length}</span>
+              </div>
+
+              <label className="gklProjectNameField">
+                <span>Название объекта / проекта</span>
+                <input
+                  type="text"
+                  value={projectName}
+                  onChange={(event: React.ChangeEvent<HTMLInputElement>) => setProjectName(event.target.value)}
+                  placeholder="Например: БЦ Северный, перегородки 2-го этажа"
+                />
+              </label>
+
+              {projectItems.length > 0 ? (
+                <div className="gklProjectList">
+                  {projectItems.map((item, index) => (
+                    <article className={editingProjectItemId === item.id ? "gklProjectItem editing" : "gklProjectItem"} key={item.id}>
+                      <div className="gklProjectItemNumber">{index + 1}</div>
+                      <div className="gklProjectItemContent">
+                        <strong>{item.title}</strong>
+                        <span>{item.paramsText}</span>
+                      </div>
+                      <div className="gklProjectItemActions">
+                        <button type="button" onClick={() => editProjectItem(item)}>Редактировать</button>
+                        <button type="button" onClick={() => duplicateProjectItem(item)}>Дублировать</button>
+                        <button type="button" className="danger" onClick={() => removeProjectItem(item.id)}>Удалить</button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              ) : (
+                <div className="gklProjectEmpty">Пока нет сохранённых расчётов. Рассчитайте первую конструкцию и нажмите «Добавить в проект и начать следующий».</div>
+              )}
+
+              {projectMessage ? <p className="gklProjectMessage">{projectMessage}</p> : null}
+
+              <div className="gklProjectFooter">
+                <button
+                  type="button"
+                  className="primaryButton"
+                  onClick={downloadProjectExcelOffer}
+                  disabled={projectItems.length === 0}
+                >
+                  Скачать единое КП ({projectItems.length})
+                </button>
+                <button type="button" className="secondaryButton" onClick={clearProject} disabled={projectItems.length === 0}>
+                  Очистить проект
+                </button>
+              </div>
+            </section>
+          ) : null}
+
           <form className="calculatorSendForm" onSubmit={sendExcelOffer}>
             <h3>Отправить расчёт в Иделеон</h3>
-            <p>Мы получим Excel-файл с расчётом и сможем подготовить предложение.</p>
+            <p>
+              {projectEnabled && projectItems.length > 0
+                ? `Мы получим единое Excel-КП из ${projectItems.length} расчётов.`
+                : "Мы получим Excel-файл с расчётом и сможем подготовить предложение."}
+            </p>
 
             <input placeholder="Ваше имя" value={clientName} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setClientName(event.target.value)} />
             <input placeholder="Телефон" value={clientPhone} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setClientPhone(event.target.value)} />
@@ -397,6 +660,175 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           </div>
         </section>
       )}
+
+      <style jsx>{`
+        .gklProjectPanel {
+          margin-top: 28px;
+          padding: 26px;
+          border: 1px solid #d9e1eb;
+          border-radius: 24px;
+          background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+          box-shadow: 0 16px 40px rgba(15, 27, 51, 0.07);
+        }
+        .gklProjectHeader {
+          display: flex;
+          justify-content: space-between;
+          gap: 24px;
+          align-items: flex-start;
+        }
+        .gklProjectHeader h3 {
+          margin: 4px 0 8px;
+          font-size: 28px;
+          color: #0f1b33;
+        }
+        .gklProjectHeader p:last-child {
+          margin: 0;
+          color: #59708e;
+          line-height: 1.55;
+        }
+        .gklProjectCount {
+          display: inline-flex;
+          min-width: 52px;
+          height: 52px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 18px;
+          background: #ff6a00;
+          color: #ffffff;
+          font-size: 22px;
+          font-weight: 900;
+        }
+        .gklProjectNameField {
+          display: grid;
+          gap: 8px;
+          margin-top: 22px;
+          font-weight: 800;
+          color: #0f1b33;
+        }
+        .gklProjectNameField input {
+          width: 100%;
+          min-height: 48px;
+          padding: 12px 14px;
+          border: 1px solid #cbd5e1;
+          border-radius: 14px;
+          background: #ffffff;
+          font: inherit;
+        }
+        .gklProjectList {
+          display: grid;
+          gap: 12px;
+          margin-top: 20px;
+        }
+        .gklProjectItem {
+          display: grid;
+          grid-template-columns: 42px minmax(0, 1fr) auto;
+          gap: 14px;
+          align-items: center;
+          padding: 15px;
+          border: 1px solid #dbe3ec;
+          border-radius: 18px;
+          background: #ffffff;
+        }
+        .gklProjectItem.editing {
+          border-color: #ff6a00;
+          box-shadow: 0 0 0 3px rgba(255, 106, 0, 0.12);
+        }
+        .gklProjectItemNumber {
+          display: inline-flex;
+          width: 38px;
+          height: 38px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+          background: #0f1b33;
+          color: #ffffff;
+          font-weight: 900;
+        }
+        .gklProjectItemContent {
+          display: grid;
+          gap: 5px;
+          min-width: 0;
+        }
+        .gklProjectItemContent strong {
+          color: #0f1b33;
+          font-size: 17px;
+        }
+        .gklProjectItemContent span {
+          color: #60748f;
+          font-size: 13px;
+          line-height: 1.45;
+        }
+        .gklProjectItemActions {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: flex-end;
+          gap: 8px;
+        }
+        .gklProjectItemActions button {
+          min-height: 36px;
+          padding: 7px 10px;
+          border: 1px solid #d6dee8;
+          border-radius: 10px;
+          background: #f8fafc;
+          color: #233754;
+          font-weight: 800;
+          cursor: pointer;
+        }
+        .gklProjectItemActions button:hover {
+          border-color: #ff6a00;
+          color: #e85f00;
+        }
+        .gklProjectItemActions button.danger:hover {
+          border-color: #dc2626;
+          color: #dc2626;
+        }
+        .gklProjectEmpty {
+          margin-top: 20px;
+          padding: 20px;
+          border: 1px dashed #cbd5e1;
+          border-radius: 16px;
+          background: #ffffff;
+          color: #64748b;
+        }
+        .gklProjectMessage {
+          margin: 16px 0 0;
+          color: #47617f;
+          font-weight: 800;
+        }
+        .gklProjectFooter {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: 20px;
+        }
+        @media (max-width: 860px) {
+          .gklProjectItem {
+            grid-template-columns: 42px minmax(0, 1fr);
+          }
+          .gklProjectItemActions {
+            grid-column: 1 / -1;
+            justify-content: flex-start;
+          }
+        }
+        @media (max-width: 560px) {
+          .gklProjectPanel {
+            padding: 20px;
+          }
+          .gklProjectHeader h3 {
+            font-size: 23px;
+          }
+          .gklProjectItem {
+            grid-template-columns: 1fr;
+          }
+          .gklProjectItemNumber {
+            width: 34px;
+            height: 34px;
+          }
+          .gklProjectItemActions button {
+            flex: 1 1 auto;
+          }
+        }
+      `}</style>
     </>
   );
 }
