@@ -1912,6 +1912,133 @@ function facadeWarning(values: Record<string, string>) {
   return null;
 }
 
+
+type SDesignVariant = {
+  system: "A25AS" | "A100AS" | "A150AS";
+  railCode: "A25/AS" | "A100/AS" | "A150/AS";
+  width: number;
+  railHeight: number;
+  coefficient: number;
+  image: string;
+};
+
+const sDesignVariants: Record<string, SDesignVariant> = {
+  A25AS: {
+    system: "A25AS",
+    railCode: "A25/AS",
+    width: 25,
+    railHeight: 13.2,
+    coefficient: 40,
+    image: "/images/calculators/rack/s-design/a25as.svg",
+  },
+  A100AS: {
+    system: "A100AS",
+    railCode: "A100/AS",
+    width: 100,
+    railHeight: 13.2,
+    coefficient: 10,
+    image: "/images/calculators/rack/s-design/a100as.svg",
+  },
+  A150AS: {
+    system: "A150AS",
+    railCode: "A150/AS",
+    width: 150,
+    railHeight: 13.2,
+    coefficient: 6.67,
+    image: "/images/calculators/rack/s-design/a150as.svg",
+  },
+};
+
+function sDesignCalculate(values: Record<string, string>): CalculatorResultRow[] {
+  const area = rackArea(values);
+  const perimeter = rackPerimeter(values);
+  const reservePercent = rackReserve(values);
+  const lengthM = rackLengthM(values);
+  const variant = sDesignVariants[values.sDesignSystem] || sDesignVariants.A100AS;
+
+  if (!area || !perimeter || !lengthM) return [];
+
+  const railWithoutReserve = roundUp(area * variant.coefficient, lengthM);
+  const railQuantity = roundUp(addReserve(railWithoutReserve, reservePercent), lengthM);
+
+  const stringerWithoutReserve = roundUp(area * 0.89, 4);
+  const stringerQuantity = roundUp(addReserve(stringerWithoutReserve, reservePercent), 4);
+
+  const angleWithoutReserve = roundUp(perimeter, 3);
+  const angleQuantity = roundUp(addReserve(angleWithoutReserve, reservePercent), 3);
+
+  const hangerWithoutReserve = roundUp(area * 0.83, 10);
+  const hangerQuantity = roundUp(addReserve(hangerWithoutReserve, reservePercent), 10);
+
+  const connectorWithoutReserve = railWithoutReserve / lengthM;
+  const connectorQuantity = roundUp(addReserve(connectorWithoutReserve, reservePercent), 1);
+
+  return [
+    resultRow({
+      name: "Рейка S-дизайн",
+      size: `${variant.width}×${fmt(variant.railHeight)}×${values.length} мм`,
+      catalogName: variant.railCode,
+      unit: "м.п.",
+      coefficient: `${fmt(variant.coefficient)} м.п./м²; округление до рейки ${fmt(lengthM)} м`,
+      quantity: railQuantity,
+      quantityStep: lengthM,
+      priceUnit: "м.п.",
+    }),
+    resultRow({
+      name: "Гребёнка S-дизайн",
+      size: "4000 мм",
+      catalogName: "ВТ-S",
+      unit: "м.п.",
+      coefficient: "0,89 м.п./м²; округление до 4 м",
+      quantity: stringerQuantity,
+      quantityStep: 4,
+      priceUnit: "м.п.",
+    }),
+    resultRow({
+      name: "Периметральный уголок",
+      size: "3000 мм",
+      catalogName: "PL-19×24 / PLL / RPP-18",
+      unit: "м.п.",
+      coefficient: "по периметру; округление до 3 м",
+      quantity: angleQuantity,
+      quantityStep: 3,
+      priceUnit: "м.п.",
+    }),
+    resultRow({
+      name: "Подвес",
+      size: "по проекту",
+      catalogName: "АП",
+      unit: "комп.",
+      coefficient: "0,83 комп./м²; округление по 10 комп.",
+      quantity: hangerQuantity,
+      quantityStep: 10,
+      priceUnit: "комп.",
+    }),
+    resultRow({
+      name: "Соединительный элемент для рейки",
+      size: "L=200 мм",
+      catalogName: variant.railCode,
+      unit: "шт.",
+      coefficient: "по количеству целых реек",
+      quantity: connectorQuantity,
+      quantityStep: 1,
+      priceUnit: "шт.",
+    }),
+  ];
+}
+
+function sDesignParams(values: Record<string, string>) {
+  const variant = sDesignVariants[values.sDesignSystem] || sDesignVariants.A100AS;
+  return `Площадь: ${fmt(rackArea(values))} м²; периметр: ${fmt(rackPerimeter(values))} м; система: ${variant.system}; рейка: ${variant.railCode}, ${variant.width}×${fmt(variant.railHeight)} мм; длина рейки: ${values.length || "3000"} мм; запас: ${fmt(rackReserve(values))}%.`;
+}
+
+function sDesignWarning(values: Record<string, string>) {
+  if (rackArea(values) <= 0) return "Укажите площадь помещения больше нуля.";
+  if (rackPerimeter(values) <= 0) return "Укажите периметр помещения больше нуля.";
+  if (!sDesignVariants[values.sDesignSystem]) return "Выберите систему S-дизайна.";
+  return null;
+}
+
 export const calculators: CalculatorConfig[] = [
 
   {
@@ -2741,6 +2868,100 @@ export const calculators: CalculatorConfig[] = [
       { question: "Почему меняется расход при другом зазоре?", answer: "Потому что меняется модуль системы: чем больше суммарный модуль, тем меньше реек требуется на 1 м²." },
       { question: "Нужен ли зазор кратно 5 мм?", answer: "Для практического применения и закупки это удобно и рекомендуется. Если указать некратное значение, калькулятор предупредит об этом." },
       { question: "Это точный проектный расчёт?", answer: "Это предварительный расчёт для подготовки КП. Для сложных узлов, индивидуального шага и нестандартной раскладки итоговую спецификацию лучше проверить по проекту." },
+    ],
+  },
+  {
+    slug: "reechnyy-potolok-s-dizayn",
+    group: "rack",
+    title: "Реечный потолок S-дизайн",
+    shortTitle: "S-дизайн",
+    description: "Расчёт систем A25AS, A100AS и A150AS: рейка, гребёнка, уголок, подвес и соединительные элементы.",
+    seoTitle: "Калькулятор реечного потолка S-дизайн",
+    seoDescription: "Онлайн-калькулятор S-дизайна Албес: системы A25AS, A100AS и A150AS, длина 3 или 4 м, комплектующие и Excel-КП.",
+    h1: "Калькулятор реечного потолка S-дизайн",
+    intro: "Выберите ширину рейки S-дизайна, длину и запас. Калькулятор рассчитает основную рейку, гребёнку ВТ-S, периметральный уголок, подвесы и соединительные элементы, а затем сформирует Excel-КП.",
+    offerTitle: "Коммерческое предложение / реечный потолок S-дизайн",
+    fileName: "KP_reechnyy_potolok_S-dizayn_ideleon.xlsx",
+    fields: [
+      { id: "area", label: "Площадь потолка", type: "number", defaultValue: "100", unit: "м²", step: "0.01" },
+      { id: "perimeter", label: "Периметр помещения", type: "number", defaultValue: "40", unit: "м", step: "0.01" },
+      {
+        id: "sDesignSystem",
+        label: "Марка системы",
+        type: "buttons",
+        defaultValue: "A100AS",
+        hideInput: true,
+        options: [
+          { label: "A25AS", value: "A25AS" },
+          { label: "A100AS", value: "A100AS" },
+          { label: "A150AS", value: "A150AS" },
+        ],
+      },
+      {
+        id: "length",
+        label: "Длина рейки",
+        type: "buttons",
+        defaultValue: "3000",
+        unit: "мм",
+        options: [
+          { label: "3000", value: "3000" },
+          { label: "4000", value: "4000" },
+        ],
+      },
+      { id: "reserve", label: "Запас", type: "number", defaultValue: "5", unit: "%", step: "1" },
+    ],
+    visualTitle: "Выберите ширину рейки S-дизайна",
+    visualDescription: "Три стандартные системы отличаются шириной рейки. Высота профиля рейки — 13,2 мм, стандартная длина — 3 или 4 метра.",
+    visuals: [
+      {
+        title: "A25AS",
+        description: "Рейка A25/AS шириной 25 мм. Расход — 40 м.п. на 1 м².",
+        image: "/images/calculators/rack/s-design/a25as.svg",
+        alt: "Рейка S-дизайн A25AS шириной 25 мм",
+        fieldId: "sDesignSystem",
+        value: "A25AS",
+      },
+      {
+        title: "A100AS",
+        description: "Рейка A100/AS шириной 100 мм. Расход — 10 м.п. на 1 м².",
+        image: "/images/calculators/rack/s-design/a100as.svg",
+        alt: "Рейка S-дизайн A100AS шириной 100 мм",
+        fieldId: "sDesignSystem",
+        value: "A100AS",
+      },
+      {
+        title: "A150AS",
+        description: "Рейка A150/AS шириной 150 мм. Расход — 6,67 м.п. на 1 м².",
+        image: "/images/calculators/rack/s-design/a150as.svg",
+        alt: "Рейка S-дизайн A150AS шириной 150 мм",
+        fieldId: "sDesignSystem",
+        value: "A150AS",
+      },
+    ],
+    calculatorNote: "Стандартная длина рейки — 3 и 4 м. Изготовление длиной до 6 м возможно по отдельному заказу. Для сложной геометрии, комбинированной раскладки и большого количества примыканий итоговую комплектацию следует проверить по проекту.",
+    resultTitle: "Состав системы S-дизайн",
+    resultMaterialTitle: "Элемент",
+    resultCoefficientTitle: "Расход / комментарий",
+    resultQuantityTitle: "Количество",
+    offerColumns: rackColumns,
+    calculate: sDesignCalculate,
+    getParamsText: sDesignParams,
+    getWarning: sDesignWarning,
+    relatedLinks: [
+      { label: "Калькулятор кубообразной рейки", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог реечных потолков", href: "/catalog/rack-ceilings" },
+    ],
+    seoSections: [
+      { title: "Какие системы S-дизайна можно рассчитать", text: "Калькулятор поддерживает A25AS, A100AS и A150AS. Им соответствуют рейки A25/AS, A100/AS и A150/AS шириной 25, 100 и 150 мм." },
+      { title: "Что входит в комплект", text: "В предварительную спецификацию входят рейка, гребёнка ВТ-S, периметральный уголок, подвес АП и соединительный элемент для рейки длиной 200 мм." },
+      { title: "Как выполняется округление", text: "Рейка округляется до выбранной длины 3 или 4 м, гребёнка — до 4 м, уголок — до 3 м, а подвесы — до упаковочного шага 10 комплектов." },
+    ],
+    faq: [
+      { question: "Чем отличаются A25AS, A100AS и A150AS?", answer: "Основное различие — ширина рейки: 25, 100 или 150 мм. Чем уже рейка, тем больше погонных метров требуется на квадратный метр потолка." },
+      { question: "Можно ли заказать нестандартную длину?", answer: "Стандартные длины — 3 и 4 м. Длина до 6 м возможна по отдельному заказу и требует подтверждения цены и срока производства." },
+      { question: "Можно ли комбинировать рейки разной ширины?", answer: "Технически такая раскладка возможна, но для неё нужен проектный расчёт. Текущая версия калькулятора считает одну выбранную систему на всю площадь." },
+      { question: "Почему соединительные элементы считаются по количеству реек?", answer: "Исходная расчётная таблица определяет их количество через число целых реек выбранной длины." },
     ],
   },
   {
