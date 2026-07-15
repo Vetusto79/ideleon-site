@@ -79,6 +79,7 @@ export const siteConfig = {
           href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn",
           children: [
             { label: "Кубообразный дизайн", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
+            { label: "S-дизайн", href: "/calculators/reechnyy-potolok-s-dizayn" },
           ],
         },
       ],
