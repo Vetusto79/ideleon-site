@@ -309,16 +309,19 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
       formData.append("email", clientEmail.trim());
       formData.append("sourcePage", `/calculators/${calculator.slug}`);
       formData.append(
-        "message",
+        "task",
         useProject
           ? `${calculator.offerTitle}\nПроект: ${projectName.trim() || "Проект ГКЛ"}\nРасчётов: ${projectItems.length}\nЕдиное КП приложено.`
           : `${calculator.offerTitle}\n${calculator.getParamsText(values)}\nФайл КП приложен.`,
       );
-      formData.append("file", file);
-      formData.append("consent", "on");
+      formData.append("attachment", file);
+      formData.append("consent", "yes");
 
       const response = await fetch("/api/request", { method: "POST", body: formData });
-      if (!response.ok) throw new Error("request failed");
+      const responseData = await response.json().catch(() => null) as { message?: string } | null;
+      if (!response.ok) {
+        throw new Error(responseData?.message || `Ошибка отправки: ${response.status}`);
+      }
 
       setSendStatus("success");
       setSendMessage(
@@ -326,9 +329,13 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           ? `Проект из ${projectItems.length} расчётов отправлен. Мы подготовим единое предложение.`
           : "Расчёт отправлен. Мы свяжемся с вами и подготовим предложение.",
       );
-    } catch {
+    } catch (error) {
       setSendStatus("error");
-      setSendMessage("Не удалось отправить заявку. Попробуйте позвонить нам или написать на почту.");
+      setSendMessage(
+        error instanceof Error && error.message
+          ? error.message
+          : "Не удалось отправить заявку. Попробуйте позвонить нам или написать на почту.",
+      );
     }
   }
 
