@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="Рейка S-дизайн A150AS">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1629"/>
+      <stop offset="1" stop-color="#172842"/>
+    </linearGradient>
+    <linearGradient id="metalTop" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="0.35" stop-color="#cbd5e1"/>
+      <stop offset="0.65" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="metalSide" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#94a3b8"/>
+      <stop offset="1" stop-color="#475569"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#000" flood-opacity="0.42"/>
+    </filter>
+    <pattern id="grid" width="38" height="38" patternUnits="userSpaceOnUse">
+      <path d="M 38 0 L 0 0 0 38" fill="none" stroke="#6b7e99" stroke-opacity="0.12" stroke-width="1"/>
+    </pattern>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#ff6a00"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="675" rx="32" fill="url(#bg)"/>
+  <rect x="18" y="18" width="1164" height="639" rx="24" fill="url(#grid)" stroke="#2f4667" stroke-width="2"/>
+  <path d="M42 48 H230" stroke="#ff6a00" stroke-width="6" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <polygon points="120,250 710.0,250 960.0,140 370,140" fill="url(#metalTop)" stroke="#eef2f7" stroke-width="2"/>
+    <polygon points="120,250 120,298 370,188 370,140" fill="url(#metalSide)" stroke="#cbd5e1" stroke-width="2"/>
+    <polygon points="710.0,250 710.0,298 960.0,188 960.0,140" fill="#5f6f83" stroke="#cbd5e1" stroke-width="2"/>
+    <!-- S-shaped locking hooks -->
+    <path d="M 120,298 q 0,20 16,20 h 18 q 12,0 12,12 q 0,12 -12,12 h -26" fill="none" stroke="#d7dee8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M 710.0,298 q 0,20 -16,20 h -18 q -12,0 -12,12 q 0,12 12,12 h 26" fill="none" stroke="#d7dee8" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="120" y1="259" x2="710.0" y2="259" stroke="#ffffff" stroke-opacity="0.75" stroke-width="2"/>
+  </g>
+
+  <!-- Cross-section -->
+  <g transform="translate(800 142)">
+    <rect x="0" y="0" width="328" height="286" rx="24" fill="#0d1b31" stroke="#314968" stroke-width="2"/>
+    <path d="M54 96 H274 V170
+             q0 16 -14 16 h-26
+             q-12 0 -12 12 q0 12 12 12 h18
+             M54 96 V170
+             q0 16 14 16 h26
+             q12 0 12 12 q0 12 -12 12 H76"
+          fill="none" stroke="#f8fafc" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+    <line x1="54" y1="54" x2="274" y2="54" stroke="#ff6a00" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="54" y1="68" x2="54" y2="88" stroke="#ff6a00" stroke-width="2"/>
+    <line x1="274" y1="68" x2="274" y2="88" stroke="#ff6a00" stroke-width="2"/>
+    <line x1="304" y1="96" x2="304" y2="210" stroke="#ff6a00" stroke-width="3" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+    <line x1="282" y1="96" x2="294" y2="96" stroke="#ff6a00" stroke-width="2"/>
+    <line x1="282" y1="210" x2="294" y2="210" stroke="#ff6a00" stroke-width="2"/>
+    <text x="164" y="42" text-anchor="middle" fill="#ff9a52" font-family="Arial, sans-serif" font-size="28" font-weight="700">150 мм</text>
+    <text x="300" y="252" text-anchor="end" fill="#ff9a52" font-family="Arial, sans-serif" font-size="24" font-weight="700">13,2 мм</text>
+  </g>
+
+  <g transform="translate(72 518)">
+    <rect width="650" height="102" rx="18" fill="#0c1b30" fill-opacity="0.92" stroke="#2f4667"/>
+    <text x="28" y="42" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" font-weight="700">A150AS</text>
+    <text x="28" y="76" fill="#9fb0c7" font-family="Arial, sans-serif" font-size="24">Рейка A150/AS · закрытый модуль 150 мм</text>
+  </g>
+</svg>
