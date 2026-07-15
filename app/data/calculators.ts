@@ -1577,33 +1577,34 @@ type CubeVariant = {
   height: number;
   system: "A50S" | "A60S" | "A70S" | "A95S" | "A100S";
   groupTitle: string;
+  defaultGap: number;
+  image: string;
 };
 
 const cubeVariants: CubeVariant[] = [
-  { id: "_25х35", label: "25×35 мм", code: "A25/35/S", width: 25, height: 35, system: "A60S", groupTitle: "Ширина рейки 25 мм" },
+  { id: "_25х35", label: "25×35 мм", code: "A25/35/S", width: 25, height: 35, system: "A60S", groupTitle: "Ширина рейки 25 мм", defaultGap: 35, image: "/images/calculators/rack/cube/a25-35-s.svg" },
 
-  { id: "_30х38", label: "30×38 мм", code: "A38/S", width: 30, height: 38, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х50", label: "30×50 мм", code: "A50/S", width: 30, height: 50, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х85", label: "30×85 мм", code: "A85/S", width: 30, height: 85, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х110", label: "30×110 мм", code: "A110/S", width: 30, height: 110, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х160", label: "30×160 мм", code: "A160/S", width: 30, height: 160, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х200", label: "30×200 мм", code: "A200/S", width: 30, height: 200, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х250", label: "30×250 мм", code: "A250/S", width: 30, height: 250, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
-  { id: "_30х300", label: "30×300 мм", code: "A300/S", width: 30, height: 300, system: "A50S", groupTitle: "Ширина рейки 30 мм" },
+  { id: "_30х38", label: "30×38 мм", code: "A38/S", width: 30, height: 38, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a38-s.svg" },
+  { id: "_30х50", label: "30×50 мм", code: "A50/S", width: 30, height: 50, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a50-s.svg" },
+  { id: "_30х85", label: "30×85 мм", code: "A85/S", width: 30, height: 85, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a85-s.svg" },
+  { id: "_30х110", label: "30×110 мм", code: "A110/S", width: 30, height: 110, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a110-s.svg" },
+  { id: "_30х160", label: "30×160 мм", code: "A160/S", width: 30, height: 160, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a160-s.svg" },
+  { id: "_30х200", label: "30×200 мм", code: "A200/S", width: 30, height: 200, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a200-s.svg" },
+  { id: "_30х250", label: "30×250 мм", code: "A250/S", width: 30, height: 250, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a250-s.svg" },
+  { id: "_30х300", label: "30×300 мм", code: "A300/S", width: 30, height: 300, system: "A50S", groupTitle: "Ширина рейки 30 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a300-s.svg" },
 
-  { id: "_37.5х25", label: "37,5×25 мм", code: "A25/S", width: 37.5, height: 25, system: "A70S", groupTitle: "Ширина рейки 37,5 мм" },
+  { id: "_37.5х25", label: "37,5×25 мм", code: "A25/S", width: 37.5, height: 25, system: "A70S", groupTitle: "Ширина рейки 37,5 мм", defaultGap: 32.7, image: "/images/calculators/rack/cube/a25-s.svg" },
+  { id: "_37.5х50", label: "37,5×50 мм", code: "A40/50/S", width: 37.5, height: 50, system: "A70S", groupTitle: "Ширина рейки 37,5 мм", defaultGap: 32.7, image: "/images/calculators/rack/cube/a40-50-s.svg" },
+  { id: "_37.5х70", label: "37,5×70 мм", code: "A40/70/S", width: 37.5, height: 70, system: "A70S", groupTitle: "Ширина рейки 37,5 мм", defaultGap: 32.7, image: "/images/calculators/rack/cube/a40-70-s.svg" },
+  { id: "_37.5х100", label: "37,5×100 мм", code: "A40/100/S", width: 37.5, height: 100, system: "A70S", groupTitle: "Ширина рейки 37,5 мм", defaultGap: 32.7, image: "/images/calculators/rack/cube/a40-100-s.svg" },
 
-  { id: "_40х50", label: "40×50 мм", code: "A50/40/S", width: 40, height: 50, system: "A70S", groupTitle: "Ширина рейки 40 мм" },
-  { id: "_40х70", label: "40×70 мм", code: "A70/40/S", width: 40, height: 70, system: "A70S", groupTitle: "Ширина рейки 40 мм" },
-  { id: "_40х100", label: "40×100 мм", code: "A100/40/S", width: 40, height: 100, system: "A70S", groupTitle: "Ширина рейки 40 мм" },
+  { id: "_50х50", label: "50×50 мм", code: "A50/50/S", width: 50, height: 50, system: "A95S", groupTitle: "Ширина рейки 50 мм", defaultGap: 45, image: "/images/calculators/rack/cube/a50-50-s.svg" },
 
-  { id: "_48.8х50", label: "48,8×50 мм", code: "A50/50/S", width: 48.8, height: 50, system: "A95S", groupTitle: "Ширина рейки 50 мм" },
+  { id: "_75х50", label: "75×50 мм", code: "A75/50/S", width: 75, height: 50, system: "A95S", groupTitle: "Ширина рейки 75 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a75-50-s.svg" },
 
-  { id: "_73.8х50", label: "73,8×50 мм", code: "A75/50/S", width: 73.8, height: 50, system: "A95S", groupTitle: "Ширина рейки 75 мм" },
-
-  { id: "_80х35", label: "80×35 мм", code: "A80/35/S", width: 80, height: 35, system: "A100S", groupTitle: "Ширина рейки 80 мм" },
-  { id: "_80х80", label: "80×80 мм", code: "A80/80/S", width: 80, height: 80, system: "A100S", groupTitle: "Ширина рейки 80 мм" },
-  { id: "_80х100", label: "80×100 мм", code: "A80/100/S", width: 80, height: 100, system: "A100S", groupTitle: "Ширина рейки 80 мм" },
+  { id: "_80х35", label: "80×35 мм", code: "A80/35/S", width: 80, height: 35, system: "A100S", groupTitle: "Ширина рейки 80 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a80-35-s.svg" },
+  { id: "_80х80", label: "80×80 мм", code: "A80/80/S", width: 80, height: 80, system: "A100S", groupTitle: "Ширина рейки 80 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a80-80-s.svg" },
+  { id: "_80х100", label: "80×100 мм", code: "A80/100/S", width: 80, height: 100, system: "A100S", groupTitle: "Ширина рейки 80 мм", defaultGap: 20, image: "/images/calculators/rack/cube/a80-100-s.svg" },
 ];
 
 const cubeVisualGroupOrder = [
@@ -1625,7 +1626,7 @@ const cubeVisualGroups: CalculatorVisualGroup[] = cubeVisualGroupOrder.map((grou
     .map((item) => ({
       title: `Рейка ${item.code}`,
       description: `${item.label} • система ${item.system}`,
-      image: "/images/calculators/rack/cube.webp",
+      image: item.image,
       alt: `Кубообразная рейка ${item.code} ${item.label}`,
       fieldId: "cubeVariant",
       value: item.id,
@@ -1680,8 +1681,13 @@ function getCubeModuleMm(values: Record<string, string>) {
 }
 
 function getCubeSystem(values: Record<string, string>) {
-  if (cubeMode(values) === "custom") return "CUSTOM";
-  return getCubeStandardVariant(values)?.system || "A50S";
+  const moduleMm = getCubeModuleMm(values);
+  if (approxEqual(moduleMm, 50, 0.35)) return "A50S";
+  if (approxEqual(moduleMm, 60, 0.35)) return "A60S";
+  if (approxEqual(moduleMm, 70.2, 0.35)) return "A70S";
+  if (approxEqual(moduleMm, 95, 0.35)) return "A95S";
+  if (approxEqual(moduleMm, 100, 0.35)) return "A100S";
+  return "CUSTOM";
 }
 
 function cubeSystemLabel(value: string) {
@@ -1700,6 +1706,23 @@ function getCubeRailCoeff(moduleMm: number) {
   if (exact) return exact[1];
   if (moduleMm <= 0) return 0;
   return Number((1000 / moduleMm).toFixed(2));
+}
+
+
+function normalizeCubeValues(values: Record<string, string>, changedFieldId: string) {
+  const next = { ...values };
+  if (!next.cubeMode) next.cubeMode = "standard";
+  if (changedFieldId === "cubeVariant" || (changedFieldId === "cubeMode" && next.cubeMode === "standard")) {
+    const variant = cubeVariants.find((item) => item.id === next.cubeVariant) || cubeVariants[0];
+    next.cubeVariant = variant.id;
+    next.cubeGap = String(variant.defaultGap);
+  }
+  if (changedFieldId === "cubeMode" && next.cubeMode === "custom") {
+    if (!next.cubeCustomWidth) next.cubeCustomWidth = "30";
+    if (!next.cubeCustomHeight) next.cubeCustomHeight = "50";
+    if (!next.cubeGap || toNumber(next.cubeGap) < 20) next.cubeGap = "20";
+  }
+  return next;
 }
 
 function cubeParams(values: Record<string, string>) {
@@ -1867,45 +1890,1026 @@ function cubeCalculate(values: Record<string, string>) {
   return rows;
 }
 
+function rectangularParams(values: Record<string, string>) {
+  return `Площадь: ${fmt(rackArea(values))} м²; периметр: ${fmt(rackPerimeter(values))} м; марка системы: ${values.system}; длина рейки: ${values.length} мм; запас: ${fmt(rackReserve(values))}%.`;
+}
+
+function simpleRackWarning(values: Record<string, string>) {
+  if (rackArea(values) <= 0 || rackPerimeter(values) <= 0) return null;
+  return null;
+}
+
+function facadeWarning(values: Record<string, string>) {
+  if (rackArea(values) <= 0 || rackPerimeter(values) <= 0) return null;
+  const surface = values.surfaceType;
+  const system = values.facadeSystem;
+  if (surface === "горизонтальная" && ["с_декоративным_пазом", "опирающегося_типа_с_декоративным_пазом", "опирающегося_типа_с_закрытыми_стыками", "с_увеличенной_жёсткостью"].includes(system)) {
+    return "Для горизонтальной обшивки используйте систему «с закрытым стыком».";
+  }
+  if (surface === "вертикальная" && system === "с_закрытым_стыком") {
+    return "Для вертикальной обшивки выберите одну из фасадных реек для вертикального монтажа.";
+  }
+  return null;
+}
+
+export const calculators: CalculatorConfig[] = [
+
+  {
+    slug: "stenovye-bloki",
+    group: "blocks",
+    title: "Калькулятор газобетона и полистиролбетона",
+    shortTitle: "Стеновые блоки",
+    description: "Расчёт объёма и количества газобетонных или полистиролбетонных блоков, веса и кладочной смеси.",
+    seoTitle: "Калькулятор газобетона и полистиролбетона — блоки на дом",
+    seoDescription: "Онлайн-калькулятор IDELEON для расчёта газобетонных и полистиролбетонных блоков: площадь стен, проёмы, объём кладки, количество блоков, масса и кладочная смесь.",
+    h1: "Калькулятор газобетона и полистиролбетона",
+    intro: "Выберите материал и тип стен, задайте размеры блока и геометрию здания. Калькулятор рассчитает чистую площадь кладки, объём материала, ориентировочное количество блоков, теоретический вес и расход кладочной смеси.",
+    offerTitle: "Коммерческое предложение / стеновые блоки",
+    fileName: "KP_stenovye_bloki_ideleon.xlsx",
+    visualTitle: "Выберите материал",
+    visualDescription: "Карточка переключает материал и устанавливает типовые размеры блока. Любой размер можно затем скорректировать вручную.",
+    calculatorNote: "Расчёт предварительный. Фактическое количество зависит от раскладки, перевязки, фронтонов, армопоясов, подрезки, упаковки производителя и геометрии проекта.",
+    resultTitle: "Результат расчёта стеновых блоков",
+    resultMaterialTitle: "Показатель",
+    resultCoefficientTitle: "Основание расчёта",
+    resultQuantityTitle: "Количество",
+    resultMaxFractionDigits: 3,
+    fields: [
+      { id: "blockMaterial", label: "Материал", type: "buttons", defaultValue: "gas", hideInput: true, options: [
+        { label: "Газобетон", value: "gas" },
+        { label: "Полистиролбетон", value: "polystyrene" },
+      ] },
+      { id: "wallType", label: "Тип стен", type: "buttons", defaultValue: "exterior", hideInput: true, options: [
+        { label: "Наружные стены", value: "exterior" },
+        { label: "Внутренние несущие", value: "bearing" },
+        { label: "Перегородки", value: "partition" },
+      ] },
+      { id: "blockLength", label: "Длина блока, мм", type: "number", defaultValue: "625", step: "any" },
+      { id: "blockHeight", label: "Высота блока, мм", type: "number", defaultValue: "250", step: "any" },
+      { id: "blockThickness", label: "Толщина блока / стены, мм", type: "number", defaultValue: "300", step: "any" },
+      { id: "blockDensity", label: "Плотность блока, кг/м³", type: "select", defaultValue: "500", options: ["300","350","400","450","500","600"].map((value) => ({ label: `D${value}`, value })) },
+      { id: "wallLength", label: "Общая длина стен, м", type: "number", defaultValue: "40", step: "any" },
+      { id: "wallHeight", label: "Средняя высота стен одного этажа, м", type: "number", defaultValue: "3", step: "any" },
+      { id: "floors", label: "Количество этажей", type: "number", defaultValue: "1", step: "1" },
+      { id: "openingsMode", label: "Как задать проёмы", type: "buttons", defaultValue: "area", options: [
+        { label: "Общей площадью", value: "area" },
+        { label: "Окна и двери", value: "count" },
+      ] },
+      { id: "openingsArea", label: "Общая площадь окон и дверей, м²", type: "number", defaultValue: "18", step: "any", showWhen: { fieldId: "openingsMode", values: ["area"] } },
+      { id: "windowCount", label: "Количество окон", type: "number", defaultValue: "8", step: "1", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "windowWidth", label: "Средняя ширина окна, м", type: "number", defaultValue: "1,4", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "windowHeight", label: "Средняя высота окна, м", type: "number", defaultValue: "1,4", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorCount", label: "Количество дверей", type: "number", defaultValue: "2", step: "1", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorWidth", label: "Средняя ширина двери, м", type: "number", defaultValue: "0,9", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "doorHeight", label: "Средняя высота двери, м", type: "number", defaultValue: "2,1", step: "any", showWhen: { fieldId: "openingsMode", values: ["count"] } },
+      { id: "glueConsumption", label: "Расход кладочной смеси, кг/м³", type: "number", defaultValue: "25", step: "any" },
+      { id: "glueBagWeight", label: "Вес мешка кладочной смеси, кг", type: "select", defaultValue: "25", options: ["20","25"].map((value) => ({ label: `${value} кг`, value })) },
+      commonReserveField,
+    ],
+    visuals: [
+      { title: "Газобетон", description: "Автоклавные ячеистые блоки. Типовой размер в калькуляторе — 625×250 мм.", image: "/images/calculators/blocks/gas-concrete.png", alt: "Газобетонный стеновой блок", fieldId: "blockMaterial", value: "gas" },
+      { title: "Полистиролбетон", description: "Лёгкие блоки с гранулами вспененного полистирола. Типовой размер — 600×300 мм.", image: "/images/calculators/blocks/polystyrene-concrete.png", alt: "Полистиролбетонный стеновой блок", fieldId: "blockMaterial", value: "polystyrene" },
+    ],
+    visualGroups: [
+      {
+        title: "Выберите тип стен",
+        description: "Тип стены устанавливает стартовую толщину блока. После выбора толщину можно изменить вручную по проекту.",
+        visuals: [
+          { title: "Наружные стены", description: "Внешний контур здания. Стартовая толщина — 300 мм.", image: "/images/calculators/blocks/exterior-walls.png", alt: "Наружные стены здания", fieldId: "wallType", value: "exterior" },
+          { title: "Внутренние несущие", description: "Несущие стены внутри здания. Стартовая толщина — 200 мм.", image: "/images/calculators/blocks/bearing-walls.png", alt: "Внутренняя несущая стена", fieldId: "wallType", value: "bearing" },
+          { title: "Перегородки", description: "Ненесущие разделительные стены. Стартовая толщина — 100 мм.", image: "/images/calculators/blocks/partitions.png", alt: "Перегородка из строительных блоков", fieldId: "wallType", value: "partition" },
+        ],
+      },
+    ],
+    offerColumns: blocksColumns,
+    calculate: blocksCalculate,
+    getParamsText: blocksParams,
+    getWarning: blocksWarning,
+    normalizeValues: normalizeBlocksValues,
+    relatedLinks: [
+      { label: "Калькулятор сэндвич-панелей", href: "/calculators/sendvich-paneli" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог строительных материалов", href: "/catalog" },
+    ],
+    seoSections: [
+      { title: "Что рассчитывает калькулятор", text: "Калькулятор определяет чистую площадь стен после вычета оконных и дверных проёмов, объём кладки, количество блоков, теоретическую массу и ориентировочное количество мешков кладочной смеси." },
+      { title: "Как задать проёмы", text: "Проёмы можно указать одной общей площадью либо через количество и средние размеры окон и дверей. Второй способ удобен на ранней стадии, когда точной ведомости проёмов ещё нет." },
+      { title: "Газобетон или полистиролбетон", text: "Выбор материала в калькуляторе меняет типовые размеры блока, но все параметры доступны для ручной корректировки. Для закупки важны фактический формат, плотность, класс прочности и упаковка конкретного производителя." },
+      { title: "Как учитывается кладочная смесь", text: "Расход задаётся пользователем в килограммах на кубометр кладки. По умолчанию установлено 25 кг/м³, но фактическое значение нужно сверять с инструкцией производителя смеси, толщиной шва и качеством геометрии блоков." },
+      { title: "Когда требуется проектный расчёт", text: "Точный расчёт требуется для фронтонов, эркеров, армопоясов, перемычек, сложной перевязки, нескольких толщин стен и нестандартных блоков. В таких случаях результат калькулятора используется как предварительная основа спецификации." },
+    ],
+    faq: [
+      { question: "Учитывает ли калькулятор запас?", answer: "Да. Запас применяется к объёму блоков и затем влияет на количество блоков, вес и расход кладочной смеси." },
+      { question: "Можно ли задать нестандартный размер блока?", answer: "Да. Длина, высота и толщина блока вводятся вручную, поэтому калькулятор подходит для разных производителей." },
+      { question: "Почему количество блоков округляется вверх?", answer: "Поставить дробную часть блока нельзя, поэтому ориентировочное количество изделий округляется до целого блока в большую сторону." },
+      { question: "Считает ли калькулятор поддоны?", answer: "Нет. Количество блоков или объём на поддоне различаются у производителей, поэтому упаковку нужно уточнять при запросе коммерческого предложения." },
+      { question: "Можно ли сразу заказать по этому расчёту?", answer: "Расчёт подходит для предварительной заявки. Перед выставлением счёта менеджер проверит размеры, плотность, упаковку, наличие и условия доставки." },
+    ],
+  },
+
+  {
+    slug: "sendvich-paneli",
+    group: "sandwich",
+    title: "Калькулятор сэндвич-панелей",
+    shortTitle: "Сэндвич-панели",
+    description: "Предварительный расчёт стеновых и кровельных сэндвич-панелей, доборных элементов и крепежа для здания.",
+    seoTitle: "Калькулятор сэндвич-панелей — стены, кровля, доборы",
+    seoDescription: "Онлайн-калькулятор IDELEON для предварительного расчёта стеновых и кровельных сэндвич-панелей: площадь стен и кровли, количество панелей, доборные элементы, крепёж и Excel-КП.",
+    h1: "Калькулятор сэндвич-панелей",
+    intro: "Калькулятор помогает быстро оценить потребность в стеновых и кровельных сэндвич-панелях по габаритам здания. Расчёт ориентировочный: он подходит для предварительного бюджета и заявки на коммерческое предложение, а окончательная спецификация уточняется по проекту.",
+    offerTitle: "Коммерческое предложение / сэндвич-панели",
+    fileName: "KP_sendvich_paneli_ideleon.xlsx",
+    visualTitle: "Выберите схему расчёта",
+    visualDescription: "Сначала выберите, что рассчитывать: здание целиком, только стены или только кровлю. Далее укажите тип кровли и размеры здания.",
+    calculatorNote: "Расчёт ориентировочный. Он не заменяет проектную раскладку панелей, расчёт узлов примыканий и подбор крепежа по ветровым и снеговым нагрузкам.",
+    resultTitle: "Результат предварительного расчёта",
+    resultMaterialTitle: "Позиция",
+    resultCoefficientTitle: "Основание",
+    resultQuantityTitle: "Количество",
+    resultMaxFractionDigits: 2,
+    fields: [
+      { id: "scope", label: "Что рассчитываем", type: "buttons", defaultValue: "building", hideInput: true, options: [
+        { label: "Здание целиком", value: "building" },
+        { label: "Только стены", value: "wall" },
+        { label: "Только кровля", value: "roof" },
+      ] },
+      { id: "buildingLength", label: "Длина здания, м", type: "number", defaultValue: "24", step: "any" },
+      { id: "buildingWidth", label: "Ширина здания, м", type: "number", defaultValue: "12", step: "any" },
+      { id: "wallHeight", label: "Высота стен, м", type: "number", defaultValue: "4", step: "any" },
+      { id: "openingsArea", label: "Площадь проёмов, м²", type: "number", defaultValue: "12", step: "any", showWhen: { fieldId: "scope", values: ["building", "wall"] } },
+      { id: "roofType", label: "Тип кровли", type: "buttons", defaultValue: "gable", hideInput: true, showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: [
+        { label: "Двускатная", value: "gable" },
+        { label: "Односкатная", value: "single" },
+      ] },
+      { id: "roofPitchDeg", label: "Уклон кровли, °", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "scope", values: ["building", "roof"] } },
+      { id: "wallThickness", label: "Толщина стеновой панели", type: "select", defaultValue: "100", showWhen: { fieldId: "scope", values: ["building", "wall"] }, options: ["50","80","100","120","150","200"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "wallUsefulWidth", label: "Полезная ширина стеновой панели", type: "select", defaultValue: "1000", showWhen: { fieldId: "scope", values: ["building", "wall"] }, options: ["1000","1190"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "roofThickness", label: "Толщина кровельной панели", type: "select", defaultValue: "120", showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: ["50","80","100","120","150","200"].map((value) => ({ label: `${value} мм`, value })) },
+      { id: "roofUsefulWidth", label: "Полезная ширина кровельной панели", type: "select", defaultValue: "1000", showWhen: { fieldId: "scope", values: ["building", "roof"] }, options: ["1000"].map((value) => ({ label: `${value} мм`, value })) },
+      commonReserveField,
+    ],
+    visuals: [],
+    visualGroups: [
+      {
+        title: "Что нужно рассчитать",
+        description: "Выберите режим расчёта. Для полного здания калькулятор покажет и стеновые, и кровельные панели, а также ориентировочный набор доборов и крепежа.",
+        visuals: [
+          { title: "Здание целиком", description: "Стены, кровля, доборные элементы и крепёж для предварительного бюджета.", image: "/images/calculators/sandwich/building.png", alt: "Расчёт комплекта сэндвич-панелей на здание", fieldId: "scope", value: "building" },
+          { title: "Только стены", description: "Только стеновые панели, проёмы, углы и стартовые элементы.", image: "/images/calculators/sandwich/wall.png", alt: "Расчёт стеновых сэндвич-панелей", fieldId: "scope", value: "wall" },
+          { title: "Только кровля", description: "Кровельные панели, конёк, карниз и фронтонные элементы.", image: "/images/calculators/sandwich/roof.png", alt: "Расчёт кровельных сэндвич-панелей", fieldId: "scope", value: "roof" },
+        ],
+      },
+      {
+        title: "Тип кровли",
+        description: "Выберите конструкцию кровли для расчёта площади кровельных панелей и доборных элементов.",
+        showWhen: { fieldId: "scope", values: ["building", "roof"] },
+        visuals: [
+          { title: "Двускатная кровля", description: "Подходит для складов, ангаров, магазинов и производственных зданий.", image: "/images/calculators/sandwich/gable.png", alt: "Двускатная кровля из сэндвич-панелей", fieldId: "roofType", value: "gable" },
+          { title: "Односкатная кровля", description: "Часто используется для навесов, пристроек и компактных зданий.", image: "/images/calculators/sandwich/single-slope.png", alt: "Односкатная кровля из сэндвич-панелей", fieldId: "roofType", value: "single" },
+        ],
+      },
+    ],
+    offerColumns: sandwichColumns,
+    calculate: sandwichCalculate,
+    getParamsText: sandwichParams,
+    getWarning: sandwichWarning,
+    relatedLinks: [
+      { label: "Калькулятор чёрного металлопроката", href: "/calculators/chernyy-metalloprokat" },
+      { label: "Каталог сэндвич-панелей", href: "/catalog/sandvich-paneli" },
+      { label: "Все калькуляторы", href: "/calculators" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор", text: "Калькулятор определяет ориентировочную площадь стеновых и кровельных сэндвич-панелей, число панелей по полезной ширине, длину основных доборных элементов и количество крепежа. Расчёт подходит для предварительной оценки бюджета и подготовки заявки в IDELEON." },
+      { title: "Как пользоваться калькулятором", text: "Сначала выберите режим расчёта: всё здание, только стены или только кровлю. Затем задайте габариты здания, высоту стен, площадь проёмов, тип кровли и толщину панелей. При необходимости укажите запас на подрезку и монтаж." },
+      { title: "Какие схемы взаимодействия заложены", text: "Для удобства пользователя калькулятор разбит на две последовательные группы карточек: сначала сценарий расчёта, затем тип кровли. После выбора схема взаимодействия становится короче: показываются только релевантные поля, а результат сразу отражает конкретный сценарий — стены, кровлю или полный комплект на здание." },
+      { title: "Когда нужен точный проектный расчёт", text: "Если у здания есть фонари, воротные порталы, внутренние углы, перепады высот, сложные узлы примыкания, несколько температурных зон или нестандартные пролёты, нужен детальный проектный расчёт. Специалисты IDELEON подготовят точную раскладку панелей, доборов и крепежа." },
+      { title: "Что важно учесть при заказе", text: "Фактическая длина панелей, тип утеплителя, замок панели, цвет, покрытие, ветровой район, снеговая нагрузка и длина доборов уточняются при подготовке коммерческого предложения. Поэтому Excel-КП из калькулятора является предварительным расчётом, а не окончательной спецификацией." },
+    ],
+    faq: [
+      { question: "Считает ли калькулятор панели поштучно?", answer: "Да, калькулятор показывает ориентировочное количество панелей по полезной ширине и расчётной длине. Итоговая раскладка всё равно требует проверки по проекту." },
+      { question: "Учитываются ли окна и ворота?", answer: "Да. Для стенового контура можно указать общую площадь проёмов, и калькулятор уменьшит расчётную площадь стеновых панелей." },
+      { question: "Можно ли считать только кровлю?", answer: "Да. Для этого выберите сценарий «Только кровля» — тогда будут показаны только кровельные панели и связанные с ними доборные элементы." },
+      { question: "Чем отличается двускатная и односкатная кровля в расчёте?", answer: "От типа кровли зависит площадь скатов, длина доборных элементов и, соответственно, ориентировочный расход панелей и крепежа." },
+      { question: "Насколько точен расчёт?", answer: "Это предварительный расчёт для бюджета и быстрой заявки. Для закупки и монтажа нужна итоговая спецификация, подготовленная по проекту." },
+    ],
+  },
+
+  {
+    slug: "chernyy-metalloprokat",
+    group: "metal",
+    title: "Калькулятор чёрного металлопроката",
+    shortTitle: "Чёрный металлопрокат",
+    description: "Пересчёт массы, длины, количества штук и площади для 12 видов стального проката.",
+    seoTitle: "Калькулятор веса металлопроката — масса, метры и количество",
+    seoDescription: "Онлайн-калькулятор чёрного металлопроката IDELEON: арматура, круг, квадрат, шестигранник, полоса, лист, трубы, уголок, швеллер и двутавр. Перевод тонн в метры и штуки, Excel-КП.",
+    h1: "Калькулятор чёрного металлопроката",
+    intro: "Выберите вид проката, укажите размер и исходную величину. Калькулятор пересчитает массу, общую длину и количество целых изделий, а затем сформирует Excel-КП в фирменном формате IDELEON.",
+    offerTitle: "Коммерческое предложение / чёрный металлопрокат",
+    fileName: "KP_chernyy_metalloprokat_ideleon.xlsx",
+    visualTitle: "Выберите вид металлопроката",
+    visualDescription: "Двенадцать основных видов чёрного металлопроката. После выбора карточки ниже появятся только относящиеся к изделию размеры и параметры пересчёта.",
+    calculatorNote: "Расчёт показывает теоретическую массу. Фактическая масса партии может отличаться в пределах производственных допусков; наличие размеров и длину поставки подтвердит менеджер IDELEON.",
+    resultTitle: "Результат пересчёта",
+    resultMaterialTitle: "Показатель",
+    resultCoefficientTitle: "Основание расчёта",
+    resultQuantityTitle: "Значение",
+    resultMaxFractionDigits: 4,
+    fields: [
+      {
+        id: "productType", label: "Вид проката", type: "buttons", defaultValue: "rebar", hideInput: true,
+        options: metalProductValues.map((value) => ({ label: metalProductLabels[value], value })),
+      },
+      {
+        id: "longInputMode", label: "Что известно", type: "buttons", defaultValue: "length", showWhen: metalLongCondition,
+        options: [
+          { label: "Общая длина", value: "length" },
+          { label: "Масса", value: "weight" },
+          { label: "Количество штук", value: "pieces" },
+        ],
+      },
+      {
+        id: "sheetInputMode", label: "Что известно", type: "buttons", defaultValue: "sheets", showWhen: { fieldId: "productType", values: ["sheet"] },
+        options: [
+          { label: "Количество листов", value: "sheets" },
+          { label: "Общая площадь", value: "area" },
+          { label: "Масса", value: "weight" },
+        ],
+      },
+      {
+        id: "rebarClass", label: "Класс арматуры", type: "buttons", defaultValue: "А500С", showWhen: { fieldId: "productType", values: ["rebar"] },
+        options: [
+          { label: "А500С", value: "А500С" },
+          { label: "А400 / А-III", value: "А400 (А-III)" },
+          { label: "А240 / А-I", value: "А240 (А-I)" },
+        ],
+      },
+      {
+        id: "steelGrade", label: "Марка стали", type: "select", defaultValue: "Ст3сп/пс5", showWhen: { fieldId: "productType", values: metalNonRebarValues },
+        options: [
+          { label: "Ст3сп/пс5", value: "Ст3сп/пс5" },
+          { label: "09Г2С", value: "09Г2С" },
+          { label: "Ст20", value: "Ст20" },
+          { label: "S235JR", value: "S235JR" },
+          { label: "Уточнить по заявке", value: "уточнить" },
+        ],
+      },
+      {
+        id: "rebarDiameter", label: "Диаметр арматуры", type: "select", defaultValue: "12", showWhen: { fieldId: "productType", values: ["rebar"] },
+        options: Object.keys(rebarMassKgM).map((value) => ({ label: `Ø${value} мм`, value })),
+      },
+      { id: "roundDiameter", label: "Диаметр круга, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["round"] } },
+      { id: "squareSide", label: "Сторона квадрата, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["square"] } },
+      { id: "hexAcrossFlats", label: "Размер шестигранника под ключ S, мм", type: "number", defaultValue: "20", step: "any", showWhen: { fieldId: "productType", values: ["hexagon"] } },
+      { id: "stripWidth", label: "Ширина полосы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["strip"] } },
+      { id: "stripThickness", label: "Толщина полосы, мм", type: "number", defaultValue: "4", step: "any", showWhen: { fieldId: "productType", values: ["strip"] } },
+      { id: "sheetThickness", label: "Толщина листа, мм", type: "number", defaultValue: "4", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "sheetWidth", label: "Ширина листа, мм", type: "number", defaultValue: "1500", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "sheetLength", label: "Длина листа, мм", type: "number", defaultValue: "6000", step: "any", showWhen: { fieldId: "productType", values: ["sheet"] } },
+      { id: "roundPipeDiameter", label: "Наружный диаметр трубы, мм", type: "number", defaultValue: "57", step: "any", showWhen: { fieldId: "productType", values: ["roundPipe"] } },
+      { id: "roundPipeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "3,5", step: "any", showWhen: { fieldId: "productType", values: ["roundPipe"] } },
+      { id: "squareTubeSide", label: "Наружная сторона трубы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["squareTube"] } },
+      { id: "squareTubeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "2", step: "any", showWhen: { fieldId: "productType", values: ["squareTube"] } },
+      { id: "rectTubeWidth", label: "Ширина трубы, мм", type: "number", defaultValue: "60", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      { id: "rectTubeHeight", label: "Высота трубы, мм", type: "number", defaultValue: "40", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      { id: "rectTubeWall", label: "Толщина стенки, мм", type: "number", defaultValue: "2", step: "any", showWhen: { fieldId: "productType", values: ["rectTube"] } },
+      {
+        id: "angleSize", label: "Размер равнополочного уголка", type: "select", defaultValue: "50×50×5", showWhen: { fieldId: "productType", values: ["angle"] },
+        options: Object.entries(equalAngleMassKgM).map(([value, mass]) => ({ label: `${value} мм — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      {
+        id: "channelSize", label: "Номер швеллера с параллельными полками", type: "select", defaultValue: "12П", showWhen: { fieldId: "productType", values: ["channel"] },
+        options: Object.entries(channelPMassKgM).map(([value, mass]) => ({ label: `${value} — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      {
+        id: "beamSize", label: "Номер двутавра", type: "select", defaultValue: "20", showWhen: { fieldId: "productType", values: ["beam"] },
+        options: Object.entries(iBeamMassKgM).map(([value, mass]) => ({ label: `№${value} — ${String(mass).replace(".", ",")} кг/м`, value })),
+      },
+      { id: "pieceLength", label: "Длина одной штуки, м", type: "number", defaultValue: "12", step: "any", showWhen: metalLongCondition },
+      { id: "inputLengthM", label: "Общая длина, м", type: "number", defaultValue: "100", step: "any", showWhen: { fieldId: "longInputMode", values: ["length"] } },
+      { id: "inputWeightT", label: "Масса, т", type: "number", defaultValue: "1", step: "any", showWhen: { fieldId: "longInputMode", values: ["weight"] } },
+      { id: "inputPieces", label: "Количество штук", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "longInputMode", values: ["pieces"] } },
+      { id: "inputSheetCount", label: "Количество листов", type: "number", defaultValue: "10", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["sheets"] } },
+      { id: "inputAreaM2", label: "Общая площадь, м²", type: "number", defaultValue: "100", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["area"] } },
+      { id: "inputSheetWeightT", label: "Масса, т", type: "number", defaultValue: "1", step: "any", showWhen: { fieldId: "sheetInputMode", values: ["weight"] } },
+    ],
+    visuals: [
+      { title: "Арматура", description: "Периодический профиль А500С. Масса по ГОСТ 34028-2016.", image: "/images/calculators/metal/rebar.png", alt: "Арматура стальная", fieldId: "productType", value: "rebar" },
+      { title: "Круг", description: "Круглый стальной пруток произвольного диаметра.", image: "/images/calculators/metal/round.png", alt: "Круг стальной", fieldId: "productType", value: "round" },
+      { title: "Квадрат", description: "Стальной квадрат сплошного сечения.", image: "/images/calculators/metal/square.png", alt: "Квадрат стальной", fieldId: "productType", value: "square" },
+      { title: "Шестигранник", description: "Пруток шестигранного сечения, размер под ключ.", image: "/images/calculators/metal/hexagon.png", alt: "Шестигранник стальной", fieldId: "productType", value: "hexagon" },
+      { title: "Полоса", description: "Плоский стальной прокат по ширине и толщине.", image: "/images/calculators/metal/strip.png", alt: "Полоса стальная", fieldId: "productType", value: "strip" },
+      { title: "Лист", description: "Листовой прокат: масса, площадь и количество листов.", image: "/images/calculators/metal/sheet.png", alt: "Лист стальной", fieldId: "productType", value: "sheet" },
+      { title: "Труба круглая", description: "Наружный диаметр и толщина стенки.", image: "/images/calculators/metal/round-pipe.png", alt: "Труба стальная круглая", fieldId: "productType", value: "roundPipe" },
+      { title: "Труба квадратная", description: "Квадратная профильная труба.", image: "/images/calculators/metal/square-tube.png", alt: "Труба профильная квадратная", fieldId: "productType", value: "squareTube" },
+      { title: "Труба прямоугольная", description: "Прямоугольная профильная труба.", image: "/images/calculators/metal/rect-tube.png", alt: "Труба профильная прямоугольная", fieldId: "productType", value: "rectTube" },
+      { title: "Уголок", description: "Горячекатаный равнополочный уголок по ГОСТ 8509-93.", image: "/images/calculators/metal/angle.png", alt: "Уголок стальной", fieldId: "productType", value: "angle" },
+      { title: "Швеллер", description: "Горячекатаный швеллер серии П по ГОСТ 8240-97.", image: "/images/calculators/metal/channel.png", alt: "Швеллер стальной", fieldId: "productType", value: "channel" },
+      { title: "Двутавр", description: "Горячекатаная двутавровая балка по ГОСТ 8239-89.", image: "/images/calculators/metal/i-beam.png", alt: "Двутавр стальной", fieldId: "productType", value: "beam" },
+    ],
+    offerColumns: metalColumns,
+    calculate: metalCalculate,
+    getParamsText: metalParams,
+    getWarning: metalWarning,
+    normalizeValues: normalizeMetalValues,
+    relatedLinks: [
+      { label: "Каталог металлопроката", href: "/catalog/metal-roll" },
+      { label: "Арматура", href: "/catalog/rebar" },
+      { label: "Все калькуляторы", href: "/calculators" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор металлопроката", text: "Калькулятор переводит массу в длину и количество штук, длину — в массу и количество, а для листового проката дополнительно считает площадь и число листов. Для сортаментных профилей используются табличные теоретические массы, для простых геометрических сечений — расчёт при плотности стали 7850 кг/м³." },
+      { title: "Какие виды проката доступны", text: "В одном калькуляторе собраны арматура, круг, квадрат, шестигранник, полоса, стальной лист, круглая труба, квадратная и прямоугольная профильная труба, равнополочный уголок, швеллер серии П и горячекатаный двутавр." },
+      { title: "Как пользоваться пересчётом", text: "Выберите изделие, задайте размеры и длину одной штуки. Затем укажите, что известно: общая длина, масса или количество штук. Для листа можно исходить из количества, площади или массы. Результат показывает как точный пересчёт, так и количество целых изделий к заказу." },
+      { title: "Почему фактическая масса может отличаться", text: "Теоретическая масса определяется по номинальным размерам. Реальная партия может отличаться из-за допусков по толщине, диаметру, геометрии профиля и длине. Перед выставлением счёта менеджер IDELEON проверит сортамент, длину поставки и наличие на складе." },
+      { title: "Когда нужен расчёт специалиста", text: "Обратитесь в IDELEON, если требуется смешанная спецификация, резка в размер, нестандартная длина, несколько марок стали, подбор аналогов или расчёт доставки. Скачанный Excel можно использовать как основу запроса цены." },
+    ],
+    faq: [
+      { question: "Какую плотность стали использует калькулятор?", answer: "Для геометрических формул используется 7850 кг/м³ — стандартное значение для расчёта теоретической массы углеродистой стали." },
+      { question: "Почему калькулятор показывает расчётное и целое количество штук?", answer: "Пересчёт массы или длины может дать дробное число изделий. Для заказа калькулятор отдельно округляет количество полных прутков, труб или балок вверх." },
+      { question: "Какие швеллеры включены?", answer: "В первой версии используется наиболее понятный сортамент горячекатаных швеллеров серии П с параллельными гранями полок по ГОСТ 8240-97." },
+      { question: "Какие уголки включены?", answer: "Калькулятор содержит распространённые равнополочные горячекатаные уголки по ГОСТ 8509-93." },
+      { question: "Можно ли использовать Excel-КП для запроса цены?", answer: "Да. В файле уже будут изделие, размер, норматив, расчётная масса и поле для цены за тонну. Окончательное предложение формируется после проверки наличия и условий поставки." },
+    ],
+  },
+  {
+    slug: "profil-gkl",
+    group: "gkl",
+    title: "Калькулятор профиля для ГКЛ",
+    shortTitle: "Профиль для ГКЛ",
+    description: "Расчёт расхода профиля для потолка, выравнивания стены и перегородки из ГКЛ.",
+    seoTitle: "Калькулятор профиля для ГКЛ — расчёт расхода онлайн",
+    seoDescription: "Онлайн-калькулятор профиля для гипсокартона: потолок, выравнивание стены и перегородка. Расчёт ПП, ППН, ПН, ПС, подвесов и соединителей.",
+    h1: "Калькулятор профиля для ГКЛ",
+    intro: "Введите параметры конструкции, чтобы получить предварительный расход профилей и комплектующих. Для перегородок и выравнивания стен можно считать как по длине и высоте, так и сразу по площади в квадратных метрах. Несколько разных конструкций можно сохранить в один проект и выгрузить единым Excel-КП на одном листе.",
+    offerTitle: "Коммерческое предложение / расчёт профиля для ГКЛ",
+    fileName: "KP_profil_GKL_ideleon.xlsx",
+    visualTitle: "Выберите тип конструкции",
+    visualDescription: "Карточка переключает тип конструкции и связанные параметры расчёта.",
+    fields: [
+      {
+        id: "constructionType",
+        label: "Тип конструкции",
+        type: "buttons",
+        defaultValue: "ceiling",
+        options: [
+          { label: "Потолок", value: "ceiling" },
+          { label: "Выравнивание", value: "cladding" },
+          { label: "Перегородка", value: "partition" },
+        ],
+      },
+      { id: "ceilingArea", label: "Площадь потолка, м²", type: "number", defaultValue: "200", showWhen: { fieldId: "constructionType", values: ["ceiling"] } },
+      { id: "ceilingPerimeter", label: "Периметр потолка, м", type: "number", defaultValue: "40", showWhen: { fieldId: "constructionType", values: ["ceiling"] } },
+      {
+        id: "suspensionType",
+        label: "Тип подвеса",
+        type: "buttons",
+        defaultValue: "direct",
+        showWhen: { fieldId: "constructionType", values: ["ceiling"] },
+        options: [
+          { label: "Прямой подвес", value: "direct" },
+          { label: "Анкерный + тяга", value: "anchor" },
+        ],
+      },
+      {
+        id: "wallInputMode",
+        label: "Как задать размеры стены",
+        type: "buttons",
+        defaultValue: "none",
+        showWhen: { fieldId: "constructionType", values: ["cladding", "partition"] },
+        options: [
+          { label: "По площади", value: "area" },
+          { label: "По длине", value: "dimensions" },
+        ],
+      },
+      {
+        id: "wallArea",
+        label: "Площадь стены / перегородки по одной стороне, м²",
+        type: "number",
+        defaultValue: "100",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["area"] },
+      },
+      {
+        id: "wallHeight",
+        label: "Высота стены / перегородки, м",
+        type: "number",
+        defaultValue: "3",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["area", "dimensions"] },
+      },
+      {
+        id: "wallLength",
+        label: "Общая длина стены / перегородки, м",
+        type: "number",
+        defaultValue: "10",
+        step: "any",
+        showWhen: { fieldId: "wallInputMode", values: ["dimensions"] },
+      },
+      {
+        id: "partitionWidth",
+        label: "Ширина профиля перегородки",
+        type: "buttons",
+        defaultValue: "50",
+        showWhen: { fieldId: "constructionType", values: ["partition"] },
+        options: [
+          { label: "50", value: "50" },
+          { label: "75", value: "75" },
+          { label: "100", value: "100" },
+        ],
+      },
+      {
+        id: "ceilingProfileLengthMm",
+        label: "Длина ПП 60×27, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["ceiling", "cladding"] },
+      },
+      {
+        id: "ceilingGuideProfileLengthMm",
+        label: "Длина ППН 27×28, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["ceiling", "cladding"] },
+      },
+      {
+        id: "studProfileLengthMm",
+        label: "Длина стоечного профиля ПС, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["partition"] },
+      },
+      {
+        id: "partitionGuideProfileLengthMm",
+        label: "Длина направляющего профиля ПН, мм",
+        type: "number",
+        defaultValue: "3000",
+        step: "1",
+        showWhen: { fieldId: "constructionType", values: ["partition"] },
+      },
+      commonReserveField,
+    ],
+    visuals: [
+      { title: "Потолок из ГКЛ", description: "ПП 60×27, ППН 27×28, подвесы и соединители.", image: "/images/calculators/gkl/gkl-ceiling.png", alt: "Схема потолочного каркаса ГКЛ", fieldId: "constructionType", value: "ceiling" },
+      { title: "Выравнивание стены", description: "ПП 60×27 на прямых подвесах к основанию стены.", image: "/images/calculators/gkl/gkl-wall-alignment.png", alt: "Схема выравнивания стены ГКЛ", fieldId: "constructionType", value: "cladding" },
+      { title: "Перегородка", description: "ПН/ПС 50, 75 или 100 мм и листовая обшивка.", image: "/images/calculators/gkl/gkl-partition.png", alt: "Схема перегородки ГКЛ", fieldId: "constructionType", value: "partition" },
+    ],
+    offerColumns: gklColumns,
+    calculate: gklCalculate,
+    getParamsText: gklParams,
+    normalizeValues: normalizeGklValues,
+    seoSections: [
+      { title: "Что считает калькулятор профиля для ГКЛ", text: "Калькулятор помогает предварительно оценить расход листов, профилей, подвесов и соединителей для типовых конструкций из гипсокартона. Для выравнивания стен и перегородок исходные данные можно задать двумя способами: площадью и высотой либо длиной и высотой. Итоговый расчёт лучше проверять по проекту, потому что на расход влияют шаг профилей, количество слоёв, проёмы и требования к конструкции." },
+      { title: "Когда стоит отправить расчёт в Иделеон", text: "Если у вас есть ведомость, проект или список материалов, отправьте расчёт нам. Мы проверим комплектность, подберём позиции под объект и подготовим коммерческое предложение." },
+      { title: "Как объединить несколько перегородок в одно КП", text: "После каждого расчёта добавьте конструкцию в проект. Сохранённые перегородки, обшивки и потолки останутся в браузере. Единое Excel-КП разместит все расчёты отдельными блоками на одном листе, а внизу сформирует суммарную спецификацию одинаковых материалов." },
+    ],
+    faq: [
+      { question: "Можно ли считать перегородку или обшивку сразу по квадратным метрам?", answer: "Да. Выберите способ «По площади», укажите площадь конструкции по одной стороне и её высоту. Калькулятор самостоятельно определит расчётную длину и выполнит дальнейший расчёт." },
+      { question: "Можно ли включить несколько разных перегородок в одно КП?", answer: "Да. Добавляйте каждый выполненный расчёт в проект. Затем скачайте единое КП: на одном листе будут отдельные блоки по каждой конструкции и общая сводная спецификация в конце." },
+      { question: "Как учитывается длина профиля?", answer: "Длину основного и направляющего профиля можно ввести вручную в миллиметрах. Расчётное количество погонных метров округляется вверх до целого количества профилей выбранной длины." },
+      { question: "Можно ли использовать расчёт как финальную спецификацию?", answer: "Нет. Это предварительный расчёт для оценки расхода. Финальную комплектацию лучше проверять по проекту." },
+      { question: "Почему выравнивание стены считается через ПП 60×27?", answer: "Потому что в этом варианте каркас крепится к стене на прямых подвесах и собирается на потолочной паре ПП 60×27 и ППН 27×28." },
+    ],
+  },
+  {
+    slug: "grilyato",
+    group: "grilyato",
+    title: "Калькулятор потолка Грильято",
+    shortTitle: "Грильято",
+    description: "Расчёт стандартного, нестандартного, пирамидального и разноуровневого Грильято.",
+    seoTitle: "Калькулятор Грильято — расчёт потолка онлайн",
+    seoDescription: "Расчёт расхода потолка Грильято по площади, периметру, типу системы и размеру ячейки. Скачать КП Excel и отправить заявку в Иделеон.",
+    h1: "Калькулятор потолка Грильято",
+    intro: "Выберите тип Грильято, размер ячейки, площадь и периметр помещения. Калькулятор рассчитает предварительную комплектацию и сформирует Excel-файл.",
+    offerTitle: "Коммерческое предложение / расчёт потолка Грильято",
+    fileName: "KP_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант потолка Грильято",
+    visualDescription: "Карточка переключает тип системы и сразу обновляет параметры расчёта.",
+    fields: [
+      areaField, perimeterField,
+      {
+        id: "grilyatoType",
+        label: "Тип Грильято",
+        type: "buttons",
+        defaultValue: "standard",
+        options: [
+          { label: "Стандарт", value: "standard" },
+          { label: "Нестандарт", value: "nonstandard" },
+          { label: "Пирамидальное", value: "pyramidal" },
+          { label: "Разноуровневое", value: "multilevel" },
+        ],
+      },
+      { id: "cellSize", label: "Ячейка", type: "select", defaultValue: "100×100", options: standardCellOptions.map((item) => ({ label: item, value: item })) },
+      commonReserveField,
+    ],
+    visuals: [
+      { title: "Стандартное", description: "Классическая открытая ячейка.", image: "/images/calculators/grilyato/grilyato-standard.png", alt: "Схема стандартного Грильято", fieldId: "grilyatoType", value: "standard" },
+      { title: "Нестандартная ячейка", description: "Модели с отличающимся размером ячейки.", image: "/images/calculators/grilyato/grilyato-nonstandard-model-1.png", alt: "Схема нестандартного Грильято", fieldId: "grilyatoType", value: "nonstandard" },
+      { title: "Пирамидальное", description: "Профиль с объёмным визуальным эффектом.", image: "/images/calculators/grilyato/grilyato-pyramidal.png", alt: "Схема пирамидального Грильято", fieldId: "grilyatoType", value: "pyramidal" },
+      { title: "Разноуровневое", description: "Система с перепадом высоты элементов.", image: "/images/calculators/grilyato/grilyato-multilevel.png", alt: "Схема разноуровневого Грильято", fieldId: "grilyatoType", value: "multilevel" },
+    ],
+    offerColumns: grilyatoColumns,
+    calculate: grilyatoCalculate,
+    getParamsText: grilyatoParams,
+    seoSections: [
+      { title: "Что входит в расчёт потолка Грильято", text: "В расчёт входят профили решётки, несущие направляющие, соединительные элементы, подвесы и уголок. Состав зависит от типа системы и размера ячейки." },
+      { title: "Почему расчёт предварительный", text: "На итоговый расход влияют раскладка потолка, примыкания, подрезка, светильники, инженерные элементы и особенности помещения. Для коммерческого предложения расчёт лучше проверить по проекту." },
+    ],
+    faq: [
+      { question: "Почему решётка не выводится в КП?", answer: "В некоторых вариантах решётка используется как расчётная база, но клиенту удобнее видеть состав элементов: мама, папа, направляющие, подвесы и уголок." },
+      { question: "Можно ли заполнить цены за погонный метр?", answer: "Да. Для профильных элементов Excel сам пересчитает цену за штуку и сумму по длине элемента." },
+    ],
+  },
+  {
+    slug: "grilyato-gl",
+    group: "grilyato",
+    title: "Калькулятор Грильято GL",
+    shortTitle: "Грильято GL",
+    description: "Расчёт потолка Грильято GL15 / GL24 по площади, периметру, ячейке и схеме монтажа.",
+    seoTitle: "Калькулятор Грильято GL15 и GL24",
+    seoDescription: "Онлайн расчёт потолка Грильято GL15 и GL24. Подбор элементов, Excel КП и отправка расчёта в Иделеон.",
+    h1: "Калькулятор Грильято GL",
+    intro: "Калькулятор помогает предварительно рассчитать систему Грильято GL15 или GL24 и сформировать Excel-файл для дальнейшей работы.",
+    offerTitle: "Коммерческое предложение / расчёт потолка Грильято GL",
+    fileName: "KP_grilyato_GL_ideleon.xlsx",
+    visualTitle: "Выберите вариант системы Грильято GL",
+    visualDescription: "Визуальный выбор работает вместе с полями калькулятора и обновляет результат.",
+    fields: [
+      areaField, perimeterField,
+      { id: "glType", label: "Тип системы", type: "buttons", defaultValue: "GL15", options: [{ label: "GL15", value: "GL15" }, { label: "GL24", value: "GL24" }] },
+      { id: "cellSize", label: "Ячейка", type: "select", defaultValue: "100×100", options: ["50×50", "60×60", "75×75", "86×86", "100×100", "120×120", "150×150", "200×200"].map((item) => ({ label: item, value: item })) },
+      mountSchemeField,
+      commonReserveField,
+    ],
+    visuals: [
+      { title: "GL15", description: "Тонкий визуальный профиль.", image: "/images/calculators/grilyato-gl/grilyato-gl15.png", alt: "Схема Грильято GL15", fieldId: "glType", value: "GL15" },
+      { title: "GL24", description: "Более выраженная подвесная система.", image: "/images/calculators/grilyato-gl/grilyato-gl24.png", alt: "Схема Грильято GL24", fieldId: "glType", value: "GL24" },
+      { title: "Размеры ячеек", description: "Чем меньше ячейка, тем выше расход профилей.", image: "/images/calculators/grilyato-gl/grilyato-cell-sizes.png", alt: "Размеры ячеек Грильято" },
+    ],
+    offerColumns: grilyatoColumns,
+    calculate: glCalculate,
+    getParamsText: glParams,
+    seoSections: [
+      { title: "Чем отличается Грильято GL", text: "Системы GL15 и GL24 отличаются визуальной шириной профиля и применяются там, где важны внешний вид потолка, шаг ячейки и совместимость с подвесной системой." },
+      { title: "Как использовать расчёт", text: "Введите площадь, периметр, тип системы и размер ячейки. После расчёта можно скачать КП Excel или отправить файл в Иделеон для проверки." },
+    ],
+    faq: [
+      { question: "GL15 и GL24 считаются одинаково?", answer: "Базовая логика похожа, но отличаются профиль и номенклатура. В расчёте это отражено через выбранный тип системы." },
+    ],
+  },
+  {
+    slug: "diagonalnoe-grilyato",
+    group: "grilyato",
+    title: "Калькулятор диагонального Грильято",
+    shortTitle: "Диагональное Грильято",
+    description: "Расчёт диагонального Грильято D-15 по площади, периметру и схеме монтажа.",
+    seoTitle: "Калькулятор диагонального Грильято D-15",
+    seoDescription: "Онлайн расчёт диагонального Грильято D-15: элементы, направляющие, диагональные профили, Excel КП.",
+    h1: "Калькулятор диагонального Грильято",
+    intro: "Диагональное Грильято имеет отдельный состав элементов, поэтому вынесено в отдельный расчёт.",
+    offerTitle: "Коммерческое предложение / расчёт диагонального Грильято",
+    fileName: "KP_diagonalnoe_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант диагонального Грильято",
+    visualDescription: "Карточка помогает выбрать исполнение перед вводом параметров объекта.",
+    fields: [areaField, perimeterField, mountSchemeField, commonReserveField],
+    visuals: [
+      { title: "Диагональное D-15", description: "Система с диагональными элементами в ячейке.", image: "/images/calculators/grilyato/grilyato-dl15.png", alt: "Схема диагонального Грильято D-15" },
+    ],
+    offerColumns: grilyatoColumns,
+    calculate: diagonalCalculate,
+    getParamsText: simpleAreaPerimeterParams("Диагональное Грильято"),
+    seoSections: [
+      { title: "Особенность диагонального Грильято", text: "В отличие от стандартного Грильято, диагональная система включает дополнительные диагональные элементы. Из-за этого состав КП отличается от стандартной решётки." },
+    ],
+    faq: [
+      { question: "Почему диагональное Грильято вынесено отдельно?", answer: "Потому что у него другой состав элементов и другие коэффициенты расхода." },
+    ],
+  },
+  {
+    slug: "treugolnoe-grilyato",
+    group: "grilyato",
+    title: "Калькулятор треугольного Грильято",
+    shortTitle: "Треугольное Грильято",
+    description: "Расчёт треугольного Грильято STA-150.",
+    seoTitle: "Калькулятор треугольного Грильято STA-150",
+    seoDescription: "Расчёт треугольного Грильято STA-150: профили мама/папа, диагональные элементы, направляющие, подвесы и обрамление.",
+    h1: "Калькулятор треугольного Грильято",
+    intro: "Треугольное Грильято имеет собственную геометрию ячейки и отдельный состав элементов. Калькулятор формирует предварительный расчёт и Excel-КП.",
+    offerTitle: "Коммерческое предложение / расчёт треугольного Грильято",
+    fileName: "KP_treugolnoe_grilyato_ideleon.xlsx",
+    visualTitle: "Выберите вариант треугольного Грильято",
+    visualDescription: "Карточка переключает вариант системы и сохраняет единый порядок работы калькулятора.",
+    fields: [areaField, perimeterField, commonReserveField],
+    visuals: [
+      { title: "Треугольное STA-150", description: "Система с треугольной геометрией ячейки.", image: "/images/calculators/grilyato/grilyato-triangle.png", alt: "Схема треугольного Грильято STA-150" },
+    ],
+    offerColumns: grilyatoColumns,
+    calculate: triangleCalculate,
+    getParamsText: simpleAreaPerimeterParams("Треугольное Грильято"),
+    seoSections: [
+      { title: "Что считает калькулятор треугольного Грильято", text: "Расчёт включает профили мама/папа, диагональные элементы, несущие направляющие, подвесы, соединительные элементы и обрамляющий профиль." },
+    ],
+    faq: [
+      { question: "Можно ли считать треугольное Грильято как стандартное?", answer: "Нет. У него другая геометрия и другой состав элементов, поэтому нужен отдельный расчёт." },
+    ],
+  },
+
+  {
+    slug: "kassetnyy-potolok-otkrytaya-sistema",
+    group: "cassette",
+    title: "Калькулятор кассетного потолка на открытой системе",
+    shortTitle: "Открытая подвесная система",
+    description: "Расчёт кассет, Т-профилей, уголка и подвесов с выбором класса системы и типа кромки.",
+    seoTitle: "Калькулятор открытого кассетного потолка — BOARD, LINE, TEGULAR и MICROLOOK",
+    seoDescription: "Расчёт открытого кассетного потолка по площади, размеру кассет, классу Т-системы, кромке BOARD, LINE, TEGULAR или MICROLOOK 15 и схеме монтажа.",
+    h1: "Калькулятор кассетного потолка на открытой системе",
+    intro: "Рассчитайте кассеты и комплектующие для открытой подвесной системы. Класс Эконом, Стандарт, Премиум или Дизайнерский помогает выбрать уровень решения, но не меняет коэффициенты расхода. Для STRUNA калькулятор автоматически использует специальные кассеты MICROLOOK 15.",
+    offerTitle: "Коммерческое предложение / открытый кассетный потолок",
+    fileName: "KP_kassetnyy_potolok_otkrytaya_sistema_ideleon.xlsx",
+    fields: [
+      areaField,
+      perimeterField,
+      {
+        id: "systemClass",
+        label: "Класс подвесной системы",
+        type: "buttons",
+        defaultValue: "standard",
+        options: [
+          { label: "Эконом", value: "economy" },
+          { label: "Стандарт", value: "standard" },
+          { label: "Премиум", value: "premium" },
+          { label: "Дизайнерский", value: "designer" },
+        ],
+      },
+      { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
+      {
+        id: "edge",
+        label: "Тип кромки",
+        type: "buttons",
+        defaultValue: "board",
+        hideInput: true,
+        options: [
+          { label: "BOARD", value: "board" },
+          { label: "LINE", value: "line" },
+          { label: "TEGULAR 45°", value: "tegular45" },
+          { label: "TEGULAR 90°", value: "tegular90" },
+          { label: "MICROLOOK 15", value: "microlook" },
+        ],
+      },
+      {
+        id: "edgeDrop",
+        label: "Опускание панели",
+        type: "buttons",
+        defaultValue: "A6",
+        showWhen: { fieldId: "edge", values: ["tegular45", "tegular90", "microlook"] },
+        options: [
+          { label: "A6 — 6,5 мм", value: "A6" },
+          { label: "A8 — 8,9 мм", value: "A8" },
+        ],
+      },
+      mountSchemeField,
+      commonReserveField,
+    ],
+    visuals: [],
+    visualGroups: [
+      {
+        title: "Выберите тип кромки кассеты",
+        description: "Карточка меняет параметр калькулятора. Класс системы влияет на ассортимент и внешний вид, но не на коэффициенты расхода.",
+        showWhen: { fieldId: "systemClass", values: ["economy", "standard", "premium"] },
+        visuals: [
+          {
+            title: "BOARD",
+            description: "Прямоугольная приподнятая кромка: кассета визуально находится немного выше видимой Т-системы.",
+            image: "/images/calculators/cassette/cassette-edge-board.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой BOARD",
+            diagram: "/images/calculators/cassette/cassette-edge-board-diagram.svg",
+            diagramAlt: "Техническая схема прямоугольной приподнятой кромки BOARD",
+            fieldId: "edge",
+            value: "board",
+          },
+          {
+            title: "LINE",
+            description: "Прямоугольная одноуровневая кромка: плоскость кассеты и видимая Т-система воспринимаются в одном уровне.",
+            image: "/images/calculators/cassette/cassette-edge-line.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой LINE",
+            diagram: "/images/calculators/cassette/cassette-edge-line-diagram.svg",
+            diagramAlt: "Техническая схема прямоугольной одноуровневой кромки LINE",
+            fieldId: "edge",
+            value: "line",
+          },
+          {
+            title: "TEGULAR 45°",
+            description: "Кассета опущена ниже Т-профиля, скошенная грань формирует мягкую теневую линию.",
+            image: "/images/calculators/cassette/cassette-edge-tegular45.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 45 градусов",
+            diagram: "/images/calculators/cassette/cassette-edge-tegular45-diagram.svg",
+            diagramAlt: "Техническая схема кромки TEGULAR 45 градусов с опусканием",
+            fieldId: "edge",
+            value: "tegular45",
+          },
+          {
+            title: "TEGULAR 90°",
+            description: "Кассета опущена ниже Т-профиля, прямая вертикальная грань создаёт чёткую геометрию.",
+            image: "/images/calculators/cassette/cassette-edge-tegular90.webp",
+            alt: "Интерьер открытого кассетного потолка с кромкой TEGULAR 90 градусов",
+            diagram: "/images/calculators/cassette/cassette-edge-tegular90-diagram.svg",
+            diagramAlt: "Техническая схема кромки TEGULAR 90 градусов с опусканием",
+            fieldId: "edge",
+            value: "tegular90",
+          },
+        ],
+      },
+      {
+        title: "Дизайнерская система STRUNA",
+        description: "Для профиля шириной 15 мм применяются специальные кассеты MICROLOOK 15. Доступны опускания A6 и A8.",
+        showWhen: { fieldId: "systemClass", values: ["designer"] },
+        visuals: [
+          {
+            title: "MICROLOOK 15",
+            description: "Специальная кромка для дизайнерской системы STRUNA. Размеры: 300×600, 300×1200, 600×600 и 600×1200 мм.",
+            image: "/images/calculators/cassette/cassette-edge-microlook15.webp",
+            alt: "Интерьер кассетного потолка STRUNA с кромкой MICROLOOK 15",
+            diagram: "/images/calculators/cassette/cassette-edge-microlook15-diagram.svg",
+            diagramAlt: "Техническая схема кромки MICROLOOK 15 для профиля STRUNA",
+            fieldId: "edge",
+            value: "microlook",
+          },
+        ],
+      },
+    ],
+    offerColumns: cassetteColumns,
+    calculate: openCassetteCalculate,
+    getParamsText: openCassetteParams,
+    getWarning: openCassetteWarning,
+    normalizeValues: normalizeOpenCassetteValues,
+    relatedLinks: [
+      { label: "Калькулятор закрытой кассетной системы", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог кассетных потолков", href: "/catalog" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор открытой системы", text: "Калькулятор определяет количество кассет, несущих и поперечных направляющих, пристенного уголка и подвесов. Формулы и коэффициенты перенесены из Excel-калькулятора IDELEON. Количество кассет зависит от площади и размера панели; тип кромки сам по себе количество кассет не меняет." },
+      { title: "Как выбрать класс подвесной системы", text: "Эконом и Стандарт подходят для объектов с жёстким бюджетом. Премиум выбирают при повышенных требованиях к качеству исполнения и внешнему виду. Дизайнерский класс — система STRUNA с видимым профилем 15 мм и специальными кассетами MICROLOOK 15. Коэффициенты расхода для классов одинаковы." },
+      { title: "Как выбрать кромку кассеты", text: "BOARD немного приподнимает кассету над Т-системой, LINE создаёт одноуровневую плоскость, TEGULAR 45° формирует мягкий скошенный край, TEGULAR 90° — строгий прямоугольный край. Для TEGULAR и MICROLOOK выбирается опускание A6 — 6,5 мм или A8 — 8,9 мм." },
+      { title: "Когда нужен точный проектный расчёт", text: "Предварительный результат нужно проверить по раскладке, если помещение имеет сложную геометрию, много подрезки, светильников, вентиляционных решёток, люков или перепадов высоты. Специалисты IDELEON уточнят совместимость и подготовят спецификацию по проекту." },
+    ],
+    faq: [
+      { question: "Меняет ли класс Эконом, Стандарт или Премиум расход материалов?", answer: "Нет. Класс нужен для понятного выбора уровня цены и внешнего вида. Коэффициенты расхода одинаковы." },
+      { question: "Какие кассеты подходят к STRUNA?", answer: "Только специальные кассеты с кромкой MICROLOOK 15. Калькулятор учитывает размеры 300×600, 300×1200, 600×600 и 600×1200 мм, а также опускания A6 и A8." },
+      { question: "Почему LINE и TEGULAR 45° ограничены размером 600×600?", answer: "Такое ограничение заложено в исходном Excel-калькуляторе и ассортиментной совместимости." },
+      { question: "Можно ли сразу использовать расчёт для заказа?", answer: "Расчёт предварительный. Перед заказом лучше проверить раскладку и инженерные элементы по проекту." },
+    ],
+  },
+  {
+    slug: "reechnyy-potolok-kuboobraznyy-dizayn",
+    group: "rack",
+    title: "Реечный потолок кубообразного дизайна",
+    shortTitle: "Кубообразный дизайн",
+    description: "Расчёт кубообразной рейки по стандартным типоразмерам Албес или по индивидуальным ширине, высоте и зазору.",
+    seoTitle: "Калькулятор кубообразного реечного потолка",
+    seoDescription: "Онлайн-калькулятор кубообразной рейки: стандартные типоразмеры Албес, свой размер, зазор между рейками, расход комплектующих и Excel-КП.",
+    h1: "Калькулятор кубообразной рейки",
+    intro: "Калькулятор адаптирован под кубообразный потолок: можно выбрать стандартный типоразмер из линейки Албес или задать свою ширину, высоту и зазор между рейками. Итогом будет готовая комплектация и Excel-КП.",
+    offerTitle: "КП — кубообразный реечный потолок",
+    fileName: "IDELEON-cube-rack-calculator.xlsx",
+    fields: [
+      { id: "area", label: "Площадь помещения", type: "number", defaultValue: "100", unit: "м²", step: "0.01" },
+      { id: "perimeter", label: "Периметр помещения", type: "number", defaultValue: "40", unit: "м", step: "0.01" },
+      { id: "cubeMode", label: "Режим подбора", type: "buttons", defaultValue: "standard", options: [
+        { label: "Стандартные типоразмеры", value: "standard" },
+        { label: "Свой размер", value: "custom" },
+      ] },
+      { id: "cubeVariant", label: "Стандартный типоразмер", type: "select", defaultValue: "_30х38", options: cubeVariants.map((item) => ({ label: `${item.code} — ${item.label}`, value: item.id })), showWhen: { fieldId: "cubeMode", values: ["standard"] } },
+      { id: "cubeCustomWidth", label: "Ширина рейки", type: "number", defaultValue: "30", unit: "мм", step: "1", showWhen: { fieldId: "cubeMode", values: ["custom"] } },
+      { id: "cubeCustomHeight", label: "Высота рейки", type: "number", defaultValue: "50", unit: "мм", step: "1", showWhen: { fieldId: "cubeMode", values: ["custom"] } },
+      { id: "length", label: "Длина рейки", type: "buttons", defaultValue: "3000", unit: "мм", options: [
+        { label: "3000", value: "3000" },
+        { label: "4000", value: "4000" },
+      ] },
+      { id: "cubeGap", label: "Зазор между рейками", type: "number", defaultValue: "20", unit: "мм", step: "5" },
+      { id: "wallSupport", label: "Примыкание к стене", type: "buttons", defaultValue: "Опирание на уголок", options: [
+        { label: "Опирание на уголок", value: "Опирание на уголок" },
+        { label: "С отступом от стены", value: "С отступом от стены" },
+      ] },
+      { id: "reserve", label: "Запас", type: "number", defaultValue: "5", unit: "%", step: "1" },
+    ],
+    visualTitle: "Выберите типоразмер кубообразной рейки",
+    visualDescription: "В стандартном режиме выберите типоразмер из линейки Албес. Если нужна нестандартная геометрия, переключитесь в режим «Свой размер» и задайте ширину, высоту и зазор между рейками.",
+    visuals: [],
+    visualGroups: [
+      {
+        title: "Режим подбора",
+        description: "Выберите стандартную рейку из каталожной линейки или задайте индивидуальную геометрию.",
+        visuals: [
+          { title: "Стандартные типоразмеры", description: "Каталожные размеры Албес с готовыми обозначениями.", image: "/images/calculators/rack/cube/standard.svg", alt: "Стандартные типоразмеры кубообразной рейки", fieldId: "cubeMode", value: "standard", setValues: { cubeMode: "standard" }, activeWhen: { cubeMode: "standard" } },
+          { title: "Свой размер", description: "Ширина и высота от 20 до 300 мм, зазор от 20 мм.", image: "/images/calculators/rack/cube/custom.svg", alt: "Индивидуальный размер кубообразной рейки", fieldId: "cubeMode", value: "custom", setValues: { cubeMode: "custom" }, activeWhen: { cubeMode: "custom" } },
+        ],
+      },
+      ...cubeVisualGroups,
+      {
+        title: "Индивидуальная кубообразная рейка",
+        description: "Размер и зазор задаются в полях калькулятора.",
+        showWhen: { fieldId: "cubeMode", values: ["custom"] },
+        visuals: [
+          { title: "Свой размер", description: "Укажите ширину, высоту и зазор между рейками.", image: "/images/calculators/rack/cube/custom.svg", alt: "Схема индивидуальной кубообразной рейки", fieldId: "cubeMode", value: "custom", activeWhen: { cubeMode: "custom" } },
+        ],
+      },
+    ],
+    calculatorNote: "Для индивидуальных размеров калькулятор даёт предварительную комплектацию. По нестандартным системам с изменяемым шагом, торцевым заглушкам и сложным примыканиям итоговую раскладку лучше проверить по проекту.",
+    resultTitle: "Состав комплекта",
+    resultMaterialTitle: "Элемент",
+    resultCoefficientTitle: "Расход / комментарий",
+    resultQuantityTitle: "Количество",
+    offerColumns: rackColumns,
+    calculate: cubeCalculate,
+    getParamsText: cubeParams,
+    getWarning: cubeWarning,
+    normalizeValues: normalizeCubeValues,
+    relatedLinks: [
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог реечных потолков", href: "/catalog/rack-ceilings" },
+    ],
+    seoSections: [
+      { title: "Что учитывает калькулятор кубообразной рейки", text: "Калькулятор считает основную рейку, гребёнку, уголок и подвес. Для типовых модулей используются коэффициенты из исходного Excel-калькулятора, а для нестандартного зазора расход рейки определяется по фактическому модулю — ширина рейки плюс зазор." },
+      { title: "Стандартные и индивидуальные размеры", text: "Стандартные типоразмеры основаны на линейке Албес. Дополнительно можно задать свою ширину и высоту рейки в диапазоне от 20 до 300 мм и использовать зазор от 20 мм с шагом 5 мм." },
+      { title: "Какой зазор задавать", text: "Зазор между рейками влияет на модуль системы и общий расход. Для большинства решений используют значения от 20 мм и далее кратно 5 мм. При нестандартных системах желательно дополнительно сверить шаг гребёнки и схему подвеса." },
+    ],
+    faq: [
+      { question: "Можно ли выбрать свой размер рейки?", answer: "Да. В калькуляторе есть режим «Свой размер», где можно указать ширину и высоту рейки от 20 до 300 мм, а также задать зазор между рейками." },
+      { question: "Почему меняется расход при другом зазоре?", answer: "Потому что меняется модуль системы: чем больше суммарный модуль, тем меньше реек требуется на 1 м²." },
+      { question: "Нужен ли зазор кратно 5 мм?", answer: "Для практического применения и закупки это удобно и рекомендуется. Если указать некратное значение, калькулятор предупредит об этом." },
+      { question: "Это точный проектный расчёт?", answer: "Это предварительный расчёт для подготовки КП. Для сложных узлов, индивидуального шага и нестандартной раскладки итоговую спецификацию лучше проверить по проекту." },
+    ],
+  },
+  {
+    slug: "kassetnyy-potolok-skrytaya-sistema",
+    group: "cassette",
+    title: "Калькулятор кассетного потолка на закрытой системе",
+    shortTitle: "Закрытая подвесная система",
+    description: "Расчёт закрытой системы без видимой Т-сетки: простой или усиленный монтаж.",
+    seoTitle: "Калькулятор закрытого кассетного потолка — простой и усиленный монтаж",
+    seoDescription: "Расчёт закрытого кассетного потолка: кассеты АС, стрингер ВТ-600 длиной 4 м, простой или усиленный монтаж, подвесы, профили и Excel-КП.",
+    h1: "Калькулятор кассетного потолка на закрытой системе",
+    intro: "В закрытой системе несущая конструкция не образует видимую Т-образную сетку между кассетами. Выберите простой или усиленный монтаж, размер панели и кромку 45° или 90° — состав Excel-КП изменится автоматически.",
+    offerTitle: "Коммерческое предложение / закрытый кассетный потолок",
+    fileName: "KP_kassetnyy_potolok_skrytaya_sistema_ideleon.xlsx",
+    fields: [
+      areaField,
+      perimeterField,
+      {
+        id: "hiddenMountScheme",
+        label: "Схема монтажа",
+        type: "buttons",
+        defaultValue: "simple",
+        hideInput: true,
+        options: [
+          { label: "Простой монтаж", value: "simple" },
+          { label: "Усиленный монтаж", value: "reinforced" },
+        ],
+      },
+      { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
+      {
+        id: "hiddenEdge",
+        label: "Тип кромки",
+        type: "buttons",
+        defaultValue: "90",
+        hideInput: true,
+        options: [
+          { label: "45°", value: "45" },
+          { label: "90°", value: "90" },
+        ],
+      },
+      commonReserveField,
+    ],
+    visuals: [],
+    visualGroups: [
+      {
+        title: "Выберите схему монтажа",
+        description: "Простой монтаж использует стрингер ВТ-600 и нониусные подвесы. В усиленной схеме добавляется отдельный каркас из профилей.",
+        visuals: [
+          {
+            title: "Простой монтаж",
+            description: "Стрингер ВТ-600 длиной 4 м, уголок PL и комплект нониусного подвеса. Подходит для большинства типовых помещений.",
+            image: "/images/calculators/cassette/cassette-hidden-simple.webp",
+            alt: "Монтаж кассеты закрытого потолка на простой системе",
+            diagram: "/images/calculators/cassette/cassette-hidden-simple-diagram.png",
+            diagramAlt: "Техническая схема простого монтажа закрытой системы на стрингере ВТ-600",
+            fieldId: "hiddenMountScheme",
+            value: "simple",
+          },
+          {
+            title: "Усиленный монтаж",
+            description: "Дополнительный каркас ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги.",
+            image: "/images/calculators/cassette/cassette-hidden-reinforced.webp",
+            alt: "Интерьер закрытого кассетного потолка с усиленной системой",
+            diagram: "/images/calculators/cassette/cassette-hidden-reinforced-diagram.png",
+            diagramAlt: "Техническая схема усиленного монтажа закрытой системы с профилем ПП-1-2",
+            fieldId: "hiddenMountScheme",
+            value: "reinforced",
+          },
+        ],
+      },
+      {
+        title: "Выберите кромку кассеты",
+        description: "Кромка влияет на внешний вид и совместимость, но не меняет количество кассет при одинаковом размере панели.",
+        visuals: [
+          {
+            title: "Кромка 45°",
+            description: "Скошенная грань создаёт более мягкий стык. По исходному Excel доступна для кассеты 600×600 мм.",
+            image: "/images/calculators/cassette/cassette-hidden-edge45.webp",
+            alt: "Интерьер закрытого кассетного потолка с кромкой 45 градусов",
+            fieldId: "hiddenEdge",
+            value: "45",
+          },
+          {
+            title: "Кромка 90°",
+            description: "Прямоугольная грань и чёткий стык. Доступна для всех размеров кассет, предусмотренных калькулятором.",
+            image: "/images/calculators/cassette/cassette-hidden-edge90.webp",
+            alt: "Интерьер закрытого кассетного потолка с кромкой 90 градусов",
+            fieldId: "hiddenEdge",
+            value: "90",
+          },
+        ],
+      },
+    ],
+    offerColumns: cassetteColumns,
+    calculate: hiddenCassetteCalculate,
+    getParamsText: hiddenCassetteParams,
+    getWarning: hiddenCassetteWarning,
+    relatedLinks: [
+      { label: "Калькулятор открытой кассетной системы", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
+      { label: "Все калькуляторы", href: "/calculators" },
+      { label: "Каталог кассетных потолков", href: "/catalog" },
+    ],
+    seoSections: [
+      { title: "Что считает калькулятор закрытой системы", text: "Для обеих схем рассчитываются кассеты, стрингеры ВТ-600 длиной 4 м и пристенный уголок. В простом монтаже дополнительно считаются верхняя и нижняя части нониусного подвеса и шплинт. В усиленном монтаже добавляются профили ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги." },
+      { title: "Как выбрать простой или усиленный монтаж", text: "Простой монтаж подходит для большинства типовых помещений и использует меньше элементов. Усиленный выбирают при повышенной нагрузке, сложной геометрии, больших пролётах или требованиях проекта к дополнительному каркасу." },
+      { title: "Как выбрать кромку закрытой кассеты", text: "Кромка 90° подходит для всех размеров, заложенных в исходных таблицах. Кромка 45° предусмотрена для панели 600×600 мм. В обоих случаях Т-образная сетка между кассетами не видна." },
+      { title: "Когда нужен точный проектный расчёт", text: "Раскладку необходимо проверить по проекту при большом количестве светильников, вентиляции, люков, нестандартных примыканий и подрезки. Для усиленной схемы особенно важно подтвердить шаг дополнительного каркаса и точки подвеса." },
+    ],
+    faq: [
+      { question: "Какой длины стрингер ВТ-600 используется в расчёте?", answer: "Четыре метра. Количество округляется до целых четырёхметровых элементов с последующим учётом запаса." },
+      { question: "Чем усиленная схема отличается по составу?", answer: "В ней появляются ПП-1-2, ППН-2, двухуровневые соединители, анкерные подвесы и тяги. Простая схема использует нониусный подвес." },
+      { question: "Видна ли Т-система у закрытого потолка?", answer: "Нет. Между кассетами остаются аккуратные стыки, а несущая конструкция скрыта." },
+      { question: "Можно ли выбрать кромку 45° для панели 300×600?", answer: "Нет. Исходные Excel-калькуляторы разрешают кромку 45° только для панели 600×600 мм." },
+    ],
+  },
 
 {
   slug: "reechnyy-potolok-kuboobraznyy-dizayn",
   group: "rack",
   title: "Реечный потолок кубообразного дизайна",
   shortTitle: "Кубообразный дизайн",
-  description: "Расчёт кубообразной рейки по стандартным типоразмерам Албес или по индивидуальным ширине, высоте и зазору.",
+  description: "Расчёт кубообразных реек, гребёнок, уголков, подвесов и дополнительных элементов.",
   seoTitle: "Калькулятор кубообразного реечного потолка",
-  seoDescription: "Онлайн-калькулятор кубообразной рейки: стандартные типоразмеры Албес, свой размер, зазор между рейками, расход комплектующих и Excel-КП.",
-  h1: "Калькулятор кубообразной рейки",
-  intro: "Калькулятор адаптирован под кубообразный потолок: можно выбрать стандартный типоразмер из линейки Албес или задать свою ширину, высоту и зазор между рейками. Итогом будет готовая комплектация и Excel-КП.",
+  seoDescription: "Онлайн-калькулятор кубообразных реек: площадь, периметр, шаг, длина рейки, расход комплектующих и Excel-КП.",
+  h1: "Калькулятор кубообразного реечного потолка",
+  intro: "Калькулятор повторяет логику исходного Excel для кубообразной рейки: рассчитывает основные элементы и формирует готовое Excel-КП.",
   offerTitle: "КП — кубообразный реечный потолок",
   fileName: "IDELEON-cube-rack-calculator.xlsx",
   fields: [
     { id: "area", label: "Площадь помещения", type: "number", defaultValue: "100", unit: "м²", step: "0.01" },
     { id: "perimeter", label: "Периметр помещения", type: "number", defaultValue: "40", unit: "м", step: "0.01" },
-    { id: "cubeMode", label: "Режим подбора", type: "buttons", defaultValue: "standard", options: [
-      { label: "Стандартные типоразмеры", value: "standard" },
-      { label: "Свой размер", value: "custom" },
+    { id: "cubeSystem", label: "Система", type: "buttons", defaultValue: "A50S", options: [
+      { label: "A50S", value: "A50S" },
+      { label: "A60S", value: "A60S" },
+      { label: "A70S", value: "A70S" },
+      { label: "A95S", value: "A95S" },
+      { label: "A100S", value: "A100S" },
     ] },
-    { id: "cubeVariant", label: "Стандартный типоразмер", type: "select", defaultValue: "_30х38", options: cubeVariants.map((item) => ({ label: `${item.code} — ${item.label}`, value: item.id })), showWhen: { fieldId: "cubeMode", values: ["standard"] } },
-    { id: "cubeCustomWidth", label: "Ширина рейки", type: "number", defaultValue: "30", unit: "мм", step: "1", showWhen: { fieldId: "cubeMode", values: ["custom"] } },
-    { id: "cubeCustomHeight", label: "Высота рейки", type: "number", defaultValue: "50", unit: "мм", step: "1", showWhen: { fieldId: "cubeMode", values: ["custom"] } },
+    { id: "cubeVariant", label: "Ширина и высота рейки", type: "select", defaultValue: "_30х38", options: cubeVariants.map((item) => ({ label: item.label, value: item.id })) },
     { id: "length", label: "Длина рейки", type: "buttons", defaultValue: "3000", unit: "мм", options: [
       { label: "3000", value: "3000" },
       { label: "4000", value: "4000" },
     ] },
-    { id: "cubeGap", label: "Зазор между рейками", type: "number", defaultValue: "20", unit: "мм", step: "5" },
+    { id: "cubeModule", label: "Шаг рейки (модуль)", type: "select", defaultValue: "50", unit: "мм", options: [
+      { label: "50", value: "50" },
+      { label: "60", value: "60" },
+      { label: "70,2", value: "70.2" },
+      { label: "95", value: "95" },
+      { label: "100", value: "100" },
+      { label: "145,4", value: "145.4" },
+      { label: "150", value: "150" },
+      { label: "200", value: "200" },
+    ] },
     { id: "wallSupport", label: "Примыкание к стене", type: "buttons", defaultValue: "Опирание на уголок", options: [
       { label: "Опирание на уголок", value: "Опирание на уголок" },
       { label: "С отступом от стены", value: "С отступом от стены" },
     ] },
     { id: "reserve", label: "Запас", type: "number", defaultValue: "5", unit: "%", step: "1" },
   ],
-  visualTitle: "Выберите типоразмер кубообразной рейки",
-  visualDescription: "В стандартном режиме выберите типоразмер из линейки Албес. Если нужна нестандартная геометрия, переключитесь в режим «Свой размер» и задайте ширину, высоту и зазор между рейками.",
-  visuals: [],
-  visualGroups: cubeVisualGroups,
-  calculatorNote: "Для индивидуальных размеров калькулятор даёт предварительную комплектацию. По нестандартным системам с изменяемым шагом, торцевым заглушкам и сложным примыканиям итоговую раскладку лучше проверить по проекту.",
+  visualTitle: "Выберите геометрию кубообразной рейки",
+  visualDescription: "Сначала выберите систему, затем размер рейки, шаг и длину. Если комбинация недопустима по исходному Excel, калькулятор подскажет это предупреждением.",
+  visuals: [
+    { title: "Кубообразная рейка", description: "Универсальное изображение для выбора размера и модуля кубообразного потолка.", image: "/images/calculators/rack/cube.webp", alt: "Кубообразная реечная рейка в фирменном стиле IDELEON", fieldId: "cubeSystem", value: "A50S" },
+    { title: "Система A60S", description: "Тот же тип изделия с альтернативной системой крепления.", image: "/images/calculators/rack/cube.webp", alt: "Кубообразная рейка A60S", fieldId: "cubeSystem", value: "A60S" },
+    { title: "Система A70S", description: "Используется для части типоразмеров кубообразной рейки.", image: "/images/calculators/rack/cube.webp", alt: "Кубообразная рейка A70S", fieldId: "cubeSystem", value: "A70S" },
+    { title: "Система A95S", description: "Система для решений с нестандартным модулем.", image: "/images/calculators/rack/cube.webp", alt: "Кубообразная рейка A95S", fieldId: "cubeSystem", value: "A95S" },
+    { title: "Система A100S", description: "Система для ряда широких кубообразных реек.", image: "/images/calculators/rack/cube.webp", alt: "Кубообразная рейка A100S", fieldId: "cubeSystem", value: "A100S" },
+  ],
+  calculatorNote: "Если нужны торцевые заглушки, соединители гребёнки или нестандартные доборные элементы, проверьте их по раскладке и проекту отдельно.",
   resultTitle: "Состав комплекта",
   resultMaterialTitle: "Элемент",
   resultCoefficientTitle: "Расход / комментарий",
@@ -1919,18 +2923,14 @@ function cubeCalculate(values: Record<string, string>) {
     { label: "Каталог реечных потолков", href: "/catalog/rack-ceilings" },
   ],
   seoSections: [
-    { title: "Что учитывает калькулятор кубообразной рейки", text: "Калькулятор считает основную рейку, гребёнку, уголок и подвес. Для типовых модулей используются коэффициенты из исходного Excel-калькулятора, а для нестандартного зазора расход рейки определяется по фактическому модулю — ширина рейки плюс зазор." },
-    { title: "Стандартные и индивидуальные размеры", text: "Стандартные типоразмеры основаны на линейке Албес. Дополнительно можно задать свою ширину и высоту рейки в диапазоне от 20 до 300 мм и использовать зазор от 20 мм с шагом 5 мм." },
-    { title: "Какой зазор задавать", text: "Зазор между рейками влияет на модуль системы и общий расход. Для большинства решений используют значения от 20 мм и далее кратно 5 мм. При нестандартных системах желательно дополнительно сверить шаг гребёнки и схему подвеса." },
+    { title: "Что считает калькулятор", text: "Калькулятор рассчитывает основную рейку, гребёнку, уголок, подвес, а также часть вспомогательных элементов по исходной Excel-логике. Для сложных примыканий и нестандартной раскладки рекомендуем проверить расчёт вручную." },
+    { title: "Какие данные нужны", text: "Для расчёта достаточно площади, периметра, системы, типоразмера рейки, длины, шага и запаса. Если комбинация размера и шага не поддерживается исходной таблицей, появится предупреждение." },
   ],
   faq: [
-    { question: "Можно ли выбрать свой размер рейки?", answer: "Да. В калькуляторе есть режим «Свой размер», где можно указать ширину и высоту рейки от 20 до 300 мм, а также задать зазор между рейками." },
-    { question: "Почему меняется расход при другом зазоре?", answer: "Потому что меняется модуль системы: чем больше суммарный модуль, тем меньше реек требуется на 1 м²." },
-    { question: "Нужен ли зазор кратно 5 мм?", answer: "Для практического применения и закупки это удобно и рекомендуется. Если указать некратное значение, калькулятор предупредит об этом." },
-    { question: "Это точный проектный расчёт?", answer: "Это предварительный расчёт для подготовки КП. Для сложных узлов, индивидуального шага и нестандартной раскладки итоговую спецификацию лучше проверить по проекту." },
+    { question: "Почему калькулятор показывает предупреждение?", answer: "Это означает, что выбранная комбинация рейки и шага не предусмотрена исходным Excel-калькулятором производителя." },
+    { question: "Округляются ли рейки до целых длин?", answer: "Да. Количество основных реек округляется до длины 3 или 4 метра в зависимости от выбранного варианта." },
   ],
 },
-
 {
   slug: "reechnyy-potolok-pryamougolnogo-dizayna",
   group: "rack",
