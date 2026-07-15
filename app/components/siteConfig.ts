@@ -74,6 +74,13 @@ export const siteConfig = {
             { label: "Газобетон и полистиролбетон", href: "/calculators/stenovye-bloki" },
           ],
         },
+        {
+          label: "Реечные потолки",
+          href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn",
+          children: [
+            { label: "Кубообразный дизайн", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
+          ],
+        },
       ],
     },
     { label: "Статьи", href: "/articles" },
