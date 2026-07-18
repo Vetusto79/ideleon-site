@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-
 import { calculators } from "./data/calculators";
 
 const baseUrl = "https://ideleon.com";
@@ -32,6 +31,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/catalog/metal-roll",
     "/catalog/rebar",
     "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+    "/articles/pp-60x27-i-ppn-28x27-dlya-gipsokartona",
     "/articles/tolshchina-profilya-dlya-gipsokartona",
     "/articles/postavshchik-stroymaterialov",
     "/articles/kak-vybrat-podvesnoy-potolok",
