@@ -127,6 +127,13 @@ export const articles: ArticleItem[] = [
     isMain: true,
   },
   {
+    title: "ПП 60×27 и ППН 28×27: потолочная пара профилей для гипсокартона",
+    href: "/articles/pp-60x27-i-ppn-28x27-dlya-gipsokartona",
+    description:
+      "Чем отличаются потолочный профиль ПП 60×27 и направляющий ППН 28×27, где они применяются и почему работают в паре.",
+    category: "profil-dlya-gkl",
+  },
+  {
     title: "Какой толщины выбрать профиль для ГКЛ: 0,6 мм, 0,5 мм или 0,4 мм",
     href: "/articles/tolshchina-profilya-dlya-gipsokartona",
     description:
