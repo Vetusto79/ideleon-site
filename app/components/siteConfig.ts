@@ -72,54 +72,31 @@ export const siteConfig = {
       label: "Калькуляторы",
       href: "/calculators",
       children: [
+        { label: "Все калькуляторы", href: "/calculators" },
         { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
         {
-          label: "Грильято",
+          label: "Потолочные системы",
           href: "/calculators/grilyato",
           children: [
-            { label: "Стандартное Грильято", href: "/calculators/grilyato" },
-            { label: "Грильято GL", href: "/calculators/grilyato-gl" },
-            { label: "Диагональное Грильято", href: "/calculators/diagonalnoe-grilyato" },
-            { label: "Треугольное Грильято", href: "/calculators/treugolnoe-grilyato" },
+            { label: "Грильято — стандартное", href: "/calculators/grilyato" },
+            { label: "Грильято — GL", href: "/calculators/grilyato-gl" },
+            { label: "Грильято — диагональное", href: "/calculators/diagonalnoe-grilyato" },
+            { label: "Грильято — треугольное", href: "/calculators/treugolnoe-grilyato" },
+            { label: "Кассетный потолок — открытая система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
+            { label: "Кассетный потолок — скрытая система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+            { label: "Реечный потолок — кубообразная рейка", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
+            { label: "Реечный потолок — S-дизайн", href: "/calculators/reechnyy-potolok-s-dizayn" },
           ],
         },
         {
-          label: "Кассетные потолки",
-          href: "/calculators/kassetnyy-potolok-otkrytaya-sistema",
-          children: [
-            { label: "Открытая подвесная система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
-            { label: "Закрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
-          ],
-        },
-        {
-          label: "Металлопрокат",
-          href: "/calculators/chernyy-metalloprokat",
-          children: [
-            { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
-          ],
-        },
-        {
-          label: "Сэндвич-панели",
+          label: "Стеновые и ограждающие материалы",
           href: "/calculators/sendvich-paneli",
           children: [
-            { label: "Калькулятор сэндвич-панелей", href: "/calculators/sendvich-paneli" },
-          ],
-        },
-        {
-          label: "Стеновые блоки",
-          href: "/calculators/stenovye-bloki",
-          children: [
+            { label: "Сэндвич-панели", href: "/calculators/sendvich-paneli" },
             { label: "Газобетон и полистиролбетон", href: "/calculators/stenovye-bloki" },
           ],
         },
-        {
-          label: "Реечные потолки",
-          href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn",
-          children: [
-            { label: "Кубообразный дизайн", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
-            { label: "S-дизайн", href: "/calculators/reechnyy-potolok-s-dizayn" },
-          ],
-        },
+        { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
       ],
     },
     { label: "Статьи", href: "/articles" },
