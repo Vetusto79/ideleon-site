@@ -105,6 +105,21 @@ export default function ArticlePage() {
               Важно понимать: 0,6 мм — это не «премиальная роскошь». Это нормальная рабочая
               толщина для каркасных систем из ГКЛ.
             </p>
+
+            <p>
+              Для наглядности ниже показано упрощённое сравнение трёх самых обсуждаемых толщин.
+              Оно не заменяет проект, но хорошо иллюстрирует разницу по логике применения.
+            </p>
+
+            <figure className="articleImageFigure">
+              <img
+                src="/images/articles/gkl-profile/thickness-comparison-06-05-04.svg"
+                alt="Сравнение толщины профиля 0,6 мм, 0,5 мм и 0,4 мм"
+              />
+              <figcaption>
+                Толщина металла напрямую влияет на жёсткость профиля и устойчивость каркаса.
+              </figcaption>
+            </figure>
           </section>
 
           <section>
@@ -178,6 +193,17 @@ export default function ArticlePage() {
               Важный вывод: уменьшение шага стоек — это не бесплатная «мелкая правка». Это
               увеличение количества профиля, крепежа и работы.
             </p>
+
+            <figure className="articleImageFigure">
+              <img
+                src="/images/articles/gkl-profile/stud-spacing-600-400.svg"
+                alt="Схема шага стоек 600 мм и 400 мм в перегородке из гипсокартона"
+              />
+              <figcaption>
+                При шаге 400 мм стоек становится больше, а значит растёт расход профиля и время
+                монтажа.
+              </figcaption>
+            </figure>
           </section>
 
           <section>
@@ -229,6 +255,22 @@ export default function ArticlePage() {
               Именно поэтому на объектах с нормальными требованиями к качеству лучше считать
               не цену одной палки профиля, а стоимость всей конструкции.
             </p>
+
+            <p>
+              Ниже — типовой пример усиления. Если профиль приходится сдваивать, низкая цена за
+              метр уже перестаёт быть главным аргументом.
+            </p>
+
+            <figure className="articleImageFigure">
+              <img
+                src="/images/articles/gkl-profile/double-stud-reinforcement.svg"
+                alt="Схема одинарной и сдвоенной стойки для усиления перегородки"
+              />
+              <figcaption>
+                Сдвоенная стойка применяется там, где требуется дополнительная жёсткость или
+                усиление узла.
+              </figcaption>
+            </figure>
           </section>
 
           <section>
@@ -296,6 +338,17 @@ export default function ArticlePage() {
               <li>претензии после отделки.</li>
             </ul>
             <p>Именно так дешёвый профиль превращается в дорогую конструкцию.</p>
+
+            <figure className="articleImageFigure">
+              <img
+                src="/images/articles/gkl-profile/economy-infographic.svg"
+                alt="Инфографика условной экономики профиля 0,6 мм, 0,5 мм и 0,4 мм"
+              />
+              <figcaption>
+                Упрощённая экономика показывает, почему считать нужно всю систему, а не только
+                цену за метр профиля.
+              </figcaption>
+            </figure>
           </section>
 
           <section className="articleCta">
