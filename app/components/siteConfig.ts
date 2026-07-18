@@ -27,7 +27,45 @@ export const siteConfig = {
   },
 
   menu: [
-    { label: "Каталог", href: "/catalog" },
+    {
+      label: "Каталог",
+      href: "/catalog",
+      children: [
+        { label: "Все материалы", href: "/catalog" },
+        { label: "Профиль для ГКЛ", href: "/catalog/gkl-profile" },
+        {
+          label: "Потолочные системы",
+          href: "/catalog/cassette-ceilings",
+          children: [
+            { label: "Кассетные потолки", href: "/catalog/cassette-ceilings" },
+            { label: "Реечные потолки", href: "/catalog/rack-ceilings" },
+            { label: "Дизайнерские потолки", href: "/catalog/design-ceilings" },
+            { label: "Потолки для медучреждений", href: "/catalog/medical-ceilings" },
+            { label: "Потолки Грильято", href: "/catalog/grilyato" },
+          ],
+        },
+        { label: "Ревизионные люки", href: "/catalog/revision-hatches" },
+        { label: "Фальшполы", href: "/catalog/raised-floors" },
+        { label: "Сэндвич-панели", href: "/catalog/sandwich-panels" },
+        {
+          label: "Блоки и кирпич",
+          href: "/catalog/gazosilikatnyy-blok",
+          children: [
+            { label: "Газосиликатный блок", href: "/catalog/gazosilikatnyy-blok" },
+            { label: "Кирпич силикатный", href: "/catalog/kirpich-silikatnyy" },
+            { label: "Кирпич керамический", href: "/catalog/kirpich-keramicheskiy" },
+          ],
+        },
+        {
+          label: "Металлопрокат",
+          href: "/catalog/metal-roll",
+          children: [
+            { label: "Металлопрокат", href: "/catalog/metal-roll" },
+            { label: "Арматура", href: "/catalog/rebar" },
+          ],
+        },
+      ],
+    },
     { label: "Решения", href: "/solutions" },
     { label: "Бренды", href: "/#brands" },
     {
