@@ -1,4 +1,4 @@
-aimport SiteHeader from "../../components/SiteHeader";
+import SiteHeader from "../../components/SiteHeader";
 import SiteFooter from "../../components/SiteFooter";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LeadCapture from "../../components/LeadCapture";
