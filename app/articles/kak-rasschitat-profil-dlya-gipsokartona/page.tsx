@@ -216,7 +216,7 @@ export default function ArticlePage() {
               перегородочные элементы.
             </p>
 
-            <figure className="articleImageFigure">
+            <figure className="articleImageFigure articleImageFigureWide">
               <img
                 src="/images/articles/gkl-profile/profile-sections.svg"
                 alt="Сечения основных профилей для гипсокартона: ПП 60×27, ППН 28×27, ПС 50×50, ПС 75×50, ПС 100×50 и направляющие ПН"
@@ -232,7 +232,7 @@ export default function ArticlePage() {
               работает в паре с направляющим профилем.
             </p>
 
-            <figure className="articleImageFigure">
+            <figure className="articleImageFigure articleImageFigureCompact">
               <img
                 src="/images/articles/gkl-profile/partition-ps-pn-pair.svg"
                 alt="Схема перегородочной пары ПС и ПН для гипсокартонной перегородки"
