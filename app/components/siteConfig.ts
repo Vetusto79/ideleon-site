@@ -99,7 +99,41 @@ export const siteConfig = {
         { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
       ],
     },
-    { label: "Статьи", href: "/articles" },
+    {
+      label: "Статьи",
+      href: "/articles",
+      children: [
+        { label: "Все статьи", href: "/articles" },
+        {
+          label: "Профиль для ГКЛ",
+          href: "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+          children: [
+            {
+              label: "Как рассчитать профиль для ГКЛ",
+              href: "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+            },
+            {
+              label: "Толщина профиля: 0,6 / 0,5 / 0,4 мм",
+              href: "/articles/tolshchina-profilya-dlya-gipsokartona",
+            },
+            {
+              label: "ПП 60×27 и ППН 28×27",
+              href: "/articles/pp-60x27-i-ppn-28x27-dlya-gipsokartona",
+            },
+          ],
+        },
+        {
+          label: "Поставки и снабжение",
+          href: "/articles/postavshchik-stroymaterialov",
+          children: [
+            {
+              label: "Поставщик материалов для объектов",
+              href: "/articles/postavshchik-stroymaterialov",
+            },
+          ],
+        },
+      ],
+    },
     { label: "О компании", href: "/about" },
     { label: "Контакты", href: "/#contacts" },
   ],
