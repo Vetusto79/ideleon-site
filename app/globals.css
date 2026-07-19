@@ -4001,3 +4001,41 @@ textarea {
     flex-basis: 168px;
   }
 }
+
+
+/* IDELEON: размеры инженерных иллюстраций в SEO-статьях */
+.articleImageFigure {
+  width: 100%;
+  margin: 30px auto 36px;
+}
+
+.articleImageFigure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+
+.articleImageFigureWide {
+  max-width: 860px;
+}
+
+.articleImageFigureCompact {
+  max-width: 680px;
+}
+
+.articleImageFigure figcaption {
+  max-width: 760px;
+  margin: 12px auto 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .articleImageFigureWide,
+  .articleImageFigureCompact {
+    max-width: 100%;
+  }
+}
