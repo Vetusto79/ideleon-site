@@ -115,6 +115,13 @@ export default function ArticlePage() {
               <img
                 src="/images/articles/gkl-profile/thickness-comparison-06-05-04.svg"
                 alt="Сравнение толщины профиля 0,6 мм, 0,5 мм и 0,4 мм"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  maxWidth: "840px",
+                  height: "auto",
+                  margin: "0 auto",
+                }}
               />
               <figcaption>
                 Толщина металла напрямую влияет на жёсткость профиля и устойчивость каркаса.
@@ -198,6 +205,13 @@ export default function ArticlePage() {
               <img
                 src="/images/articles/gkl-profile/stud-spacing-600-400.svg"
                 alt="Схема шага стоек 600 мм и 400 мм в перегородке из гипсокартона"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  maxWidth: "840px",
+                  height: "auto",
+                  margin: "0 auto",
+                }}
               />
               <figcaption>
                 При шаге 400 мм стоек становится больше, а значит растёт расход профиля и время
@@ -265,6 +279,13 @@ export default function ArticlePage() {
               <img
                 src="/images/articles/gkl-profile/double-stud-reinforcement.svg"
                 alt="Схема одинарной и сдвоенной стойки для усиления перегородки"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  maxWidth: "740px",
+                  height: "auto",
+                  margin: "0 auto",
+                }}
               />
               <figcaption>
                 Сдвоенная стойка применяется там, где требуется дополнительная жёсткость или
@@ -343,6 +364,13 @@ export default function ArticlePage() {
               <img
                 src="/images/articles/gkl-profile/economy-infographic.svg"
                 alt="Инфографика условной экономики профиля 0,6 мм, 0,5 мм и 0,4 мм"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  maxWidth: "840px",
+                  height: "auto",
+                  margin: "0 auto",
+                }}
               />
               <figcaption>
                 Упрощённая экономика показывает, почему считать нужно всю систему, а не только
