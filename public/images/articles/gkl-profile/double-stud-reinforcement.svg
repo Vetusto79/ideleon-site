@@ -1,12 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
-    <rect width="1600" height="900" fill="#ffffff"/>
-    <defs>
-      <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-        <path d="M0,4 L8,0 L8,8 Z" fill="#f28c28"/>
-      </marker>
-      <marker id="arrS" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-        <path d="M8,4 L0,0 L0,8 Z" fill="#f28c28"/>
-      </marker>
-    </defs>
-    <rect x="24" y="24" width="1552" height="852" rx="24" fill="#ffffff" stroke="#d7e1ea"/><text x="64" y="84" fill="#18324a" font-family="Arial" font-size="42" font-weight="700">Схема усиления / сдвоенной стойки</text><text x="64" y="122" fill="#66788a" font-family="Arial" font-size="24">Один из способов усилить каркас из тонкого профиля</text><rect x="90" y="180" width="650" height="620" rx="20" fill="#f7fafc" stroke="#d7e1ea"/><text x="114" y="220" fill="#18324a" font-family="Arial" font-size="22" font-weight="700">Обычная стойка</text><text x="114" y="248" fill="#66788a" font-family="Arial" font-size="16">Базовый вариант каркаса</text><path d="M 230 270 V 306 H 610 V 270" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 230 680 V 716 H 610 V 680" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 395 350 H 407 M 443 350 H 455 M 395 350 V 600 H 455 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><text x="330" y="770" fill="#66788a" font-size="22" font-family="Arial">Одна стойка ПС внутри направляющих ПН</text><rect x="860" y="180" width="650" height="620" rx="20" fill="#f7fafc" stroke="#d7e1ea"/><text x="884" y="220" fill="#18324a" font-family="Arial" font-size="22" font-weight="700">Сдвоенная стойка</text><text x="884" y="248" fill="#66788a" font-family="Arial" font-size="16">Усиление за счёт вложения двух стоек</text><path d="M 1000 270 V 306 H 1380 V 270" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1000 680 V 716 H 1380 V 680" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1145 350 H 1157 M 1193 350 H 1205 M 1145 350 V 600 H 1205 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1162 366 H 1174 M 1210 366 H 1222 M 1162 366 V 584 H 1222 V 366" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="1248" y1="420" x2="1330" y2="420" stroke="#f28c28" stroke-width="4" marker-end="url(#arr)"/><text x="1338" y="426" fill="#f28c28" font-size="22" font-family="Arial" font-weight="700">вложение 2 профилей</text><text x="1030" y="770" fill="#66788a" font-size="22" font-family="Arial">Применяют, когда нужно повысить жёсткость без смены типоразмера профиля</text>
-    </svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="780" viewBox="0 0 740 780" role="img" aria-labelledby="title desc">
+  <title id="title">Одинарная и сдвоенная стойка в направляющем профиле</title>
+  <desc id="desc">Слева в верхнем блоке одна стойка ПС внутри ПН. В нижнем блоке два профиля ПС соединены навстречу друг другу в замкнутое усиленное сечение, при этом ПН остаётся видимым.</desc>
+  <defs>
+    <marker id="orangeArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#F47A20"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2340" flood-opacity=".10"/>
+    </filter>
+    <g id="floorTrack">
+      <path d="M0 35 H470 L498 10 H28 Z" fill="#E8F0F5" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0 35 H470 V62 H0 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M470 35 L498 10 V37 L470 62 Z" fill="#B7CBD8" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M28 10 H498" fill="none" stroke="#0B2340" stroke-width="4"/>
+    </g>
+    <g id="singleStud3d">
+      <rect x="0" y="0" width="56" height="158" fill="#E8F0F5" stroke="#0B2340" stroke-width="4"/>
+      <path d="M56 0 L83 -17 V141 L56 158 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0 0 L27 -17 H83 L56 0 Z" fill="#F7FAFC" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M27 -17 V-5 H70" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0 158 L27 141 H83" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+  </defs>
+
+  <rect width="740" height="780" rx="24" fill="#F7FAFC"/>
+  <text x="38" y="52" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="29" font-weight="700" fill="#0B2340">Одинарная и сдвоенная стойка</text>
+  <text x="38" y="80" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="16" fill="#50677C">ПС устанавливается внутрь направляющего ПН</text>
+
+  <g transform="translate(28 102)">
+    <rect width="684" height="282" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+    <text x="28" y="42" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="22" font-weight="700" fill="#0B2340">Одна стойка ПС</text>
+    <text x="28" y="68" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" fill="#50677C">Стандартный узел</text>
+    <g transform="translate(112 190)">
+      <use href="#floorTrack"/>
+      <g transform="translate(207 -145)"><use href="#singleStud3d"/></g>
+      <circle cx="244" cy="45" r="7" fill="#F47A20"/>
+      <text x="510" y="39" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" font-weight="700" fill="#0B2340">ПН видим</text>
+      <line x1="492" y1="35" x2="462" y2="42" stroke="#F47A20" stroke-width="3" marker-end="url(#orangeArrow)"/>
+    </g>
+  </g>
+
+  <g transform="translate(28 402)">
+    <rect width="684" height="326" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+    <text x="28" y="42" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="22" font-weight="700" fill="#0B2340">Два профиля ПС — усиленный узел</text>
+    <text x="28" y="68" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" fill="#50677C">Профили развёрнуты навстречу и соединены в короб</text>
+    <g transform="translate(112 215)">
+      <use href="#floorTrack"/>
+      <g transform="translate(190 -145)">
+        <rect x="0" y="0" width="56" height="158" fill="#E8F0F5" stroke="#0B2340" stroke-width="4"/>
+        <path d="M56 0 L83 -17 V141 L56 158 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4"/>
+        <path d="M0 0 L27 -17 H83 L56 0 Z" fill="#F7FAFC" stroke="#0B2340" stroke-width="4"/>
+        <path d="M27 -17 V-5 H70" fill="none" stroke="#0B2340" stroke-width="4"/>
+        <path d="M56 0 L83 -17 H110 L83 0 Z" fill="#FFF1E6" stroke="#F47A20" stroke-width="4"/>
+        <rect x="56" y="0" width="27" height="158" fill="#FFF1E6" fill-opacity=".72" stroke="#F47A20" stroke-width="4"/>
+        <path d="M83 0 H110 V158 H83" fill="none" stroke="#F47A20" stroke-width="4" stroke-linejoin="round"/>
+        <circle cx="70" cy="55" r="6" fill="#F47A20"/>
+        <circle cx="70" cy="108" r="6" fill="#F47A20"/>
+      </g>
+      <line x1="410" y1="-70" x2="302" y2="-70" stroke="#F47A20" stroke-width="3" marker-end="url(#orangeArrow)"/>
+      <text x="420" y="-76" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" font-weight="700" fill="#0B2340">место соединения</text>
+      <circle cx="250" cy="45" r="7" fill="#F47A20"/>
+    </g>
+    <g transform="translate(496 87)">
+      <circle cx="76" cy="70" r="62" fill="#F7FAFC" stroke="#D8E2EA" stroke-width="2"/>
+      <text x="76" y="17" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="12" fill="#50677C">вид сверху</text>
+      <path d="M42 39 H102 V52 H54 V88 H102 V101 H42 Z" fill="none" stroke="#0B2340" stroke-width="7" stroke-linejoin="round"/>
+      <path d="M110 39 H50 V52 H98 V88 H50 V101 H110 Z" fill="none" stroke="#F47A20" stroke-width="7" stroke-linejoin="round"/>
+      <circle cx="50" cy="47" r="4" fill="#F47A20"/>
+      <circle cx="102" cy="93" r="4" fill="#F47A20"/>
+    </g>
+  </g>
+
+  <text x="370" y="758" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#6D7F8E">Сечения ПС и ПН выполнены по геометрии профилей из ТУ Албес</text>
+</svg>

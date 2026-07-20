@@ -1,12 +1,74 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
-    <rect width="1600" height="900" fill="#ffffff"/>
-    <defs>
-      <marker id="arr" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-        <path d="M0,4 L8,0 L8,8 Z" fill="#f28c28"/>
-      </marker>
-      <marker id="arrS" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-        <path d="M8,4 L0,0 L0,8 Z" fill="#f28c28"/>
-      </marker>
-    </defs>
-    <rect x="24" y="24" width="1552" height="852" rx="24" fill="#ffffff" stroke="#d7e1ea"/><text x="64" y="84" fill="#18324a" font-family="Arial" font-size="42" font-weight="700">Шаг стоек 600 мм и 400 мм</text><text x="64" y="122" fill="#66788a" font-family="Arial" font-size="24">Как влияет расстояние между стойками на каркас перегородки</text><rect x="90" y="180" width="695" height="610" rx="20" fill="#f7fafc" stroke="#d7e1ea"/><text x="114" y="220" fill="#18324a" font-family="Arial" font-size="22" font-weight="700">Шаг 600 мм</text><text x="114" y="248" fill="#66788a" font-family="Arial" font-size="16">Стандартный вариант для большинства перегородок</text><path d="M 180 280 V 316 H 700 V 280" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 180 650 V 686 H 700 V 650" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 220.0 350 H 230.0 M 256.0 350 H 266.0 M 220.0 350 V 600 H 266.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 380.0 350 H 390.0 M 416.0 350 H 426.0 M 380.0 350 V 600 H 426.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 540.0 350 H 550.0 M 576.0 350 H 586.0 M 540.0 350 V 600 H 586.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 700.0 350 H 710.0 M 736.0 350 H 746.0 M 700.0 350 V 600 H 746.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="243.0" y1="720" x2="403.0" y2="720" stroke="#f28c28" stroke-width="3" marker-start="url(#arrS)" marker-end="url(#arr)"/><text x="323.0" y="700" text-anchor="middle" fill="#f28c28" font-size="22" font-family="Arial" font-weight="700">600 мм</text><rect x="815" y="180" width="695" height="610" rx="20" fill="#f7fafc" stroke="#d7e1ea"/><text x="839" y="220" fill="#18324a" font-family="Arial" font-size="22" font-weight="700">Шаг 400 мм</text><text x="839" y="248" fill="#66788a" font-family="Arial" font-size="16">Используют при повышенной нагрузке или более тонком профиле</text><path d="M 905 280 V 316 H 1425 V 280" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 905 650 V 686 H 1425 V 650" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 945.0 350 H 955.0 M 981.0 350 H 991.0 M 945.0 350 V 600 H 991.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1041.0 350 H 1051.0 M 1077.0 350 H 1087.0 M 1041.0 350 V 600 H 1087.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1137.0 350 H 1147.0 M 1173.0 350 H 1183.0 M 1137.0 350 V 600 H 1183.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1233.0 350 H 1243.0 M 1269.0 350 H 1279.0 M 1233.0 350 V 600 H 1279.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1329.0 350 H 1339.0 M 1365.0 350 H 1375.0 M 1329.0 350 V 600 H 1375.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><path d="M 1425.0 350 H 1435.0 M 1461.0 350 H 1471.0 M 1425.0 350 V 600 H 1471.0 V 350" fill="none" stroke="#163a59" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/><line x1="968.0" y1="720" x2="1064.0" y2="720" stroke="#f28c28" stroke-width="3" marker-start="url(#arrS)" marker-end="url(#arr)"/><text x="1016.0" y="700" text-anchor="middle" fill="#f28c28" font-size="22" font-family="Arial" font-weight="700">400 мм</text><text x="90" y="845" fill="#66788a" font-size="20" font-family="Arial">Уменьшение шага стоек повышает жёсткость каркаса, но увеличивает расход профиля.</text>
-    </svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="840" height="610" viewBox="0 0 840 610" role="img" aria-labelledby="title desc">
+  <title id="title">Шаг стоек 600 и 400 миллиметров</title>
+  <desc id="desc">Два каркаса перегородки. Стоечные профили ПС установлены внутрь верхнего и нижнего направляющего профиля ПН.</desc>
+  <defs>
+    <marker id="dimArrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#F47A20"/>
+    </marker>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2340" flood-opacity=".10"/>
+    </filter>
+    <g id="stud">
+      <rect x="-12" y="0" width="24" height="270" rx="2" fill="#E8F0F5" stroke="#0B2340" stroke-width="3"/>
+      <rect x="-12" y="0" width="7" height="270" fill="#C7D8E4" stroke="#0B2340" stroke-width="2"/>
+      <path d="M-12 0 H12 M-12 0 L-5 -7 H14 L12 0" fill="#F7FAFC" stroke="#0B2340" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M-12 270 H12 M-12 270 L-5 263 H14 L12 270" fill="#F7FAFC" stroke="#0B2340" stroke-width="2" stroke-linejoin="round"/>
+    </g>
+    <g id="track">
+      <path d="M0 20 H330 L342 8 H12 Z" fill="#E8F0F5" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M0 20 H330 V34 H0 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M330 20 L342 8 V22 L330 34 Z" fill="#B8CDD9" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M12 8 H342" fill="none" stroke="#0B2340" stroke-width="3"/>
+    </g>
+  </defs>
+
+  <rect width="840" height="610" rx="24" fill="#F7FAFC"/>
+  <text x="42" y="55" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="30" font-weight="700" fill="#0B2340">Шаг стоек 600 мм и 400 мм</text>
+  <text x="42" y="84" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="17" fill="#50677C">ПС устанавливается внутрь верхнего и нижнего ПН</text>
+
+  <g transform="translate(28 108)">
+    <rect width="382" height="430" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+    <text x="191" y="40" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="24" font-weight="700" fill="#0B2340">Шаг 600 мм</text>
+    <text x="191" y="66" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="14" fill="#50677C">стандартный вариант</text>
+    <g transform="translate(20 92)">
+      <g transform="translate(0 270)"><use href="#track"/></g>
+      <g transform="translate(0 0)"><use href="#track"/></g>
+      <g transform="translate(12 8)"><use href="#stud"/></g>
+      <g transform="translate(171 8)"><use href="#stud"/></g>
+      <g transform="translate(330 8)"><use href="#stud"/></g>
+      <line x1="12" y1="330" x2="171" y2="330" stroke="#F47A20" stroke-width="3" marker-start="url(#dimArrow)" marker-end="url(#dimArrow)"/>
+      <line x1="12" y1="308" x2="12" y2="342" stroke="#F47A20" stroke-width="2"/>
+      <line x1="171" y1="308" x2="171" y2="342" stroke="#F47A20" stroke-width="2"/>
+      <rect x="52" y="316" width="80" height="28" rx="14" fill="#FFFFFF"/>
+      <text x="92" y="336" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="17" font-weight="700" fill="#F47A20">600 мм</text>
+    </g>
+  </g>
+
+  <g transform="translate(430 108)">
+    <rect width="382" height="430" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+    <text x="191" y="40" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="24" font-weight="700" fill="#0B2340">Шаг 400 мм</text>
+    <text x="191" y="66" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="14" fill="#50677C">стоек больше</text>
+    <g transform="translate(20 92)">
+      <g transform="translate(0 270)"><use href="#track"/></g>
+      <g transform="translate(0 0)"><use href="#track"/></g>
+      <g transform="translate(12 8)"><use href="#stud"/></g>
+      <g transform="translate(118 8)"><use href="#stud"/></g>
+      <g transform="translate(224 8)"><use href="#stud"/></g>
+      <g transform="translate(330 8)"><use href="#stud"/></g>
+      <line x1="12" y1="330" x2="118" y2="330" stroke="#F47A20" stroke-width="3" marker-start="url(#dimArrow)" marker-end="url(#dimArrow)"/>
+      <line x1="12" y1="308" x2="12" y2="342" stroke="#F47A20" stroke-width="2"/>
+      <line x1="118" y1="308" x2="118" y2="342" stroke="#F47A20" stroke-width="2"/>
+      <rect x="26" y="316" width="78" height="28" rx="14" fill="#FFFFFF"/>
+      <text x="65" y="336" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="17" font-weight="700" fill="#F47A20">400 мм</text>
+    </g>
+  </g>
+
+  <g transform="translate(42 564)">
+    <path d="M0 0 H28 V15 H0" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+    <text x="40" y="14" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="14" fill="#0B2340">ПС 50×50</text>
+    <path d="M144 0 H178 V15 H144" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
+    <text x="190" y="14" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="14" fill="#0B2340">ПН 50×40</text>
+    <text x="798" y="14" text-anchor="end" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#6D7F8E">Геометрия профилей — по ТУ Албес</text>
+  </g>
+</svg>
