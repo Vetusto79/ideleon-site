@@ -123,6 +123,28 @@ export const siteConfig = {
           ],
         },
         {
+          label: "Потолочные системы",
+          href: "/articles/kak-vybrat-potolok-grilyato",
+          children: [
+            {
+              label: "Как выбрать потолок Грильято",
+              href: "/articles/kak-vybrat-potolok-grilyato",
+            },
+            {
+              label: "Кассетный потолок: открытая система",
+              href: "/articles/kassetnyy-potolok-otkrytaya-sistema",
+            },
+          ],
+        },
+        {
+          label: "Сэндвич-панели для строительства",
+          href: "/articles/sendvich-paneli-dlya-stroitelstva",
+        },
+        {
+          label: "Металлопрокат для строительного объекта",
+          href: "/articles/metalloprokat-dlya-stroitelnogo-obekta",
+        },
+        {
           label: "Поставки и снабжение",
           href: "/articles/postavshchik-stroymaterialov",
           children: [
