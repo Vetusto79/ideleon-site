@@ -9,7 +9,6 @@
     <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2340" flood-opacity=".10"/>
     </filter>
-    <path id="psProfile" d="M112 30 H96 V43 H32 V137 H96 V150 H112"/>
   </defs>
 
   <rect width="840" height="690" rx="24" fill="#F7FAFC"/>
@@ -20,7 +19,7 @@
     <rect width="776" height="166" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
     <rect width="10" height="166" rx="5" fill="#F47A20"/>
     <g transform="translate(40 -10)">
-      <use href="#psProfile" fill="none" stroke="#0B2340" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M112 45 V30 H32 V150 H112 V135" fill="none" stroke="#0B2340" stroke-width="10" stroke-linejoin="round" stroke-linecap="round"/>
       <text x="23" y="164" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#50677C">ПС 50×50</text>
     </g>
     <g transform="translate(220 35)">
@@ -36,7 +35,7 @@
     <rect width="776" height="166" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
     <rect width="10" height="166" rx="5" fill="#EBA15D"/>
     <g transform="translate(40 -10)">
-      <use href="#psProfile" fill="none" stroke="#0B2340" stroke-width="8.3" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M112 45 V30 H32 V150 H112 V135" fill="none" stroke="#0B2340" stroke-width="8.3" stroke-linejoin="round" stroke-linecap="round"/>
       <text x="23" y="164" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#50677C">ПС 50×50</text>
     </g>
     <g transform="translate(220 35)">
@@ -52,7 +51,7 @@
     <rect width="776" height="166" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
     <rect width="10" height="166" rx="5" fill="#B9C7D2"/>
     <g transform="translate(40 -10)">
-      <use href="#psProfile" fill="none" stroke="#0B2340" stroke-width="6.7" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M112 45 V30 H32 V150 H112 V135" fill="none" stroke="#0B2340" stroke-width="6.7" stroke-linejoin="round" stroke-linecap="round"/>
       <text x="23" y="164" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#50677C">ПС 50×50</text>
     </g>
     <g transform="translate(220 35)">
