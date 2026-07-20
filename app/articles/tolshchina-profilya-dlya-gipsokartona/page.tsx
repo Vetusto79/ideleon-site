@@ -203,7 +203,7 @@ export default function ArticlePage() {
 
             <figure className="articleImageFigure">
               <img
-                src="/images/articles/gkl-profile/stud-spacing-600-400.svg"
+                src="/images/articles/gkl-profile/stud-spacing-600-400.png"
                 alt="Схема шага стоек 600 мм и 400 мм в перегородке из гипсокартона"
                 style={{
                   display: "block",
