@@ -1,76 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="740" height="780" viewBox="0 0 740 780" role="img" aria-labelledby="title desc">
-  <title id="title">Одинарная и сдвоенная стойка в направляющем профиле</title>
-  <desc id="desc">Слева в верхнем блоке одна стойка ПС внутри ПН. В нижнем блоке два профиля ПС соединены навстречу друг другу в замкнутое усиленное сечение, при этом ПН остаётся видимым.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="770" viewBox="0 0 760 770" role="img" aria-labelledby="title desc">
+  <title id="title">Одинарная и сдвоенная стойка ПС внутри направляющего ПН</title>
+  <desc id="desc">Техническая аксонометрия открытого U-профиля ПН и C-профиля ПС. Во втором узле два C-профиля развёрнуты навстречу и соединены в короб.</desc>
   <defs>
-    <marker id="orangeArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
       <path d="M0 0 L10 5 L0 10 z" fill="#F47A20"/>
     </marker>
-    <filter id="shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#0B2340" flood-opacity=".10"/>
-    </filter>
-    <g id="floorTrack">
-      <path d="M0 35 H470 L498 10 H28 Z" fill="#E8F0F5" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M0 35 H470 V62 H0 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M470 35 L498 10 V37 L470 62 Z" fill="#B7CBD8" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M28 10 H498" fill="none" stroke="#0B2340" stroke-width="4"/>
-    </g>
-    <g id="singleStud3d">
-      <rect x="0" y="0" width="56" height="158" fill="#E8F0F5" stroke="#0B2340" stroke-width="4"/>
-      <path d="M56 0 L83 -17 V141 L56 158 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M0 0 L27 -17 H83 L56 0 Z" fill="#F7FAFC" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M27 -17 V-5 H70" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-      <path d="M0 158 L27 141 H83" fill="none" stroke="#0B2340" stroke-width="4" stroke-linejoin="round"/>
-    </g>
+    <style>
+      text { font-family: Arial, 'DejaVu Sans', sans-serif; }
+      .title { font-size: 29px; font-weight: 700; fill: #0B2340; }
+      .subtitle { font-size: 17px; fill: #50677C; }
+      .panel-title { font-size: 23px; font-weight: 700; fill: #0B2340; }
+      .panel-sub { font-size: 15px; fill: #50677C; }
+      .note { font-size: 14px; font-weight: 700; fill: #0B2340; }
+      .small { font-size: 13px; fill: #50677C; }
+    </style>
   </defs>
-
-  <rect width="740" height="780" rx="24" fill="#F7FAFC"/>
-  <text x="38" y="52" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="29" font-weight="700" fill="#0B2340">Одинарная и сдвоенная стойка</text>
-  <text x="38" y="80" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="16" fill="#50677C">ПС устанавливается внутрь направляющего ПН</text>
-
-  <g transform="translate(28 102)">
-    <rect width="684" height="282" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
-    <text x="28" y="42" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="22" font-weight="700" fill="#0B2340">Одна стойка ПС</text>
-    <text x="28" y="68" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" fill="#50677C">Стандартный узел</text>
-    <g transform="translate(112 190)">
-      <use href="#floorTrack"/>
-      <g transform="translate(207 -145)"><use href="#singleStud3d"/></g>
-      <circle cx="244" cy="45" r="7" fill="#F47A20"/>
-      <text x="510" y="39" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" font-weight="700" fill="#0B2340">ПН видим</text>
-      <line x1="492" y1="35" x2="462" y2="42" stroke="#F47A20" stroke-width="3" marker-end="url(#orangeArrow)"/>
+  <rect width="760" height="770" rx="24" fill="#F7FAFC"/>
+  <text x="38" y="52" class="title">Одинарная и сдвоенная стойка</text>
+  <text x="38" y="80" class="subtitle">Реальные формы профилей: ПН — U, ПС — C</text>
+  
+    <g>
+      <rect x="28" y="103" width="704" height="284" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+      <text x="58" y="145" class="panel-title">Одна стойка ПС</text>
+      <text x="58" y="173" class="panel-sub">ПС 50×50 установлен внутрь ПН 50×40</text>
+      <polygon points="104.0,314.0 624.0,314.0 624.0,274.0 104.0,274.0" fill="#DCE8F0" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="104.0,314.0 624.0,314.0 601.2,329.0 81.2,329.0" fill="#EEF4F7" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <polygon points="350.1,313.2 331.1,325.8 331.1,182.8 350.1,170.2" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="350.1,313.2 398.1,313.2 398.1,170.2 350.1,170.2" fill="#F1F6F8" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="331.1,325.8 379.1,325.8 379.1,182.8 331.1,182.8" fill="#F1F6F8" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="398.1,313.2 393.9,316.0 393.9,173.0 398.1,170.2" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="379.1,325.8 383.3,323.0 383.3,180.0 379.1,182.8" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="350.1,170.2 398.1,170.2 393.9,173.0 398.1,170.2 350.1,170.2 331.1,182.8 379.1,182.8 383.3,180.0" fill="none" stroke="#0B2340" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <polygon points="81.2,329.0 601.2,329.0 601.2,289.0 81.2,289.0" fill="#BFD2DF" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M544 187 C505 185 472 185 430 196" fill="none" stroke="#F47A20" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="552" y="181" class="note">открытое C-сечение ПС</text>
+      <path d="M587 338 C548 337 529 337 505 344" fill="none" stroke="#F47A20" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="593" y="343" class="note">открытый U-профиль ПН</text>
     </g>
-  </g>
-
-  <g transform="translate(28 402)">
-    <rect width="684" height="326" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
-    <text x="28" y="42" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="22" font-weight="700" fill="#0B2340">Два профиля ПС — усиленный узел</text>
-    <text x="28" y="68" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" fill="#50677C">Профили развёрнуты навстречу и соединены в короб</text>
-    <g transform="translate(112 215)">
-      <use href="#floorTrack"/>
-      <g transform="translate(190 -145)">
-        <rect x="0" y="0" width="56" height="158" fill="#E8F0F5" stroke="#0B2340" stroke-width="4"/>
-        <path d="M56 0 L83 -17 V141 L56 158 Z" fill="#C7D8E4" stroke="#0B2340" stroke-width="4"/>
-        <path d="M0 0 L27 -17 H83 L56 0 Z" fill="#F7FAFC" stroke="#0B2340" stroke-width="4"/>
-        <path d="M27 -17 V-5 H70" fill="none" stroke="#0B2340" stroke-width="4"/>
-        <path d="M56 0 L83 -17 H110 L83 0 Z" fill="#FFF1E6" stroke="#F47A20" stroke-width="4"/>
-        <rect x="56" y="0" width="27" height="158" fill="#FFF1E6" fill-opacity=".72" stroke="#F47A20" stroke-width="4"/>
-        <path d="M83 0 H110 V158 H83" fill="none" stroke="#F47A20" stroke-width="4" stroke-linejoin="round"/>
-        <circle cx="70" cy="55" r="6" fill="#F47A20"/>
-        <circle cx="70" cy="108" r="6" fill="#F47A20"/>
-      </g>
-      <line x1="410" y1="-70" x2="302" y2="-70" stroke="#F47A20" stroke-width="3" marker-end="url(#orangeArrow)"/>
-      <text x="420" y="-76" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="15" font-weight="700" fill="#0B2340">место соединения</text>
-      <circle cx="250" cy="45" r="7" fill="#F47A20"/>
+    
+  
+    <g>
+      <rect x="28" y="405" width="704" height="326" rx="18" fill="#FFFFFF" stroke="#D8E2EA"/>
+      <text x="58" y="447" class="panel-title">Сдвоенная стойка ПС</text>
+      <text x="58" y="475" class="panel-sub">Два C-профиля развёрнуты навстречу и соединены в короб</text>
+      <polygon points="104.0,696.0 624.0,696.0 624.0,656.0 104.0,656.0" fill="#DCE8F0" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="104.0,696.0 624.0,696.0 601.2,711.0 81.2,711.0" fill="#EEF4F7" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <polygon points="328.1,695.2 309.1,707.8 309.1,554.8 328.1,542.2" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="328.1,695.2 376.1,695.2 376.1,542.2 328.1,542.2" fill="#F1F6F8" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="309.1,707.8 357.1,707.8 357.1,554.8 309.1,554.8" fill="#F1F6F8" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="376.1,695.2 371.9,698.0 371.9,545.0 376.1,542.2" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="357.1,707.8 361.3,705.0 361.3,552.0 357.1,554.8" fill="#E2ECF2" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="328.1,542.2 376.1,542.2 371.9,545.0 376.1,542.2 328.1,542.2 309.1,554.8 357.1,554.8 361.3,552.0" fill="none" stroke="#0B2340" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <polygon points="376.1,695.2 357.1,707.8 357.1,554.8 376.1,542.2" fill="#FFF0E5" stroke="#F47A20" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="376.1,695.2 328.1,695.2 328.1,542.2 376.1,542.2" fill="#FFE1CC" stroke="#F47A20" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="357.1,707.8 309.1,707.8 309.1,554.8 357.1,554.8" fill="#FFE1CC" stroke="#F47A20" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="328.1,695.2 323.9,698.0 323.9,545.0 328.1,542.2" fill="#FFF0E5" stroke="#F47A20" stroke-width="3" stroke-linejoin="round"/>
+<polygon points="309.1,707.8 313.3,705.0 313.3,552.0 309.1,554.8" fill="#FFF0E5" stroke="#F47A20" stroke-width="3" stroke-linejoin="round"/>
+<polyline points="376.1,542.2 328.1,542.2 323.9,545.0 328.1,542.2 376.1,542.2 357.1,554.8 309.1,554.8 313.3,552.0" fill="none" stroke="#F47A20" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      <polygon points="81.2,711.0 601.2,711.0 601.2,671.0 81.2,671.0" fill="#BFD2DF" stroke="#0B2340" stroke-width="3" stroke-linejoin="round"/>
+      <circle cx="354" cy="585" r="6" fill="#F47A20"/>
+      <circle cx="354" cy="625" r="6" fill="#F47A20"/>
+      <path d="M592 532 C540 534 487 542 414 560" fill="none" stroke="#F47A20" stroke-width="3" marker-end="url(#arrow)"/>
+      <text x="598" y="526" class="note">два профиля образуют</text>
+      <text x="598" y="547" class="note">замкнутое сечение</text>
+      <text x="598" y="625" class="small">● точки соединения</text>
     </g>
-    <g transform="translate(496 87)">
-      <circle cx="76" cy="70" r="62" fill="#F7FAFC" stroke="#D8E2EA" stroke-width="2"/>
-      <text x="76" y="17" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="12" fill="#50677C">вид сверху</text>
-      <path d="M42 39 H102 V52 H54 V88 H102 V101 H42 Z" fill="none" stroke="#0B2340" stroke-width="7" stroke-linejoin="round"/>
-      <path d="M110 39 H50 V52 H98 V88 H50 V101 H110 Z" fill="none" stroke="#F47A20" stroke-width="7" stroke-linejoin="round"/>
-      <circle cx="50" cy="47" r="4" fill="#F47A20"/>
-      <circle cx="102" cy="93" r="4" fill="#F47A20"/>
-    </g>
-  </g>
-
-  <text x="370" y="758" text-anchor="middle" font-family="Arial, 'DejaVu Sans', sans-serif" font-size="13" fill="#6D7F8E">Сечения ПС и ПН выполнены по геометрии профилей из ТУ Албес</text>
+    
+  <text x="380" y="754" text-anchor="middle" class="small">Геометрия ПН и ПС — по приложению А ТУ Албес</text>
 </svg>
