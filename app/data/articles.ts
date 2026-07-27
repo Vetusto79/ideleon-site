@@ -170,6 +170,13 @@ export const articles: ArticleItem[] = [
     category: "potolochnye-sistemy",
   },
   {
+    title: "Медицинские потолки для больниц, клиник и чистых помещений",
+    href: "/articles/meditsinskie-potolki-dlya-bolnits-i-klinik",
+    description:
+      "Открытые, скрытые и герметичные системы, требования к очистке, подбор материалов и проверка документации.",
+    category: "potolochnye-sistemy",
+  },
+  {
     title: "Ревизионные люки под плитку и под покраску: что выбрать",
     href: "/articles/revizionnye-lyuki-pod-plitku-i-pokrasku",
     description:
