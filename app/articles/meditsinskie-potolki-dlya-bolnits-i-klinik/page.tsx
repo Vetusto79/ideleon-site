@@ -304,9 +304,9 @@ export default function MedicalCeilingsArticlePage() {
           </p>
 
           <ArticleImage
-            src="/images/articles/medical-ceilings/hidden-medical-ceiling-detail.webp"
-            alt="Узел металлического кассетного потолка на скрытой подвесной системе"
-            caption="Кассета фиксируется на скрытом стрингере; точная конструкция замка и несущего каркаса зависит от выбранной системы производителя."
+            src="/images/articles/medical-ceilings/hidden-medical-ceiling-detail-v2.webp"
+            alt="Усиленный каркас кассетного потолка на скрытой подвесной системе"
+            caption="Усиленная схема: подвесы удерживают основные потолочные профили, а перпендикулярные стрингеры соединяются с ними в двух уровнях."
             width={1672}
             height={941}
             objectFit="contain"
