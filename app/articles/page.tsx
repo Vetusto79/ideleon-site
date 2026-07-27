@@ -12,6 +12,8 @@ type ArticleCard = {
   href: string;
   title: string;
   text: string;
+  image?: string;
+  imageAlt?: string;
   featured?: boolean;
 };
 
@@ -77,6 +79,13 @@ const categories: ArticleCategory[] = [
         href: "/articles/kassetnyy-potolok-otkrytaya-sistema",
         title: "Кассетный потолок на открытой системе: кромки, Т-профиль и расчёт",
         text: "Кромки Board, Tegular и Line, выбор Т-15 или Т-24, расчёт кассет, подвесов и комплектующих.",
+      },
+      {
+        href: "/articles/meditsinskie-potolki-dlya-bolnits-i-klinik",
+        title: "Медицинские потолки для больниц, клиник и чистых помещений",
+        text: "Открытые, скрытые и герметичные системы, требования к очистке, подбор материалов и проверка документации.",
+        image: "/images/articles/medical-ceilings/medical-ceiling-hero.webp",
+        imageAlt: "Металлический кассетный потолок в медицинской клинике",
       },
       {
         href: "/articles/kassetnye-potolki",
@@ -213,6 +222,25 @@ export default function ArticlesPage() {
                     href={article.href}
                     key={article.href}
                   >
+                    {article.image ? (
+                      <img
+                        src={article.image}
+                        alt={article.imageAlt ?? ""}
+                        width={1672}
+                        height={941}
+                        loading="lazy"
+                        decoding="async"
+                        style={{
+                          display: "block",
+                          width: "100%",
+                          height: "auto",
+                          aspectRatio: "16 / 9",
+                          objectFit: "cover",
+                          borderRadius: 14,
+                          marginBottom: 18,
+                        }}
+                      />
+                    ) : null}
                     {article.featured ? <span className="articleBadge">Главная статья</span> : null}
                     <h3>{article.title}</h3>
                     <p>{article.text}</p>
