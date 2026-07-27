@@ -39,6 +39,7 @@ const routes: Array<{ path: string; priority: number }> = [
   { path: "/articles/revizionnye-lyuki-pod-plitku-i-pokrasku", priority: 0.7 },
   { path: "/articles/kak-vybrat-potolok-grilyato", priority: 0.7 },
   { path: "/articles/kassetnyy-potolok-otkrytaya-sistema", priority: 0.7 },
+  { path: "/articles/meditsinskie-potolki-dlya-bolnits-i-klinik", priority: 0.8 },
   { path: "/articles/sendvich-paneli-dlya-stroitelstva", priority: 0.7 },
   { path: "/articles/metalloprokat-dlya-stroitelnogo-obekta", priority: 0.7 },
   { path: "/calculators/stenovye-bloki", priority: 0.8 },
