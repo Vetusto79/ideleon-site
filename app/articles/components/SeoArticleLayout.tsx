@@ -14,11 +14,15 @@ type LinkItem = {
 type Props = {
   title: string;
   breadcrumb: string;
+  breadcrumbParent?: LinkItem;
   lead: string;
   children: ReactNode;
   calculatorLinks: LinkItem[];
   ctaLabel: string;
   ctaText: string;
+  ctaDisclaimer?: string;
+  leadId?: string;
+  leadTitle?: string;
   leadCaptureText: string;
   relatedLinks: LinkItem[];
 };
@@ -26,14 +30,25 @@ type Props = {
 export default function SeoArticleLayout({
   title,
   breadcrumb,
+  breadcrumbParent,
   lead,
   children,
   calculatorLinks,
   ctaLabel,
   ctaText,
+  ctaDisclaimer,
+  leadId = "request",
+  leadTitle = "Получить расчёт проекта",
   leadCaptureText,
   relatedLinks,
 }: Props) {
+  const breadcrumbItems = [
+    { label: "Главная", href: "/" },
+    { label: "Статьи", href: "/articles" },
+    ...(breadcrumbParent ? [breadcrumbParent] : []),
+    { label: breadcrumb },
+  ];
+
   return (
     <main>
       <SiteHeader />
@@ -41,11 +56,7 @@ export default function SeoArticleLayout({
       <article className="articlePage">
         <div className="articleHeader">
           <Breadcrumbs
-            items={[
-              { label: "Главная", href: "/" },
-              { label: "Статьи", href: "/articles" },
-              { label: breadcrumb },
-            ]}
+            items={breadcrumbItems}
           />
           <p className="label">Статья</p>
           <h1>{title}</h1>
@@ -75,11 +86,16 @@ export default function SeoArticleLayout({
             >
               {ctaLabel} →
             </TrackedCalculationLink>
+            {ctaDisclaimer ? (
+              <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, opacity: 0.86 }}>
+                {ctaDisclaimer}
+              </p>
+            ) : null}
           </section>
 
           <LeadCapture
-            id="request"
-            title="Получить расчёт проекта"
+            id={leadId}
+            title={leadTitle}
             text={leadCaptureText}
           />
 
