@@ -268,11 +268,11 @@ export default function MedicalCeilingsArticlePage() {
           </p>
 
           <ArticleImage
-            src="/images/articles/medical-ceilings/medical-ceiling-systems.webp"
-            alt="Открытая, скрытая и герметичная потолочные системы для медицинских помещений"
-            caption="Слева — открытая Т-система, в центре — скрытое крепление металлических кассет, справа — отдельная герметизированная система чистого помещения."
-            width={1672}
-            height={941}
+            src="/images/articles/medical-ceilings/medical-ceiling-systems-universal-v4.webp"
+            alt="Сравнение открытой, закрытой и герметичной систем металлического кассетного потолка"
+            caption="Слева — открытая система на Т‑профилях; в центре — закрытая система со скрытым каркасом; справа — герметичная система на усиленном скрытом каркасе."
+            width={1800}
+            height={1000}
             objectFit="contain"
           />
 
