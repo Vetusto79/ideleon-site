@@ -134,6 +134,10 @@ export const siteConfig = {
               label: "Кассетный потолок: открытая система",
               href: "/articles/kassetnyy-potolok-otkrytaya-sistema",
             },
+            {
+              label: "Медицинские потолки",
+              href: "/articles/meditsinskie-potolki-dlya-bolnits-i-klinik",
+            },
           ],
         },
         {
