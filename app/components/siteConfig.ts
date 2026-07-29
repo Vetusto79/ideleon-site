@@ -27,36 +27,140 @@ export const siteConfig = {
   },
 
   menu: [
-    { label: "Каталог", href: "/catalog" },
+    {
+      label: "Каталог",
+      href: "/catalog",
+      children: [
+        { label: "Все материалы", href: "/catalog" },
+        { label: "Профиль для ГКЛ", href: "/catalog/gkl-profile" },
+        {
+          label: "Потолочные системы",
+          href: "/catalog/cassette-ceilings",
+          children: [
+            { label: "Кассетные потолки", href: "/catalog/cassette-ceilings" },
+            { label: "Реечные потолки", href: "/catalog/rack-ceilings" },
+            { label: "Дизайнерские потолки", href: "/catalog/design-ceilings" },
+            { label: "Потолки для медучреждений", href: "/catalog/medical-ceilings" },
+            { label: "Потолки Грильято", href: "/catalog/grilyato" },
+          ],
+        },
+        { label: "Ревизионные люки", href: "/catalog/revision-hatches" },
+        { label: "Фальшполы", href: "/catalog/raised-floors" },
+        { label: "Сэндвич-панели", href: "/catalog/sandwich-panels" },
+        {
+          label: "Блоки и кирпич",
+          href: "/catalog/gazosilikatnyy-blok",
+          children: [
+            { label: "Газосиликатный блок", href: "/catalog/gazosilikatnyy-blok" },
+            { label: "Кирпич силикатный", href: "/catalog/kirpich-silikatnyy" },
+            { label: "Кирпич керамический", href: "/catalog/kirpich-keramicheskiy" },
+          ],
+        },
+        {
+          label: "Металлопрокат",
+          href: "/catalog/metal-roll",
+          children: [
+            { label: "Металлопрокат", href: "/catalog/metal-roll" },
+            { label: "Арматура", href: "/catalog/rebar" },
+          ],
+        },
+      ],
+    },
     { label: "Решения", href: "/solutions" },
     { label: "Бренды", href: "/#brands" },
     {
       label: "Калькуляторы",
       href: "/calculators",
       children: [
+        { label: "Все калькуляторы", href: "/calculators" },
         { label: "Профиль для ГКЛ", href: "/calculators/profil-gkl" },
-        { label: "Каркас из строительных лесов", href: "/calculators/stroitelnye-lesa-zashchitnyy-karkas" },
         {
-          label: "Грильято",
+          label: "Потолочные системы",
           href: "/calculators/grilyato",
           children: [
-            { label: "Стандартное Грильято", href: "/calculators/grilyato" },
-            { label: "Грильято GL", href: "/calculators/grilyato-gl" },
-            { label: "Диагональное Грильято", href: "/calculators/diagonalnoe-grilyato" },
-            { label: "Треугольное Грильято", href: "/calculators/treugolnoe-grilyato" },
+            { label: "Грильято — стандартное", href: "/calculators/grilyato" },
+            { label: "Грильято — GL", href: "/calculators/grilyato-gl" },
+            { label: "Грильято — диагональное", href: "/calculators/diagonalnoe-grilyato" },
+            { label: "Грильято — треугольное", href: "/calculators/treugolnoe-grilyato" },
+            { label: "Кассетный потолок — открытая система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
+            { label: "Кассетный потолок — скрытая система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+            { label: "Реечный потолок — кубообразная рейка", href: "/calculators/reechnyy-potolok-kuboobraznyy-dizayn" },
+            { label: "Реечный потолок — S-дизайн", href: "/calculators/reechnyy-potolok-s-dizayn" },
           ],
         },
         {
-          label: "Кассетные потолки",
-          href: "/calculators/kassetnyy-potolok-otkrytaya-sistema",
+          label: "Стеновые и ограждающие материалы",
+          href: "/calculators/sendvich-paneli",
           children: [
-            { label: "Открытая подвесная система", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
-            { label: "Закрытая подвесная система", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
+            { label: "Сэндвич-панели", href: "/calculators/sendvich-paneli" },
+            { label: "Газобетон и полистиролбетон", href: "/calculators/stenovye-bloki" },
+          ],
+        },
+        { label: "Чёрный металлопрокат", href: "/calculators/chernyy-metalloprokat" },
+        { label: "Защита зданий от БПЛА", href: "/calculators/stroitelnye-lesa-zashchitnyy-karkas" },
+      ],
+    },
+    {
+      label: "Статьи",
+      href: "/articles",
+      children: [
+        { label: "Все статьи", href: "/articles" },
+        {
+          label: "Профиль для ГКЛ",
+          href: "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+          children: [
+            {
+              label: "Как рассчитать профиль для ГКЛ",
+              href: "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+            },
+            {
+              label: "Толщина профиля: 0,6 / 0,5 / 0,4 мм",
+              href: "/articles/tolshchina-profilya-dlya-gipsokartona",
+            },
+            {
+              label: "ПП 60×27 и ППН 28×27",
+              href: "/articles/pp-60x27-i-ppn-28x27-dlya-gipsokartona",
+            },
+          ],
+        },
+        {
+          label: "Потолочные системы",
+          href: "/articles/kak-vybrat-potolok-grilyato",
+          children: [
+            {
+              label: "Как выбрать потолок Грильято",
+              href: "/articles/kak-vybrat-potolok-grilyato",
+            },
+            {
+              label: "Кассетный потолок: открытая система",
+              href: "/articles/kassetnyy-potolok-otkrytaya-sistema",
+            },
+            {
+              label: "Медицинские потолки",
+              href: "/articles/meditsinskie-potolki-dlya-bolnits-i-klinik",
+            },
+          ],
+        },
+        {
+          label: "Сэндвич-панели для строительства",
+          href: "/articles/sendvich-paneli-dlya-stroitelstva",
+        },
+        {
+          label: "Металлопрокат для строительного объекта",
+          href: "/articles/metalloprokat-dlya-stroitelnogo-obekta",
+        },
+        {
+          label: "Поставки и снабжение",
+          href: "/articles/postavshchik-stroymaterialov",
+          children: [
+            {
+              label: "Поставщик материалов для объектов",
+              href: "/articles/postavshchik-stroymaterialov",
+            },
           ],
         },
       ],
     },
-    { label: "Статьи", href: "/articles" },
     { label: "О компании", href: "/about" },
     { label: "Контакты", href: "/#contacts" },
   ],
