@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 type SystemType = "wedge" | "clamp";
 type GeometryMode = "rectangle" | "l-shape" | "u-shape" | "custom";
+type GeometryInputMode = "segments" | "coordinates";
 type Point = { x: number; y: number };
 type CalculationRow = { name: string; specification: string; formula: string; quantity: number; unit: string };
 
@@ -80,6 +81,8 @@ export default function ScaffoldProtectionCalculator() {
   const [reserve, setReserve] = useState("5");
   const [system, setSystem] = useState<SystemType>("wedge");
   const [points, setPoints] = useState<Point[]>(PRESETS.custom);
+  const [activePoint, setActivePoint] = useState<number | null>(null);
+  const [geometryInputMode, setGeometryInputMode] = useState<GeometryInputMode>("segments");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -92,11 +95,34 @@ export default function ScaffoldProtectionCalculator() {
 
   function selectMode(next: GeometryMode) {
     setMode(next);
+    setActivePoint(null);
     if (next !== "rectangle") setPoints(PRESETS[next].map((p) => ({ ...p })));
   }
   function updatePoint(index: number, axis: "x" | "y", value: string) {
     const parsed = Number(value.replace(",", "."));
     setPoints((current) => current.map((point, i) => i === index ? { ...point, [axis]: Number.isFinite(parsed) ? parsed : 0 } : point));
+  }
+  function segmentDirection(index: number) {
+    const start = points[index];
+    const end = points[(index + 1) % points.length];
+    const degrees = Math.atan2(end.y - start.y, end.x - start.x) * 180 / Math.PI;
+    return (degrees + 360) % 360;
+  }
+  function updateSegment(index: number, field: "length" | "angle", value: string) {
+    if (index >= points.length - 1) return;
+    const parsed = Number(value.replace(",", "."));
+    if (!Number.isFinite(parsed)) return;
+    setPoints((current) => {
+      const start = current[index];
+      const end = current[index + 1];
+      const currentLength = Math.max(0.01, distance(start, end));
+      const currentAngle = Math.atan2(end.y - start.y, end.x - start.x);
+      const nextLength = field === "length" ? Math.max(0.01, parsed) : currentLength;
+      const nextAngle = field === "angle" ? parsed * Math.PI / 180 : currentAngle;
+      return current.map((point, pointIndex) => pointIndex === index + 1
+        ? { x: start.x + Math.cos(nextAngle) * nextLength, y: start.y + Math.sin(nextAngle) * nextLength }
+        : point);
+    });
   }
 
   const result = useMemo(() => {
@@ -154,8 +180,28 @@ export default function ScaffoldProtectionCalculator() {
     const minX = Math.min(...all.map((p) => p.x)), maxX = Math.max(...all.map((p) => p.x));
     const minY = Math.min(...all.map((p) => p.y)), maxY = Math.max(...all.map((p) => p.y));
     const scale = Math.min(620 / Math.max(1, maxX - minX), 360 / Math.max(1, maxY - minY));
-    const map = (p: Point) => `${50 + (p.x - minX) * scale},${50 + (p.y - minY) * scale}`;
-    return { outer: result.outer.map(map).join(" "), inner: result.inner.map(map).join(" "), building: buildingPoints.map(map).join(" ") };
+    const mapPoint = (p: Point) => ({ x: 50 + (p.x - minX) * scale, y: 50 + (p.y - minY) * scale });
+    const map = (p: Point) => {
+      const mapped = mapPoint(p);
+      return `${mapped.x},${mapped.y}`;
+    };
+    const mappedBuilding = buildingPoints.map(mapPoint);
+    const segmentLabels = mappedBuilding.map((point, index) => {
+      const next = mappedBuilding[(index + 1) % mappedBuilding.length];
+      return {
+        x: (point.x + next.x) / 2,
+        y: (point.y + next.y) / 2,
+        length: distance(buildingPoints[index], buildingPoints[(index + 1) % buildingPoints.length]),
+        index,
+      };
+    });
+    return {
+      outer: result.outer.map(map).join(" "),
+      inner: result.inner.map(map).join(" "),
+      building: buildingPoints.map(map).join(" "),
+      buildingPoints: mappedBuilding,
+      segmentLabels,
+    };
   }, [buildingPoints, result.inner, result.outer]);
 
   function calculationLines() {
@@ -228,19 +274,71 @@ export default function ScaffoldProtectionCalculator() {
             </div>
           ) : (
             <>
-              <p>Координаты углов задаются в метрах. Обходи здание по порядку, не пересекая линии. Последняя точка замыкается с первой автоматически.</p>
+              <p>Обходи здание по порядку, не пересекая линии. Номера участков и углов показаны на схеме справа.</p>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+                <button type="button" className={geometryInputMode === "segments" ? "primaryButton" : "secondaryButton"} onClick={() => setGeometryInputMode("segments")}>Длины и направления</button>
+                <button type="button" className={geometryInputMode === "coordinates" ? "primaryButton" : "secondaryButton"} onClick={() => setGeometryInputMode("coordinates")}>Ввод из CAD: X / Y</button>
+              </div>
               <div style={{ overflowX: "auto" }}>
                 <table className="calculatorResultTable">
-                  <thead><tr><th>Точка</th><th>X, м</th><th>Y, м</th><th /></tr></thead>
+                  <thead>{geometryInputMode === "segments"
+                    ? <tr><th>Участок</th><th>Длина, м</th><th>Направление, °</th><th /></tr>
+                    : <tr><th>Точка</th><th>X, м</th><th>Y, м</th><th /></tr>}
+                  </thead>
                   <tbody>{points.map((point, index) => (
-                    <tr key={index}><td><strong>{index + 1}</strong></td>
-                      <td><input aria-label={`X точки ${index + 1}`} type="number" step="0.1" value={point.x} onChange={(e) => updatePoint(index, "x", e.target.value)} /></td>
-                      <td><input aria-label={`Y точки ${index + 1}`} type="number" step="0.1" value={point.y} onChange={(e) => updatePoint(index, "y", e.target.value)} /></td>
-                      <td><button type="button" className="secondaryButton" disabled={points.length <= 3} onClick={() => setPoints((p) => p.filter((_, i) => i !== index))}>Удалить</button></td>
+                    <tr
+                      key={index}
+                      onClick={() => setActivePoint(index)}
+                      style={{
+                        cursor: "pointer",
+                        background: activePoint === index ? "#fff1e8" : undefined,
+                        boxShadow: activePoint === index ? "inset 4px 0 #ff6500" : undefined,
+                      }}
+                    ><td><strong style={{
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      width: 28, height: 28, borderRadius: "50%",
+                      color: activePoint === index ? "#fff" : "#101b32",
+                      background: activePoint === index ? "#ff6500" : "#e9eef5",
+                    }}>{index + 1}</strong>{geometryInputMode === "segments" && <span style={{ marginLeft: 8, whiteSpace: "nowrap" }}>→ {index + 1 === points.length ? 1 : index + 2}</span>}</td>
+                      {geometryInputMode === "segments" ? (
+                        <>
+                          <td><input
+                            onFocus={() => setActivePoint(index)}
+                            aria-label={`Длина участка ${index + 1}`}
+                            type="number" min="0.01" step="0.1"
+                            value={Number(distance(point, points[(index + 1) % points.length]).toFixed(2))}
+                            disabled={index === points.length - 1}
+                            title={index === points.length - 1 ? "Замыкающий участок рассчитывается автоматически" : undefined}
+                            onChange={(e) => updateSegment(index, "length", e.target.value)}
+                          /></td>
+                          <td><input
+                            onFocus={() => setActivePoint(index)}
+                            aria-label={`Направление участка ${index + 1}`}
+                            type="number" step="1"
+                            value={Number(segmentDirection(index).toFixed(1))}
+                            disabled={index === points.length - 1}
+                            title={index === points.length - 1 ? "Направление замыкающего участка рассчитывается автоматически" : "0° — вправо, 90° — вниз на схеме, 180° — влево, 270° — вверх"}
+                            onChange={(e) => updateSegment(index, "angle", e.target.value)}
+                          /></td>
+                        </>
+                      ) : (
+                        <>
+                          <td><input onFocus={() => setActivePoint(index)} aria-label={`X точки ${index + 1}`} type="number" step="0.1" value={point.x} onChange={(e) => updatePoint(index, "x", e.target.value)} /></td>
+                          <td><input onFocus={() => setActivePoint(index)} aria-label={`Y точки ${index + 1}`} type="number" step="0.1" value={point.y} onChange={(e) => updatePoint(index, "y", e.target.value)} /></td>
+                        </>
+                      )}
+                      <td><button type="button" className="secondaryButton" disabled={points.length <= 3} onClick={(event) => {
+                        event.stopPropagation();
+                        setActivePoint(null);
+                        setPoints((p) => p.filter((_, i) => i !== index));
+                      }}>Удалить</button></td>
                     </tr>
                   ))}</tbody>
                 </table>
               </div>
+              {geometryInputMode === "segments" && <p style={{ marginTop: 10, color: "#5f6d83", fontSize: 13 }}>
+                0° — вправо, 90° — вниз, 180° — влево, 270° — вверх. Последний участок замыкается автоматически.
+              </p>}
               <button type="button" className="secondaryButton" style={{ marginTop: 12 }} onClick={() => {
                 const last = points[points.length - 1] || { x: 0, y: 0 };
                 setPoints((p) => [...p, { x: last.x + 5, y: last.y }]);
@@ -270,7 +368,48 @@ export default function ScaffoldProtectionCalculator() {
             <polygon points={drawing.outer} className="scaffoldOuter" />
             <polygon points={drawing.inner} className="scaffoldInner" />
             <polygon points={drawing.building} className="scaffoldBuilding" />
+            {mode !== "rectangle" && drawing.segmentLabels.map((segment) => (
+              <g key={`segment-${segment.index}`} pointerEvents="none">
+                <rect x={segment.x - 36} y={segment.y - 12} width="72" height="24" rx="12" fill="white" fillOpacity="0.9" stroke="#cbd3df" />
+                <text x={segment.x} y={segment.y + 4} textAnchor="middle" fontSize="12" fontWeight="700" fill="#41506a">
+                  {format(segment.length)} м
+                </text>
+              </g>
+            ))}
+            {mode !== "rectangle" && drawing.buildingPoints.map((point, index) => {
+              const active = activePoint === index;
+              return (
+                <g
+                  key={`point-${index}`}
+                  role="button"
+                  aria-label={`Точка ${index + 1}: X ${buildingPoints[index].x}, Y ${buildingPoints[index].y}`}
+                  tabIndex={0}
+                  onClick={() => setActivePoint(index)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === " ") setActivePoint(index);
+                  }}
+                  style={{ cursor: "pointer", outline: "none" }}
+                >
+                  {active && <circle cx={point.x} cy={point.y} r="18" fill="#ff6500" fillOpacity="0.2" />}
+                  <circle cx={point.x} cy={point.y} r={active ? 13 : 10} fill={active ? "#ff6500" : "#101b32"} stroke="#fff" strokeWidth="3" />
+                  <text x={point.x} y={point.y + 4} textAnchor="middle" fontSize={active ? 13 : 11} fontWeight="800" fill="#fff" pointerEvents="none">
+                    {index + 1}
+                  </text>
+                </g>
+              );
+            })}
           </svg>
+          {mode !== "rectangle" && (
+            <div style={{
+              marginTop: 10, padding: "10px 14px", borderRadius: 12,
+              background: activePoint === null ? "#f3f6fa" : "#fff1e8",
+              color: "#101b32", fontSize: 14,
+            }}>
+              {activePoint === null
+                ? "Нажми на номер точки в таблице или на схеме — соответствующий угол подсветится."
+                : <><strong>Точка {activePoint + 1}</strong>: X = {format(buildingPoints[activePoint].x)} м, Y = {format(buildingPoints[activePoint].y)} м. Изменяй её координаты в подсвеченной строке слева.</>}
+            </div>
+          )}
           <div className="scaffoldLegend"><span><i className="outer" /> Наружный контур</span><span><i className="inner" /> Внутренний контур</span><span><i className="building" /> Здание</span></div>
           <div className="scaffoldMetrics">
             <div><span>Периметр здания</span><strong>{format(result.perimeter)} м</strong></div>
