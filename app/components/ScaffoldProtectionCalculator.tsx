@@ -124,6 +124,14 @@ export default function ScaffoldProtectionCalculator() {
         : point);
     });
   }
+  function nudgeSegment(index: number, field: "length" | "angle", delta: number) {
+    if (index >= points.length - 1) return;
+    const value = field === "length"
+      ? distance(points[index], points[index + 1]) + delta
+      : segmentDirection(index) + delta;
+    updateSegment(index, field, String(value));
+    setActivePoint(index);
+  }
 
   const result = useMemo(() => {
     const frameH = positive(height, 15);
@@ -302,24 +310,54 @@ export default function ScaffoldProtectionCalculator() {
                     }}>{index + 1}</strong>{geometryInputMode === "segments" && <span style={{ marginLeft: 8, whiteSpace: "nowrap" }}>→ {index + 1 === points.length ? 1 : index + 2}</span>}</td>
                       {geometryInputMode === "segments" ? (
                         <>
-                          <td><input
-                            onFocus={() => setActivePoint(index)}
-                            aria-label={`Длина участка ${index + 1}`}
-                            type="number" min="0.01" step="0.1"
-                            value={Number(distance(point, points[(index + 1) % points.length]).toFixed(2))}
-                            disabled={index === points.length - 1}
-                            title={index === points.length - 1 ? "Замыкающий участок рассчитывается автоматически" : undefined}
-                            onChange={(e) => updateSegment(index, "length", e.target.value)}
-                          /></td>
-                          <td><input
-                            onFocus={() => setActivePoint(index)}
-                            aria-label={`Направление участка ${index + 1}`}
-                            type="number" step="1"
-                            value={Number(segmentDirection(index).toFixed(1))}
-                            disabled={index === points.length - 1}
-                            title={index === points.length - 1 ? "Направление замыкающего участка рассчитывается автоматически" : "0° — вправо, 90° — вниз на схеме, 180° — влево, 270° — вверх"}
-                            onChange={(e) => updateSegment(index, "angle", e.target.value)}
-                          /></td>
+                          <td>
+                            <div style={{ display: "grid", gridTemplateColumns: "38px minmax(72px, 1fr) 38px", gap: 5, alignItems: "stretch", minWidth: 164 }}>
+                              <button type="button" className="secondaryButton" disabled={index === points.length - 1}
+                                aria-label={`Уменьшить длину участка ${index + 1} на 0,1 м`}
+                                title="Уменьшить на 0,1 м"
+                                style={{ minWidth: 38, padding: 0, fontSize: 22, lineHeight: 1 }}
+                                onClick={(event) => { event.stopPropagation(); nudgeSegment(index, "length", -0.1); }}>−</button>
+                              <input
+                                onFocus={() => setActivePoint(index)}
+                                aria-label={`Длина участка ${index + 1}`}
+                                type="number" min="0.01" step="0.1"
+                                value={Number(distance(point, points[(index + 1) % points.length]).toFixed(2))}
+                                disabled={index === points.length - 1}
+                                title={index === points.length - 1 ? "Замыкающий участок рассчитывается автоматически" : undefined}
+                                style={{ width: "100%", minWidth: 0, textAlign: "center" }}
+                                onChange={(e) => updateSegment(index, "length", e.target.value)}
+                              />
+                              <button type="button" className="secondaryButton" disabled={index === points.length - 1}
+                                aria-label={`Увеличить длину участка ${index + 1} на 0,1 м`}
+                                title="Увеличить на 0,1 м"
+                                style={{ minWidth: 38, padding: 0, fontSize: 22, lineHeight: 1 }}
+                                onClick={(event) => { event.stopPropagation(); nudgeSegment(index, "length", 0.1); }}>+</button>
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ display: "grid", gridTemplateColumns: "38px minmax(72px, 1fr) 38px", gap: 5, alignItems: "stretch", minWidth: 164 }}>
+                              <button type="button" className="secondaryButton" disabled={index === points.length - 1}
+                                aria-label={`Уменьшить направление участка ${index + 1} на 1 градус`}
+                                title="Повернуть на 1° против часовой стрелки"
+                                style={{ minWidth: 38, padding: 0, fontSize: 22, lineHeight: 1 }}
+                                onClick={(event) => { event.stopPropagation(); nudgeSegment(index, "angle", -1); }}>−</button>
+                              <input
+                                onFocus={() => setActivePoint(index)}
+                                aria-label={`Направление участка ${index + 1}`}
+                                type="number" step="1"
+                                value={Number(segmentDirection(index).toFixed(1))}
+                                disabled={index === points.length - 1}
+                                title={index === points.length - 1 ? "Направление замыкающего участка рассчитывается автоматически" : "0° — вправо, 90° — вниз на схеме, 180° — влево, 270° — вверх"}
+                                style={{ width: "100%", minWidth: 0, textAlign: "center" }}
+                                onChange={(e) => updateSegment(index, "angle", e.target.value)}
+                              />
+                              <button type="button" className="secondaryButton" disabled={index === points.length - 1}
+                                aria-label={`Увеличить направление участка ${index + 1} на 1 градус`}
+                                title="Повернуть на 1° по часовой стрелке"
+                                style={{ minWidth: 38, padding: 0, fontSize: 22, lineHeight: 1 }}
+                                onClick={(event) => { event.stopPropagation(); nudgeSegment(index, "angle", 1); }}>+</button>
+                            </div>
+                          </td>
                         </>
                       ) : (
                         <>
@@ -359,7 +397,7 @@ export default function ScaffoldProtectionCalculator() {
               <label>Запас, %<input type="number" min="0" max="30" step="1" value={reserve} onChange={(e) => setReserve(e.target.value)} /></label>
             </div>
           </details>
-          <div className="scaffoldAssumption"><strong>Модель V2:</strong> каждый участок замкнутого контура рассчитывается отдельно. На поворотах ставятся узлы стоек; внутренний и наружный контуры строятся смещением от фасада.</div>
+          <div className="scaffoldAssumption"><strong>Модель V4:</strong> каждый участок замкнутого контура рассчитывается отдельно. На поворотах ставятся узлы стоек; внутренний и наружный контуры строятся смещением от фасада.</div>
         </div>
 
         <div className="calculatorPanel scaffoldDrawingPanel">
@@ -407,7 +445,7 @@ export default function ScaffoldProtectionCalculator() {
             }}>
               {activePoint === null
                 ? "Нажми на номер точки в таблице или на схеме — соответствующий угол подсветится."
-                : <><strong>Точка {activePoint + 1}</strong>: X = {format(buildingPoints[activePoint].x)} м, Y = {format(buildingPoints[activePoint].y)} м. Изменяй её координаты в подсвеченной строке слева.</>}
+                : <><strong>Точка {activePoint + 1}</strong>: X = {format(buildingPoints[activePoint].x)} м, Y = {format(buildingPoints[activePoint].y)} м. {geometryInputMode === "segments" ? "Меняй длину и направление участка в подсвеченной строке слева." : "Изменяй её координаты в подсвеченной строке слева."}</>}
             </div>
           )}
           <div className="scaffoldLegend"><span><i className="outer" /> Наружный контур</span><span><i className="inner" /> Внутренний контур</span><span><i className="building" /> Здание</span></div>
