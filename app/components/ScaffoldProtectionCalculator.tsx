@@ -37,6 +37,29 @@ function signedArea(points: Point[]) {
   }, 0) / 2;
 }
 function polygonArea(points: Point[]) { return Math.abs(signedArea(points)); }
+function orientation(a: Point, b: Point, c: Point) {
+  return Math.sign((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x));
+}
+function segmentsIntersect(a: Point, b: Point, c: Point, d: Point) {
+  const o1 = orientation(a, b, c);
+  const o2 = orientation(a, b, d);
+  const o3 = orientation(c, d, a);
+  const o4 = orientation(c, d, b);
+  return o1 !== o2 && o3 !== o4;
+}
+function polygonSelfIntersects(points: Point[]) {
+  for (let i = 0; i < points.length; i += 1) {
+    const a = points[i];
+    const b = points[(i + 1) % points.length];
+    for (let j = i + 1; j < points.length; j += 1) {
+      if (j === i || j === i + 1 || (i === 0 && j === points.length - 1)) continue;
+      const c = points[j];
+      const d = points[(j + 1) % points.length];
+      if (segmentsIntersect(a, b, c, d)) return true;
+    }
+  }
+  return false;
+}
 function lineIntersection(a: Point, av: Point, b: Point, bv: Point): Point | null {
   const cross = av.x * bv.y - av.y * bv.x;
   if (Math.abs(cross) < 1e-8) return null;
@@ -119,8 +142,10 @@ export default function ScaffoldProtectionCalculator() {
       const currentAngle = Math.atan2(end.y - start.y, end.x - start.x);
       const nextLength = field === "length" ? Math.max(0.01, parsed) : currentLength;
       const nextAngle = field === "angle" ? parsed * Math.PI / 180 : currentAngle;
-      return current.map((point, pointIndex) => pointIndex === index + 1
-        ? { x: start.x + Math.cos(nextAngle) * nextLength, y: start.y + Math.sin(nextAngle) * nextLength }
+      const nextEnd = { x: start.x + Math.cos(nextAngle) * nextLength, y: start.y + Math.sin(nextAngle) * nextLength };
+      const shift = { x: nextEnd.x - end.x, y: nextEnd.y - end.y };
+      return current.map((point, pointIndex) => pointIndex > index
+        ? { x: point.x + shift.x, y: point.y + shift.y }
         : point);
     });
   }
@@ -180,6 +205,8 @@ export default function ScaffoldProtectionCalculator() {
       innerBaysBySegment, outerBaysBySegment, innerBays, outerBays, allNodes, tiers,
       topCoverageArea, buildingArea: polygonArea(buildingPoints), rows,
       perimeter: segments(buildingPoints).reduce((sum, s) => sum + s.length, 0),
+      selfIntersects: polygonSelfIntersects(buildingPoints),
+      closingLength: distance(buildingPoints[buildingPoints.length - 1], buildingPoints[0]),
     };
   }, [buildingPoints, height, facadeGap, corridor, bay, tier, reserve, system]);
 
@@ -375,7 +402,7 @@ export default function ScaffoldProtectionCalculator() {
                 </table>
               </div>
               {geometryInputMode === "segments" && <p style={{ marginTop: 10, color: "#5f6d83", fontSize: 13 }}>
-                0° — вправо, 90° — вниз, 180° — влево, 270° — вверх. Последний участок замыкается автоматически.
+                0° — вправо, 90° — вниз, 180° — влево, 270° — вверх. При изменении участка следующие участки сохраняют свои длины и направления. Последний участок замыкается автоматически.
               </p>}
               <button type="button" className="secondaryButton" style={{ marginTop: 12 }} onClick={() => {
                 const last = points[points.length - 1] || { x: 0, y: 0 };
@@ -397,7 +424,18 @@ export default function ScaffoldProtectionCalculator() {
               <label>Запас, %<input type="number" min="0" max="30" step="1" value={reserve} onChange={(e) => setReserve(e.target.value)} /></label>
             </div>
           </details>
-          <div className="scaffoldAssumption"><strong>Модель V4:</strong> каждый участок замкнутого контура рассчитывается отдельно. На поворотах ставятся узлы стоек; внутренний и наружный контуры строятся смещением от фасада.</div>
+          {mode !== "rectangle" && (
+            <div className="scaffoldAssumption" style={{
+              borderColor: result.selfIntersects ? "#d83a3a" : "#b8c5d8",
+              background: result.selfIntersects ? "#fff0f0" : undefined,
+            }}>
+              <strong>{result.selfIntersects ? "Контур пересекает сам себя." : "Контур замкнут корректно."}</strong>{" "}
+              {result.selfIntersects
+                ? "Исправь длину или направление участков до расчёта комплектации."
+                : `Автоматический замыкающий участок: ${format(result.closingLength)} м. Остальные введённые длины и направления сохраняются без самопроизвольной корректировки.`}
+            </div>
+          )}
+          <div className="scaffoldAssumption"><strong>Предварительная инженерно-коммерческая модель:</strong> каждый участок замкнутого контура рассчитывается отдельно. На поворотах ставятся узлы стоек; внутренний и наружный контуры строятся смещением от фасада.</div>
         </div>
 
         <div className="calculatorPanel scaffoldDrawingPanel">
@@ -466,7 +504,7 @@ export default function ScaffoldProtectionCalculator() {
         </table></div>
       </section>}
 
-      <section className="calculatorPanel scaffoldResults">
+      <section className="calculatorPanel scaffoldResults" style={result.selfIntersects ? { opacity: 0.55 } : undefined}>
         <div className="scaffoldResultHeader"><div><p className="label">Предварительная комплектация</p><h2>Ведомость элементов</h2></div><button type="button" className="secondaryButton" onClick={downloadCalculation}>Скачать расчёт CSV</button></div>
         <div className="calculatorTableWrap"><table className="calculatorResultTable">
           <thead><tr><th>Элемент</th><th>Спецификация</th><th>Основание расчёта</th><th>Количество с запасом</th></tr></thead>
@@ -476,7 +514,7 @@ export default function ScaffoldProtectionCalculator() {
       </section>
 
       <section className="scaffoldBottomGrid">
-        <article className="calculatorPanel"><p className="label">Для эксперта</p><h2>Что нужно подтвердить в V2</h2><ol className="scaffoldCheckList">
+        <article className="calculatorPanel"><p className="label">Инженерная проверка</p><h2>Что нужно подтвердить перед заказом</h2><ol className="scaffoldCheckList">
           <li>Метод построения смещённых контуров во внешних и внутренних углах.</li><li>Разбивку каждого участка на стандартные длины производителя.</li>
           <li>Сопряжение несовпадающих узлов внутреннего и наружного рядов.</li><li>Частоту поперечных перемычек и диагоналей на сложном контуре.</li><li>Артикулы, массы и ограничения конкретной системы лесов.</li>
         </ol></article>
