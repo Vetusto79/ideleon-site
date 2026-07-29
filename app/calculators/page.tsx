@@ -6,7 +6,7 @@ import { calculators } from "../data/calculators";
 
 export const metadata = {
   title: "Калькуляторы строительных материалов",
-  description: "Онлайн-калькуляторы Иделеон для расчёта профиля ГКЛ, потолочных систем и двухконтурного пространственного каркаса.",
+  description: "Онлайн-калькуляторы Иделеон для расчёта строительных материалов и предварительного подбора защитного каркаса от БПЛА.",
 };
 
 const groups = [
@@ -73,17 +73,17 @@ export default function CalculatorsPage() {
         <section className="calculatorGroupBlock">
           <header className="calculatorGroupHeader">
             <div>
-              <p className="label">Пространственные конструкции</p>
-              <h2>Строительные леса и защитные каркасы</h2>
-              <p>Предварительный подбор элементов двухконтурного каркаса вокруг здания.</p>
+              <p className="label">Безопасность объектов</p>
+              <h2>Защита зданий от БПЛА</h2>
+              <p>Предварительный подбор двухконтурного каркаса на базе элементов строительных лесов.</p>
             </div>
             <span>1 калькулятор</span>
           </header>
           <div className="calculatorHub calculatorHubGrouped">
             <Link href="/calculators/stroitelnye-lesa-zashchitnyy-karkas" className="calculatorHubCard">
-              <span>Пространственный каркас</span>
-              <h3>Двухконтурный каркас вокруг здания</h3>
-              <p>Клиновая или хомутовая система: стойки, ригели, перемычки, диагонали, опоры и панели.</p>
+              <span>Защитные конструкции</span>
+              <h3>Калькулятор защиты здания от БПЛА</h3>
+              <p>Предварительный расчёт внутреннего и внешнего контуров, стоек, ригелей, перемычек, диагоналей, опор и панелей.</p>
               <strong>Открыть калькулятор →</strong>
             </Link>
           </div>
