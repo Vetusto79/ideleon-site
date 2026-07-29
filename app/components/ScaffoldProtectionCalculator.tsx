@@ -224,7 +224,7 @@ export default function ScaffoldProtectionCalculator() {
     setStatus("sending");
     try {
       const message = [
-        "Предварительный расчёт двухконтурного пространственного каркаса",
+        "Предварительный расчёт защиты здания от БПЛА",
         `Система: ${system === "wedge" ? "клиновая" : "хомутовая"}`,
         `Здание: ${result.buildingL} × ${result.buildingW} × ${result.frameH} м`,
         `Отступ: ${result.gap} м; между контурами: ${result.frameWidth} м`,
