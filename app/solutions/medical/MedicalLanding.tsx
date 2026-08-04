@@ -265,7 +265,7 @@ export default function MedicalLanding() {
       <style jsx>{`
         .page{--navy:#0b1f3a;--navy2:#12345b;--orange:#f58220;--ink:#142033;--muted:#64748b;--line:#dbe4ee;background:#fff;color:var(--ink)}
         .container{width:min(1180px,calc(100% - 40px));margin:0 auto}
-        .hero{position:relative;overflow:hidden;background:linear-gradient(112deg,#081a31 0%,#12345b 72%,#174771 100%);color:#fff;padding:54px 0 60px}
+        .hero{position:relative;overflow:hidden;display:block;width:100%;max-width:none;min-height:0;margin:0;grid-template-columns:none;gap:0;align-items:initial;background:linear-gradient(112deg,#081a31 0%,#12345b 72%,#174771 100%);color:#fff;padding:54px 0 60px}
         .hero:after{content:"";position:absolute;right:-180px;top:-220px;width:620px;height:620px;border:1px solid rgba(255,255,255,.12);border-radius:50%;box-shadow:0 0 0 80px rgba(255,255,255,.025),0 0 0 160px rgba(255,255,255,.02)}
         .heroInner{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);align-items:center;gap:44px}
         .heroCopy{min-width:0}
@@ -285,7 +285,7 @@ export default function MedicalLanding() {
         .heroVisual{position:relative;margin:0;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.16);background:#0d2948;box-shadow:0 30px 70px rgba(0,0,0,.28)}
         .heroVisual img{display:block;width:100%;height:460px;object-fit:cover;object-position:center}
         .heroVisual figcaption{position:absolute;left:14px;right:14px;bottom:14px;padding:12px 14px;border:1px solid rgba(255,255,255,.16);border-radius:12px;background:rgba(7,23,42,.82);backdrop-filter:blur(8px);color:#fff;font-size:13px;font-weight:750;line-height:1.35}
-        .section{padding:76px 0}
+        .section{width:100%;max-width:none;margin:0;padding:76px 0}
         .soft{background:#f5f8fb}
         .dark{background:var(--navy);color:#fff}
         .sectionHead{max-width:790px;margin-bottom:34px}
@@ -304,7 +304,7 @@ export default function MedicalLanding() {
         .pill span{color:var(--orange);font-size:13px}
         .valueGrid .pill{background:#102c4d;border-color:rgba(255,255,255,.1);color:#fff}
         .valueGrid .pill span{color:#ff9c4b}
-        .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:step}
+        .steps{display:grid;max-width:none;margin:0;grid-template-columns:repeat(5,1fr);gap:0;counter-reset:step}
         .step{position:relative;padding:0 24px 0 0;counter-increment:step}
         .step:before{content:counter(step);display:flex;width:42px;height:42px;align-items:center;justify-content:center;border-radius:50%;background:var(--orange);color:#fff;font-weight:900;margin-bottom:18px}
         .step:not(:last-child):after{content:"";position:absolute;left:52px;right:12px;top:20px;height:2px;background:#d7e1ec}
@@ -323,7 +323,7 @@ export default function MedicalLanding() {
         .close{position:absolute;right:16px;top:14px;width:40px;height:40px;border:0;border-radius:50%;background:#eef3f8;color:var(--navy);font-size:25px;cursor:pointer}
         .modal h2{padding-right:42px;margin:0;color:var(--navy);font-size:30px}
         .modalLead{color:var(--muted);line-height:1.5;margin:10px 0 22px}
-        .form{display:grid;gap:15px}
+        .form{display:grid;grid-template-columns:1fr;gap:15px}
         .field{display:grid;gap:7px}
         .field label{font-weight:750;font-size:14px}
         .field input,.field textarea{width:100%;box-sizing:border-box;border:1px solid #cbd7e4;border-radius:11px;background:#fff;padding:13px 14px;font:inherit;color:var(--ink);outline:none}
