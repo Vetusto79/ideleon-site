@@ -36,29 +36,6 @@ export default function YandexMetrika() {
             var text = (clickable.textContent || "").trim().toLowerCase();
             var href = clickable.getAttribute("href") || "";
 
-            if (href.indexOf("tel:") === 0) {
-              if (text.indexOf("позвонить") !== -1) {
-                ym(${YM_COUNTER_ID}, "reachGoal", "click_callback", {
-                  source: location.href,
-                  text: clickable.textContent || ""
-                });
-              } else {
-                ym(${YM_COUNTER_ID}, "reachGoal", "click_phone", {
-                  source: location.href,
-                  phone: href
-                });
-              }
-              return;
-            }
-
-            if (text.indexOf("перезвоните") !== -1 || text.indexOf("перезвонить") !== -1) {
-              ym(${YM_COUNTER_ID}, "reachGoal", "click_callback", {
-                source: location.href,
-                text: clickable.textContent || ""
-              });
-              return;
-            }
-
             if (text.indexOf("получить расч") !== -1 || href === "#request" || href === "/#request") {
               ym(${YM_COUNTER_ID}, "reachGoal", "click_calculation", {
                 source: location.href,
