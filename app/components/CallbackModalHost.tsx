@@ -5,17 +5,35 @@ import { reachGoal } from "./metrika";
 
 type FormStatus = "idle" | "sending" | "success" | "error";
 
+type NavigatorWithUserAgentData = Navigator & {
+  userAgentData?: {
+    mobile?: boolean;
+  };
+};
+
+function isMobileDevice() {
+  const mobileHint = (navigator as NavigatorWithUserAgentData).userAgentData?.mobile === true;
+  const hasCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
+  const hasNarrowViewport = window.matchMedia("(max-width: 900px)").matches;
+
+  return mobileHint || (hasCoarsePointer && hasNarrowViewport);
+}
+
 export default function CallbackModalHost() {
   const [isOpen, setIsOpen] = useState(false);
   const [status, setStatus] = useState<FormStatus>("idle");
   const [message, setMessage] = useState("");
   const [sourcePage, setSourcePage] = useState("");
 
-  function openModal() {
+  function openModal(phone?: string) {
     setSourcePage(window.location.href);
     setIsOpen(true);
     setStatus("idle");
     setMessage("");
+    reachGoal("click_callback", {
+      source: window.location.href,
+      ...(phone ? { phone } : {}),
+    });
   }
 
   function closeModal() {
@@ -29,14 +47,18 @@ export default function CallbackModalHost() {
 
       if (!link) return;
 
-      const text = (link.textContent || "").trim().toLowerCase();
+      if (isMobileDevice()) {
+        reachGoal("click_phone", {
+          source: window.location.href,
+          phone: link.getAttribute("href") || "",
+        });
+        return;
+      }
 
-      // Перехватываем только кнопки с текстом «Позвонить».
-      // Телефоны в шапке и футере остаются обычными tel-ссылками.
-      if (!text.includes("позвонить")) return;
-
+      // На компьютере tel: остаётся в HTML как резервный вариант без JavaScript,
+      // но при штатной загрузке клиента клик открывает форму обратного звонка.
       event.preventDefault();
-      openModal();
+      openModal(link.getAttribute("href") || undefined);
     }
 
     function handleOpenEvent() {
