@@ -37,6 +37,7 @@ export default function CallbackModal() {
     setIsOpen(true);
     setStatus("idle");
     setMessage("");
+    reachGoal("click_callback", { source: sourcePage || window.location.href });
   }
 
   function closeModal() {
