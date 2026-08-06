@@ -20,6 +20,7 @@ type Props = {
   calculatorLinks: LinkItem[];
   ctaLabel: string;
   ctaText: string;
+  ctaHref?: string;
   ctaDisclaimer?: string;
   leadId?: string;
   leadTitle?: string;
@@ -36,12 +37,14 @@ export default function SeoArticleLayout({
   calculatorLinks,
   ctaLabel,
   ctaText,
+  ctaHref,
   ctaDisclaimer,
   leadId = "request",
   leadTitle = "Получить расчёт проекта",
   leadCaptureText,
   relatedLinks,
 }: Props) {
+  const primaryCtaHref = ctaHref ?? calculatorLinks[0]?.href;
   const breadcrumbItems = [
     { label: "Главная", href: "/" },
     { label: "Статьи", href: "/articles" },
@@ -80,12 +83,20 @@ export default function SeoArticleLayout({
           <section className="articleCta">
             <h2>{ctaLabel}</h2>
             <p>{ctaText}</p>
-            <TrackedCalculationLink
-              className="button primary"
-              href={calculatorLinks[0].href}
-            >
-              {ctaLabel} →
-            </TrackedCalculationLink>
+            {primaryCtaHref ? (
+              primaryCtaHref.startsWith("/calculators/") ? (
+                <TrackedCalculationLink
+                  className="button primary"
+                  href={primaryCtaHref}
+                >
+                  {ctaLabel} →
+                </TrackedCalculationLink>
+              ) : (
+                <a className="button primary" href={primaryCtaHref}>
+                  {ctaLabel} →
+                </a>
+              )
+            ) : null}
             {ctaDisclaimer ? (
               <p style={{ marginTop: 16, fontSize: 14, lineHeight: 1.6, opacity: 0.86 }}>
                 {ctaDisclaimer}

@@ -114,10 +114,17 @@ const categories: ArticleCategory[] = [
     categoryHref: "/articles/revizionnye-lyuki",
     articles: [
       {
+        href: "/articles/kak-vybrat-revizionnyy-lyuk",
+        title: "Как выбрать ревизионный люк: виды, размеры и ошибки при выборе",
+        text: "Люки под плитку, покраску и в пол, большие люки-двери и противопожарные решения: сравнение, алгоритм подбора и типичные ошибки.",
+        image: "/images/articles/revision-hatches/revision-hatch-tile-hero.webp",
+        imageAlt: "Открытый скрытый ревизионный люк под плитку в ванной комнате",
+        featured: true,
+      },
+      {
         href: "/articles/revizionnye-lyuki-pod-plitku-i-pokrasku",
         title: "Ревизионные люки под плитку и под покраску: что выбрать",
         text: "Ревизионный люк должен давать доступ к коммуникациям и при этом аккуратно вписываться в интерьер.",
-        featured: true,
       },
     ],
   },

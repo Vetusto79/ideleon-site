@@ -1622,6 +1622,33 @@ button.button.secondary:disabled {
   text-underline-offset: 4px;
 }
 
+.articleTableHatches {
+  min-width: 1080px;
+  table-layout: auto;
+}
+
+.articleTableWrapScrollable {
+  overflow-x: auto;
+}
+
+.articleTableHatches th,
+.articleTableHatches td,
+.articleTableHatches th:nth-child(1),
+.articleTableHatches td:nth-child(1),
+.articleTableHatches th:nth-child(2),
+.articleTableHatches td:nth-child(2),
+.articleTableHatches th:nth-child(3),
+.articleTableHatches td:nth-child(3),
+.articleTableHatches th:nth-child(4),
+.articleTableHatches td:nth-child(4) {
+  width: auto;
+}
+
+.articleTableHatches th:first-child,
+.articleTableHatches td:first-child {
+  min-width: 150px;
+}
+
 @media (max-width: 760px) {
   .articleTableWrap {
     overflow-x: auto;
@@ -4293,5 +4320,3 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
-
-
