@@ -142,6 +142,20 @@ export const siteConfig = {
           ],
         },
         {
+          label: "Ревизионные люки",
+          href: "/articles/revizionnye-lyuki",
+          children: [
+            {
+              label: "Как выбрать ревизионный люк",
+              href: "/articles/kak-vybrat-revizionnyy-lyuk",
+            },
+            {
+              label: "Люки под плитку и покраску",
+              href: "/articles/revizionnye-lyuki-pod-plitku-i-pokrasku",
+            },
+          ],
+        },
+        {
           label: "Сэндвич-панели для строительства",
           href: "/articles/sendvich-paneli-dlya-stroitelstva",
         },
