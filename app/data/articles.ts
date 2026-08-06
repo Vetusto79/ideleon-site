@@ -177,12 +177,19 @@ export const articles: ArticleItem[] = [
     category: "potolochnye-sistemy",
   },
   {
+    title: "Как выбрать ревизионный люк: виды, размеры и ошибки при выборе",
+    href: "/articles/kak-vybrat-revizionnyy-lyuk",
+    description:
+      "Сравниваем люки под плитку, покраску и в пол, большие люки-двери и противопожарные решения. Пошаговый подбор без типичных ошибок.",
+    category: "revizionnye-lyuki",
+    isMain: true,
+  },
+  {
     title: "Ревизионные люки под плитку и под покраску: что выбрать",
     href: "/articles/revizionnye-lyuki-pod-plitku-i-pokrasku",
     description:
       "Ревизионный люк должен давать доступ к коммуникациям и при этом аккуратно вписываться в интерьер.",
     category: "revizionnye-lyuki",
-    isMain: true,
   },
   {
     title: "Как выбрать поставщика строительных материалов для объекта",
