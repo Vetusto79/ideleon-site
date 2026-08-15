@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import LeadCapture from "../../components/LeadCapture";
 import SiteFooter from "../../components/SiteFooter";
 import SiteHeader from "../../components/SiteHeader";
 import ProfileRequestBuilder from "./ProfileRequestBuilder";
@@ -111,6 +112,7 @@ export default function GklProfilePage() {
           <div className={styles.heroActions}>
             <a className="button primary" href="#quick-request">Указать позиции</a>
             <a className="button secondary" href="/calculators/profil-gkl">Рассчитать систему</a>
+            <a className="button secondary" href="#manager-request">Позвать менеджера</a>
           </div>
           <ul className={styles.heroFacts} aria-label="Условия работы">
             <li>Одна позиция или комплект</li>
@@ -140,21 +142,21 @@ export default function GklProfilePage() {
         <div className={styles.routeGrid}>
           <a className={styles.routeCard} href="#quick-request">
             <span className={styles.routeNumber}>01</span>
-            <strong>Знаю позиции</strong>
-            <p>Заполните одну или несколько строк: тип, размер, толщина, длина и количество.</p>
+            <strong>Знаю, что нужно</strong>
+            <p>Заполните одну или несколько строк либо приложите готовую спецификацию.</p>
             <span className={styles.routeLink}>Составить заявку →</span>
           </a>
           <a className={styles.routeCard} href="/calculators/profil-gkl">
             <span className={styles.routeNumber}>02</span>
-            <strong>Нужен расчёт</strong>
-            <p>Выберите потолок, облицовку или перегородку — калькулятор соберёт предварительную ведомость.</p>
+            <strong>Хочу посчитать сам</strong>
+            <p>Если количество неизвестно, выберите конструкцию — калькулятор соберёт предварительную ведомость.</p>
             <span className={styles.routeLink}>Открыть калькулятор →</span>
           </a>
-          <a className={styles.routeCard} href="#specification">
+          <a className={styles.routeCard} href="#manager-request">
             <span className={styles.routeNumber}>03</span>
-            <strong>Есть спецификация</strong>
-            <p>Приложите файл. Менеджер проверит позиции, задаст вопросы по делу и подготовит предложение.</p>
-            <span className={styles.routeLink}>Загрузить файл →</span>
+            <strong>Нужна помощь</strong>
+            <p>Опишите задачу своими словами. Менеджер уточнит недостающее и подготовит расчёт.</p>
+            <span className={styles.routeLink}>Позвать менеджера →</span>
           </a>
         </div>
       </section>
@@ -193,7 +195,7 @@ export default function GklProfilePage() {
           </p>
           <div className={styles.helpActions}>
             <a className="button primary" href="/calculators/profil-gkl">Перейти к калькулятору</a>
-            <a className="button secondary" href="#quick-request">Отдать задачу менеджеру</a>
+            <a className="button secondary" href="#manager-request">Отдать задачу менеджеру</a>
           </div>
         </div>
         <div className={styles.helpChecklist}>
@@ -208,6 +210,13 @@ export default function GklProfilePage() {
           <p>Нет всего списка? Присылайте то, что есть. Остальное уточним.</p>
         </div>
       </section>
+
+      <LeadCapture
+        id="manager-request"
+        eyebrow="Помощь менеджера"
+        title="Опишите задачу — остальное уточним сами"
+        text="Не знаете тип профиля, размер или количество? Напишите обычными словами, что строите и что нужно получить. Менеджер задаст вопросы по делу и подготовит расчёт."
+      />
 
       <section className={styles.knowledgeSection} aria-labelledby="knowledge-title">
         <div className={styles.sectionHeading}>
