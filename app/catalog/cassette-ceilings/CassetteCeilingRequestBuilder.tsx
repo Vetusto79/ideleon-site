@@ -9,6 +9,7 @@ type FormStatus = "idle" | "sending" | "success" | "error";
 type CeilingRow = {
   id: number;
   systemType: string;
+  hiddenMountScheme: string;
   systemClass: string;
   material: string;
   module: string;
@@ -49,6 +50,7 @@ function createRow(id: number): CeilingRow {
   return {
     id,
     systemType: "Открытая система",
+    hiddenMountScheme: "Обычная",
     systemClass: "Стандарт",
     material: "Оцинкованная сталь",
     module: "600×600",
@@ -160,9 +162,12 @@ export default function CassetteCeilingRequestBuilder() {
       const perimeter = row.perimeter.trim()
         ? `${row.perimeter.trim()} м`
         : `${row.area.trim()} м (предварительно принят численно равным площади)`;
+      const hiddenMount = row.systemType === "Закрытая система"
+        ? `; исполнение закрытой системы: ${row.hiddenMountScheme}`
+        : "";
 
       return (
-        `${index + 1}. ${row.systemType}; класс ${row.systemClass}; ` +
+        `${index + 1}. ${row.systemType}${hiddenMount}; класс ${row.systemClass}; ` +
         `кассета ${selectedModule}; материал: ${row.material}; цвет: ${selectedColor}; ` +
         `площадь ${row.area.trim()} м²; периметр ${perimeter}; ` +
         `опускание ${row.drop.trim() || "не указано"} мм`
@@ -255,6 +260,19 @@ export default function CassetteCeilingRequestBuilder() {
                   <option>Закрытая система</option>
                 </select>
               </label>
+
+              {row.systemType === "Закрытая система" && (
+                <label>
+                  <span>Исполнение закрытой системы</span>
+                  <select
+                    value={row.hiddenMountScheme}
+                    onChange={(event) => updateRow(row.id, "hiddenMountScheme", event.target.value)}
+                  >
+                    <option>Обычная</option>
+                    <option>Усиленная профилем для ГКЛ</option>
+                  </select>
+                </label>
+              )}
 
               <label>
                 <span>Класс</span>
