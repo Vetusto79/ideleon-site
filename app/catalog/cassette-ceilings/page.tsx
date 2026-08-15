@@ -31,7 +31,7 @@ const systems = [
     number: "02",
     title: "Закрытая система",
     profiles: "Кассеты CLIP-IN + скрытый стрингер",
-    text: "Кассеты защёлкиваются в стрингер, несущий каркас закрыт. Возможен простой или усиленный монтаж.",
+    text: "Кассеты защёлкиваются в стрингер, несущий каркас закрыт. Система бывает обычной или усиленной дополнительным каркасом из профиля для ГКЛ.",
   },
   {
     number: "03",
@@ -199,7 +199,7 @@ export default function CassetteCeilingsPage() {
           <a className={styles.routeCard} href="/calculators/kassetnyy-potolok-skrytaya-sistema">
             <span className={styles.routeNumber}>CLIP-IN</span>
             <strong>Закрытая система</strong>
-            <p>Кассеты, стрингер ВТ-600 и простой либо усиленный монтаж.</p>
+            <p>Кассеты, стрингер ВТ-600 и обычная либо усиленная профилем для ГКЛ система.</p>
             <span className={styles.routeLink}>Открыть калькулятор →</span>
           </a>
         </div>
