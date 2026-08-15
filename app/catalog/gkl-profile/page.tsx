@@ -1,72 +1,237 @@
-import SiteHeader from "../../components/SiteHeader";
-import SiteFooter from "../../components/SiteFooter";
+import type { Metadata } from "next";
 import Breadcrumbs from "../../components/Breadcrumbs";
-import LeadCapture from "../../components/LeadCapture";
-export const metadata = {
-  title: "Профиль для гипсокартона — Иделеон",
-  description: "Профиль для гипсокартона с расчётом и поставкой по России.",
+import SiteFooter from "../../components/SiteFooter";
+import SiteHeader from "../../components/SiteHeader";
+import ProfileRequestBuilder from "./ProfileRequestBuilder";
+import styles from "./gklProfile.module.css";
+
+export const metadata: Metadata = {
+  title: "Профиль для ГКЛ: подбор, расчёт и поставка | Иделеон",
+  description:
+    "Профиль для гипсокартона для потолков, облицовок и перегородок. Быстрая заявка по позициям, расчёт системы или загрузка готовой спецификации.",
+  alternates: { canonical: "/catalog/gkl-profile" },
 };
 
-export default function CatalogItemPage() {
+const systems = [
+  {
+    number: "01",
+    title: "Потолочный каркас",
+    profiles: "ПП 60×27 + ППН 28×27",
+    text: "Профили, подвесы, соединители и крепёж для одно- и двухуровневых потолков.",
+  },
+  {
+    number: "02",
+    title: "Перегородки",
+    profiles: "ПС + ПН: 50, 75 и 100 мм",
+    text: "Стоечные и направляющие профили с учётом высоты, шага стоек и дверных проёмов.",
+  },
+  {
+    number: "03",
+    title: "Облицовка стен",
+    profiles: "ПП/ППН или ПС/ПН",
+    text: "Подберём систему под способ крепления, высоту помещения и требуемый вынос от стены.",
+  },
+  {
+    number: "04",
+    title: "Комплектующие",
+    profiles: "Подвесы, соединители, тяги, крепёж",
+    text: "Проверим комплектность, чтобы каркас не остановился из-за одной забытой детали.",
+  },
+];
+
+const relatedArticles = [
+  {
+    label: "Выбор",
+    title: "Какой толщины выбрать профиль для ГКЛ",
+    href: "/articles/tolshchina-profilya-dlya-gipsokartona",
+  },
+  {
+    label: "Система",
+    title: "ПП 60×27 и ППН 28×27: потолочная пара без путаницы",
+    href: "/articles/pp-60x27-i-ppn-28x27-dlya-gipsokartona",
+  },
+  {
+    label: "Расчёт",
+    title: "Как рассчитать профиль для гипсокартона",
+    href: "/articles/kak-rasschitat-profil-dlya-gipsokartona",
+  },
+];
+
+const faq = [
+  {
+    question: "Можно заказать только один тип профиля на добор?",
+    answer:
+      "Да. В форме можно оставить одну строку — например, только ПП 60×27 или ПС 75×50. Комплектную систему заказывать необязательно.",
+  },
+  {
+    question: "Можно отправить готовую спецификацию вместо заполнения строк?",
+    answer:
+      "Да. Приложите PDF, Excel, Word, чертёж, изображение или архив до 25 МБ. Менеджер разберёт позиции и уточнит недостающие параметры.",
+  },
+  {
+    question: "Калькулятор даёт окончательную спецификацию?",
+    answer:
+      "Калькулятор делает предварительный расчёт. Финальную комплектность лучше проверить по проекту: на расход влияют высота, шаг стоек, проёмы, количество слоёв и узлы примыканий.",
+  },
+  {
+    question: "Почему на странице нет цены за штуку?",
+    answer:
+      "На объектную цену влияют производитель, толщина металла, длина, объём, регион и состав всей поставки. Поэтому сначала фиксируем задачу, затем готовим сопоставимое предложение без декоративной цены «от».",
+  },
+];
+
+export default function GklProfilePage() {
   return (
-    <main>
+    <main className={styles.page}>
       <SiteHeader />
 
-      <section className="productHero">
-        <div>
-        <Breadcrumbs items={[{ label: "Главная", href: "/" }, { label: "Каталог", href: "/catalog" }, { label: "Профиль для гипсокартона" }]} />
-          <p className="label">Каталог</p>
-          <h1>Профиль для гипсокартона</h1>
-          <p>Поставляем профиль для гипсокартона и комплектующие для перегородок, облицовок и потолочных систем.</p>
-          <div className="heroButtons">
-            <a className="button primary" href="/#request">Получить расчёт</a>
-            <a className="button secondary" href="/catalog">В каталог</a>
+      <section className={styles.hero}>
+        <div className={styles.heroCopy}>
+          <Breadcrumbs
+            items={[
+              { label: "Главная", href: "/" },
+              { label: "Каталог", href: "/catalog" },
+              { label: "Профиль для гипсокартона" },
+            ]}
+          />
+          <p className="label">Профиль для ГКЛ</p>
+          <h1>Профиль под задачу, а не «что было на складе»</h1>
+          <p className={styles.heroLead}>
+            Поставляем профиль и комплектующие для потолков, облицовок и перегородок.
+            Можно заказать одну позицию на добор, собрать список из нескольких профилей
+            или прислать проект целиком.
+          </p>
+          <div className={styles.heroActions}>
+            <a className="button primary" href="#quick-request">Указать позиции</a>
+            <a className="button secondary" href="/calculators/profil-gkl">Рассчитать систему</a>
+          </div>
+          <ul className={styles.heroFacts} aria-label="Условия работы">
+            <li>Одна позиция или комплект</li>
+            <li>Проверка совместимости</li>
+            <li>Поставка на объект</li>
+          </ul>
+        </div>
+
+        <div className={styles.heroVisual}>
+          <img
+            src="/images/catalog/gkl-profile.jpg"
+            alt="Оцинкованный профиль для каркаса из гипсокартона"
+          />
+          <div className={styles.heroVisualNote}>
+            <strong>Не нашли точное название?</strong>
+            <span>Опишите конструкцию — подберём пару профилей и комплектующие.</span>
           </div>
         </div>
+      </section>
 
-        <div className="productHeroImage">
-          <img src="/images/catalog/gkl-profile.jpg" alt="Профиль для гипсокартона" />
+      <section className={styles.routeSection} aria-labelledby="route-title">
+        <div className={styles.sectionHeading}>
+          <p className="label">С чего начать</p>
+          <h2 id="route-title">Выберите свой короткий путь</h2>
+          <p>Никакого каталожного квеста на триста карточек. Нужен результат — идём к нему.</p>
+        </div>
+        <div className={styles.routeGrid}>
+          <a className={styles.routeCard} href="#quick-request">
+            <span className={styles.routeNumber}>01</span>
+            <strong>Знаю позиции</strong>
+            <p>Заполните одну или несколько строк: тип, размер, толщина, длина и количество.</p>
+            <span className={styles.routeLink}>Составить заявку →</span>
+          </a>
+          <a className={styles.routeCard} href="/calculators/profil-gkl">
+            <span className={styles.routeNumber}>02</span>
+            <strong>Нужен расчёт</strong>
+            <p>Выберите потолок, облицовку или перегородку — калькулятор соберёт предварительную ведомость.</p>
+            <span className={styles.routeLink}>Открыть калькулятор →</span>
+          </a>
+          <a className={styles.routeCard} href="#specification">
+            <span className={styles.routeNumber}>03</span>
+            <strong>Есть спецификация</strong>
+            <p>Приложите файл. Менеджер проверит позиции, задаст вопросы по делу и подготовит предложение.</p>
+            <span className={styles.routeLink}>Загрузить файл →</span>
+          </a>
         </div>
       </section>
 
-      <section className="productInfoGrid">
-        <div className="productInfoCard">
-          <h2>Для кого подходит</h2>
+      <section className={styles.systemsSection} aria-labelledby="systems-title">
+        <div className={styles.sectionHeading}>
+          <p className="label">Системы</p>
+          <h2 id="systems-title">Не россыпь артикулов, а понятные группы</h2>
+          <p>
+            Профиль выбирают не по красоте фотографии. Сначала конструкция, затем
+            типоразмер, толщина металла, длина и комплектность.
+          </p>
+        </div>
+        <div className={styles.systemGrid}>
+          {systems.map((system) => (
+            <article className={styles.systemCard} key={system.number}>
+              <span>{system.number}</span>
+              <h3>{system.title}</h3>
+              <strong>{system.profiles}</strong>
+              <p>{system.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <ProfileRequestBuilder />
+
+      <section className={styles.helpSection}>
+        <div className={styles.helpCopy}>
+          <p className="label">Если исходных данных мало</p>
+          <h2>Считать самому или отдать менеджеру?</h2>
+          <p>
+            Хотите вспотеть сами — открывайте калькулятор. Не хотите — отправляйте
+            план, ведомость или даже нормальное описание задачи. Пусть потеет менеджер:
+            ему за это и выдали калькулятор, таблицы и телефон.
+          </p>
+          <div className={styles.helpActions}>
+            <a className="button primary" href="/calculators/profil-gkl">Перейти к калькулятору</a>
+            <a className="button secondary" href="#quick-request">Отдать задачу менеджеру</a>
+          </div>
+        </div>
+        <div className={styles.helpChecklist}>
+          <h3>Для точного подбора пригодятся</h3>
           <ul>
-              <li>подрядчиков по внутренней отделке</li>
-              <li>строительных компаний</li>
-              <li>застройщиков</li>
-              <li>магазинов строительных материалов</li>
+            <li>тип конструкции: потолок, облицовка или перегородка;</li>
+            <li>площадь, длина и высота;</li>
+            <li>типоразмер и желаемая толщина металла;</li>
+            <li>дверные проёмы и особые нагрузки;</li>
+            <li>адрес объекта и желаемый срок поставки.</li>
           </ul>
-        </div>
-
-        <div className="productInfoCard">
-          <h2>Что можно заказать</h2>
-          <ul>
-              <li>потолочный профиль</li>
-              <li>направляющий профиль</li>
-              <li>стоечный профиль</li>
-              <li>профиль для перегородок</li>
-              <li>подвесы, соединители и крепёж</li>
-          </ul>
+          <p>Нет всего списка? Присылайте то, что есть. Остальное уточним.</p>
         </div>
       </section>
 
-      <section className="productProcess">
-        <p className="label">Как работаем</p>
-        <h2>Берём на себя подбор, расчёт и поставку</h2>
-        <div className="steps">
-          <div>1. Получаем задачу</div>
-          <div>2. Подбираем материалы</div>
-          <div>3. Считаем комплектность</div>
-          <div>4. Организуем поставку</div>
+      <section className={styles.knowledgeSection} aria-labelledby="knowledge-title">
+        <div className={styles.sectionHeading}>
+          <p className="label">Без гадания по оцинковке</p>
+          <h2 id="knowledge-title">Коротко разобраться перед заказом</h2>
+        </div>
+        <div className={styles.articleGrid}>
+          {relatedArticles.map((article) => (
+            <a className={styles.articleCard} href={article.href} key={article.href}>
+              <span>{article.label}</span>
+              <strong>{article.title}</strong>
+              <i>Читать →</i>
+            </a>
+          ))}
         </div>
       </section>
 
-      <LeadCapture
-        title="Нужно рассчитать материалы?"
-        text="Пришлите задачу, проект или список позиций — Иделеон поможет подобрать материалы и подготовить предложение."
-      />
+      <section className={styles.faqSection} aria-labelledby="faq-title">
+        <div className={styles.sectionHeading}>
+          <p className="label">Вопросы</p>
+          <h2 id="faq-title">Что обычно уточняют</h2>
+        </div>
+        <div className={styles.faqList}>
+          {faq.map((item) => (
+            <details key={item.question}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
 
       <SiteFooter />
     </main>
