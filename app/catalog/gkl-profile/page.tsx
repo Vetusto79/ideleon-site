@@ -6,10 +6,17 @@ import ProfileRequestBuilder from "./ProfileRequestBuilder";
 import styles from "./gklProfile.module.css";
 
 export const metadata: Metadata = {
-  title: "Профиль для ГКЛ: подбор, расчёт и поставка | Иделеон",
+  title: "Профиль для ГКЛ: подбор, расчёт и поставка",
   description:
     "Профиль для гипсокартона для потолков, облицовок и перегородок. Быстрая заявка по позициям, расчёт системы или загрузка готовой спецификации.",
   alternates: { canonical: "/catalog/gkl-profile" },
+  openGraph: {
+    title: "Профиль для ГКЛ: подбор, расчёт и поставка",
+    description:
+      "Одна позиция на добор, комплектная система или готовая спецификация. Подбор и поставка профиля для гипсокартона на объект.",
+    url: "/catalog/gkl-profile",
+    type: "website",
+  },
 };
 
 const systems = [
