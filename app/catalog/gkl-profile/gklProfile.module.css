@@ -1,5 +1,10 @@
 .page { overflow: hidden; }
 
+.page :global(#manager-request) {
+  width: min(1760px, calc(100% - 112px));
+  scroll-margin-top: 120px;
+}
+
 .hero, .routeSection, .builderSection, .helpSection, .knowledgeSection, .faqSection {
   width: min(1760px, calc(100% - 112px));
   margin-inline: auto;
@@ -445,6 +450,10 @@
 .faqList p { margin: 15px 0 0; color: #64748b; line-height: 1.65; }
 
 @media (max-width: 1320px) {
+  .page :global(#manager-request) {
+    width: min(calc(100% - 44px), 1760px);
+  }
+
   .hero, .routeSection, .builderSection, .helpSection, .knowledgeSection, .faqSection {
     width: min(calc(100% - 44px), 1760px);
   }
@@ -464,6 +473,11 @@
 }
 
 @media (max-width: 640px) {
+  .page :global(#manager-request) {
+    width: calc(100% - 32px);
+    border-radius: 22px;
+  }
+
   .hero, .routeSection, .builderSection, .helpSection, .knowledgeSection, .faqSection {
     width: calc(100% - 32px);
   }
