@@ -531,12 +531,97 @@ const cassetteColumns: OfferColumn[] = [
 const cassetteModules = ["300×300", "300×600", "300×1200", "600×600", "600×1200"];
 const microlookModules = ["300×600", "300×1200", "600×600", "600×1200"];
 
+const cassettePerimeterField: CalculatorField = {
+  id: "perimeter",
+  label: "Периметр, м — необязательно",
+  type: "number",
+  defaultValue: "",
+  step: "0.01",
+};
+
+const cassetteMaterialField: CalculatorField = {
+  id: "cassetteMaterial",
+  label: "Материал кассеты",
+  type: "buttons",
+  defaultValue: "steel",
+  options: [
+    { label: "Оцинкованная сталь", value: "steel" },
+    { label: "Алюминий", value: "aluminum" },
+  ],
+};
+
+const cassetteColorField: CalculatorField = {
+  id: "cassetteColor",
+  label: "Цвет кассеты",
+  type: "select",
+  defaultValue: "white9003",
+  options: [
+    { label: "Белый RAL 9003", value: "white9003" },
+    { label: "Металлик RAL 9007", value: "metallic9007" },
+    { label: "Металлик матовый RAL 9006", value: "metallicMatte9006" },
+    { label: "Другой RAL / декор", value: "custom" },
+  ],
+};
+
+const cassetteCustomColorField: CalculatorField = {
+  id: "cassetteCustomColor",
+  label: "Другой цвет / декор",
+  type: "text",
+  defaultValue: "",
+  showWhen: { fieldId: "cassetteColor", values: ["custom"] },
+};
+
+const cassetteDropField: CalculatorField = {
+  id: "ceilingDrop",
+  label: "Опускание потолка, мм",
+  type: "number",
+  defaultValue: "300",
+  step: "1",
+};
+
 const systemClassLabels: Record<string, string> = {
   economy: "Эконом",
   standard: "Стандарт",
   premium: "Премиум",
   designer: "Дизайнерский",
 };
+
+const cassetteMaterialLabels: Record<string, string> = {
+  steel: "оцинкованная сталь",
+  aluminum: "алюминий",
+};
+
+const cassetteColorLabels: Record<string, string> = {
+  white9003: "белый RAL 9003",
+  metallic9007: "металлик RAL 9007",
+  metallicMatte9006: "металлик матовый RAL 9006",
+};
+
+function cassettePerimeter(values: Record<string, string>) {
+  return toNumber(values.perimeter) || toNumber(values.area);
+}
+
+function cassettePerimeterText(values: Record<string, string>) {
+  return String(values.perimeter || "").trim()
+    ? `${values.perimeter} м`
+    : `${values.area} м (предварительно принят численно равным площади)`;
+}
+
+function cassetteColorText(values: Record<string, string>) {
+  if (values.cassetteColor === "custom") {
+    return String(values.cassetteCustomColor || "").trim() || "другой цвет — уточнить";
+  }
+  return cassetteColorLabels[values.cassetteColor || "white9003"] || cassetteColorLabels.white9003;
+}
+
+function cassetteDropText(values: Record<string, string>) {
+  const drop = toNumber(values.ceilingDrop);
+  return drop > 0 ? `${fmt(drop)} мм` : "по проекту";
+}
+
+function cassetteSuspensionSize(values: Record<string, string>) {
+  return `под опускание ${cassetteDropText(values)}`;
+}
 
 function cassetteAreaCoefficient(module: string) {
   if (module === "300×300") return 11.11;
@@ -650,7 +735,7 @@ function openCassetteCalculate(values: Record<string, string>): CalculatorResult
   if (!isOpenCassetteCombinationValid(values)) return [];
 
   const area = toNumber(values.area);
-  const perimeter = toNumber(values.perimeter);
+  const perimeter = cassettePerimeter(values);
   const module = values.module || "600×600";
   const edge = values.edge || "board";
   const scheme = values.mountScheme || "standard";
@@ -760,7 +845,7 @@ function openCassetteCalculate(values: Record<string, string>): CalculatorResult
   const hangerCoeff = module === "300×300" ? 1.39 : 0.83;
   push({
     name: "Подвес",
-    size: "по проекту",
+    size: cassetteSuspensionSize(values),
     catalogName: "АП",
     unit: "комп.",
     coefficient: `площадь × ${String(hangerCoeff).replace(".", ",")}`,
@@ -783,7 +868,8 @@ function openCassetteParams(values: Record<string, string>) {
   const scheme = values.mountScheme === "reinforced" ? "усиленная" : "стандартная";
   const classLabel = systemClassLabels[values.systemClass || "standard"];
 
-  return `Открытая подвесная система; площадь: ${values.area} м²; периметр: ${values.perimeter} м; класс системы: ${classLabel}; кассета: ${values.module}; кромка: ${edgeLabels[values.edge]}; схема: ${scheme}; запас: ${values.reserve}%`;
+  const material = cassetteMaterialLabels[values.cassetteMaterial || "steel"] || cassetteMaterialLabels.steel;
+  return `Открытая подвесная система; площадь: ${values.area} м²; периметр: ${cassettePerimeterText(values)}; класс системы: ${classLabel}; кассета: ${values.module}; материал: ${material}; цвет: ${cassetteColorText(values)}; опускание: ${cassetteDropText(values)}; кромка: ${edgeLabels[values.edge]}; схема: ${scheme}; запас: ${values.reserve}%`;
 }
 
 function hiddenCassetteCombinationValid(values: Record<string, string>) {
@@ -809,7 +895,7 @@ function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResu
   if (!hiddenCassetteCombinationValid(values)) return [];
 
   const area = toNumber(values.area);
-  const perimeter = toNumber(values.perimeter);
+  const perimeter = cassettePerimeter(values);
   const module = values.module || "600×600";
   const scheme = values.hiddenMountScheme || "simple";
   const reserveValue = reserve(values);
@@ -849,12 +935,12 @@ function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResu
     push({ name: "Потолочный профиль направляющий", size: "3 м", catalogName: "ППН-2 (30×20)", lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
     push({ name: "Соединитель двухуровневый", size: "—", catalogName: "Соединитель двухуровневый для ПП-1-2", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 1), priceUnit: "шт.", priceMode: "quantity" });
     push({ name: "Уголок", size: "3 м", catalogName: "PL", lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
-    push({ name: "Подвес анкерный", size: "по проекту", catalogName: "Подвес с зажимом для ПП-1-2", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
-    push({ name: "Тяга подвеса", size: "по проекту", catalogName: "Ø4", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
+    push({ name: "Подвес анкерный", size: cassetteSuspensionSize(values), catalogName: "Подвес с зажимом для ПП-1-2", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
+    push({ name: "Тяга подвеса", size: cassetteSuspensionSize(values), catalogName: "Ø4", unit: "шт.", coefficient: "площадь × 1,67", quantity: orderQuantity(area * 1.67, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
   } else {
     push({ name: "Уголок", size: "3 м", catalogName: "PL", lengthM: 3, unit: "м.п.", coefficient: "периметр", quantity: orderQuantity(perimeter, reserveValue, 3), priceUnit: "м.п.", priceMode: "quantity" });
-    push({ name: "Верхняя часть нониусного подвеса", size: "по проекту", catalogName: "Верхняя часть нониусного подвеса", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
-    push({ name: "Нижняя часть нониусного подвеса", size: "по проекту", catalogName: "Нижняя часть нониусного подвеса для ВТ-600", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
+    push({ name: "Верхняя часть нониусного подвеса", size: cassetteSuspensionSize(values), catalogName: "Верхняя часть нониусного подвеса", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
+    push({ name: "Нижняя часть нониусного подвеса", size: cassetteSuspensionSize(values), catalogName: "Нижняя часть нониусного подвеса для ВТ-600", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
     push({ name: "Шплинт нониусный", size: "по проекту", catalogName: "Шплинт нониусный", unit: "шт.", coefficient: `площадь × ${String(coeff).replace(".", ",")}`, quantity: orderQuantity(area * coeff, reserveValue, 10), priceUnit: "шт.", priceMode: "quantity" });
   }
 
@@ -863,7 +949,9 @@ function hiddenCassetteCalculate(values: Record<string, string>): CalculatorResu
 
 function hiddenCassetteParams(values: Record<string, string>) {
   const scheme = values.hiddenMountScheme === "reinforced" ? "усиленный монтаж" : "простой монтаж";
-  return `Закрытая подвесная система; ${scheme}; площадь: ${values.area} м²; периметр: ${values.perimeter} м; кассета: ${values.module}; кромка: ${values.hiddenEdge}°; стрингер ВТ-600 длиной 4 м; запас: ${values.reserve}%`;
+  const classLabel = systemClassLabels[values.systemClass || "standard"] || systemClassLabels.standard;
+  const material = cassetteMaterialLabels[values.cassetteMaterial || "steel"] || cassetteMaterialLabels.steel;
+  return `Закрытая подвесная система; ${scheme}; площадь: ${values.area} м²; периметр: ${cassettePerimeterText(values)}; класс системы: ${classLabel}; кассета: ${values.module}; материал: ${material}; цвет: ${cassetteColorText(values)}; опускание: ${cassetteDropText(values)}; кромка: ${values.hiddenEdge}°; стрингер ВТ-600 длиной 4 м; запас: ${values.reserve}%`;
 }
 
 
@@ -2648,16 +2736,16 @@ export const calculators: CalculatorConfig[] = [
     group: "cassette",
     title: "Калькулятор кассетного потолка на открытой системе",
     shortTitle: "Открытая подвесная система",
-    description: "Расчёт кассет, Т-профилей, уголка и подвесов с выбором класса системы и типа кромки.",
+    description: "Расчёт кассет, Т-профилей, уголка и подвесов с выбором класса, материала, цвета и опускания.",
     seoTitle: "Калькулятор открытого кассетного потолка — BOARD, LINE, TEGULAR и MICROLOOK",
-    seoDescription: "Расчёт открытого кассетного потолка по площади, размеру кассет, классу Т-системы, кромке BOARD, LINE, TEGULAR или MICROLOOK 15 и схеме монтажа.",
+    seoDescription: "Расчёт открытого кассетного потолка по площади, размеру кассет, классу Т-системы, материалу, цвету, опусканию, кромке и схеме монтажа.",
     h1: "Калькулятор кассетного потолка на открытой системе",
-    intro: "Рассчитайте кассеты и комплектующие для открытой подвесной системы. Класс Эконом, Стандарт, Премиум или Дизайнерский помогает выбрать уровень решения, но не меняет коэффициенты расхода. Для STRUNA калькулятор автоматически использует специальные кассеты MICROLOOK 15.",
+    intro: "Рассчитайте кассеты и комплектующие для открытой подвесной системы. Укажите класс, материал, цвет, размер кассет и опускание потолка. Если периметр неизвестен, оставьте его пустым — предварительно примем численно равным площади. Для STRUNA калькулятор автоматически использует кассеты MICROLOOK 15.",
     offerTitle: "Коммерческое предложение / открытый кассетный потолок",
     fileName: "KP_kassetnyy_potolok_otkrytaya_sistema_ideleon.xlsx",
     fields: [
       areaField,
-      perimeterField,
+      cassettePerimeterField,
       {
         id: "systemClass",
         label: "Класс подвесной системы",
@@ -2671,6 +2759,10 @@ export const calculators: CalculatorConfig[] = [
         ],
       },
       { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
+      cassetteMaterialField,
+      cassetteColorField,
+      cassetteCustomColorField,
+      cassetteDropField,
       {
         id: "edge",
         label: "Тип кромки",
@@ -2774,7 +2866,7 @@ export const calculators: CalculatorConfig[] = [
     relatedLinks: [
       { label: "Калькулятор закрытой кассетной системы", href: "/calculators/kassetnyy-potolok-skrytaya-sistema" },
       { label: "Все калькуляторы", href: "/calculators" },
-      { label: "Каталог кассетных потолков", href: "/catalog" },
+      { label: "Каталог кассетных потолков", href: "/catalog/cassette-ceilings" },
     ],
     seoSections: [
       { title: "Что считает калькулятор открытой системы", text: "Калькулятор определяет количество кассет, несущих и поперечных направляющих, пристенного уголка и подвесов. Формулы и коэффициенты перенесены из Excel-калькулятора IDELEON. Количество кассет зависит от площади и размера панели; тип кромки сам по себе количество кассет не меняет." },
@@ -2969,16 +3061,27 @@ export const calculators: CalculatorConfig[] = [
     group: "cassette",
     title: "Калькулятор кассетного потолка на закрытой системе",
     shortTitle: "Закрытая подвесная система",
-    description: "Расчёт закрытой системы без видимой Т-сетки: простой или усиленный монтаж.",
+    description: "Расчёт закрытой системы без видимой Т-сетки с выбором класса, материала, цвета и опускания.",
     seoTitle: "Калькулятор закрытого кассетного потолка — простой и усиленный монтаж",
-    seoDescription: "Расчёт закрытого кассетного потолка: кассеты АС, стрингер ВТ-600 длиной 4 м, простой или усиленный монтаж, подвесы, профили и Excel-КП.",
+    seoDescription: "Расчёт закрытого кассетного потолка: класс системы, материал, цвет, опускание, кассеты АС, стрингер ВТ-600, подвесы, профили и Excel-КП.",
     h1: "Калькулятор кассетного потолка на закрытой системе",
-    intro: "В закрытой системе несущая конструкция не образует видимую Т-образную сетку между кассетами. Выберите простой или усиленный монтаж, размер панели и кромку 45° или 90° — состав Excel-КП изменится автоматически.",
+    intro: "В закрытой системе несущая конструкция не образует видимую Т-образную сетку между кассетами. Укажите класс, материал, цвет, размер панели и опускание. Если периметр неизвестен, оставьте его пустым — предварительно примем численно равным площади.",
     offerTitle: "Коммерческое предложение / закрытый кассетный потолок",
     fileName: "KP_kassetnyy_potolok_skrytaya_sistema_ideleon.xlsx",
     fields: [
       areaField,
-      perimeterField,
+      cassettePerimeterField,
+      {
+        id: "systemClass",
+        label: "Класс системы",
+        type: "buttons",
+        defaultValue: "standard",
+        options: [
+          { label: "Эконом", value: "economy" },
+          { label: "Стандарт", value: "standard" },
+          { label: "Премиум", value: "premium" },
+        ],
+      },
       {
         id: "hiddenMountScheme",
         label: "Схема монтажа",
@@ -2991,6 +3094,10 @@ export const calculators: CalculatorConfig[] = [
         ],
       },
       { id: "module", label: "Размер кассеты", type: "buttons", defaultValue: "600×600", options: cassetteModules.map((item) => ({ label: item, value: item })) },
+      cassetteMaterialField,
+      cassetteColorField,
+      cassetteCustomColorField,
+      cassetteDropField,
       {
         id: "hiddenEdge",
         label: "Тип кромки",
@@ -3062,7 +3169,7 @@ export const calculators: CalculatorConfig[] = [
     relatedLinks: [
       { label: "Калькулятор открытой кассетной системы", href: "/calculators/kassetnyy-potolok-otkrytaya-sistema" },
       { label: "Все калькуляторы", href: "/calculators" },
-      { label: "Каталог кассетных потолков", href: "/catalog" },
+      { label: "Каталог кассетных потолков", href: "/catalog/cassette-ceilings" },
     ],
     seoSections: [
       { title: "Что считает калькулятор закрытой системы", text: "Для обеих схем рассчитываются кассеты, стрингеры ВТ-600 длиной 4 м и пристенный уголок. В простом монтаже дополнительно считаются верхняя и нижняя части нониусного подвеса и шплинт. В усиленном монтаже добавляются профили ПП-1-2 и ППН-2, двухуровневые соединители, анкерные подвесы и тяги." },
