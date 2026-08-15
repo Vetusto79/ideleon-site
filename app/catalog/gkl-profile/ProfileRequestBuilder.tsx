@@ -10,6 +10,7 @@ type ProfileRow = {
   id: number;
   type: string;
   size: string;
+  customSize: string;
   thickness: string;
   length: string;
   quantity: string;
@@ -32,16 +33,24 @@ const profileTypes = [
   "Другой профиль",
 ];
 
-const commonSizes = [
-  "60×27", "28×27", "50×50", "75×50", "100×50",
-  "50×40", "75×40", "100×40",
-];
+const CUSTOM_SIZE = "Другой размер";
+
+const profileSizes: Record<string, string[]> = {
+  "ПП — потолочный": ["60×27", CUSTOM_SIZE],
+  "ППН — направляющий потолочный": ["28×27", CUSTOM_SIZE],
+  "ПС — стоечный": ["50×50", "75×50", "100×50", CUSTOM_SIZE],
+  "ПН — направляющий": ["50×40", "75×40", "100×40", CUSTOM_SIZE],
+  "ПУ — угловой": ["20×20", "25×25", "31×31", CUSTOM_SIZE],
+  "Маячковый": ["6", "10", CUSTOM_SIZE],
+  "Другой профиль": [CUSTOM_SIZE],
+};
 
 function createRow(id: number): ProfileRow {
   return {
     id,
     type: "ПП — потолочный",
     size: "60×27",
+    customSize: "",
     thickness: "0,6",
     length: "3000",
     quantity: "",
@@ -74,6 +83,17 @@ export default function ProfileRequestBuilder() {
   function updateRow(id: number, field: keyof Omit<ProfileRow, "id">, value: string) {
     setRows((current) =>
       current.map((row) => (row.id === id ? { ...row, [field]: value } : row))
+    );
+  }
+
+  function updateProfileType(id: number, type: string) {
+    const firstSize = profileSizes[type]?.[0] || CUSTOM_SIZE;
+    setRows((current) =>
+      current.map((row) =>
+        row.id === id
+          ? { ...row, type, size: firstSize, customSize: "" }
+          : row
+      )
     );
   }
 
@@ -139,12 +159,16 @@ export default function ProfileRequestBuilder() {
     }
 
     const formData = new FormData(form);
-    const positionLines = filledRows.map(
-      (row, index) =>
-        `${index + 1}. ${row.type}; размер ${row.size || "не указан"}; ` +
+    const positionLines = filledRows.map((row, index) => {
+      const selectedSize =
+        row.size === CUSTOM_SIZE ? row.customSize.trim() : row.size;
+
+      return (
+        `${index + 1}. ${row.type}; размер ${selectedSize || "не указан"}; ` +
         `толщина ${row.thickness || "не указана"} мм; длина ${row.length || "не указана"} мм; ` +
         `количество ${row.quantity || "не указано"} ${row.unit}`
-    );
+      );
+    });
     const city = String(formData.get("city") || "").trim();
     const comment = String(formData.get("comment") || "").trim();
 
@@ -226,18 +250,28 @@ export default function ProfileRequestBuilder() {
               <legend>Позиция {index + 1}</legend>
               <label className={styles.typeField}>
                 <span>Тип профиля</span>
-                <select value={row.type} onChange={(event) => updateRow(row.id, "type", event.target.value)}>
+                <select value={row.type} onChange={(event) => updateProfileType(row.id, event.target.value)}>
                   {profileTypes.map((type) => <option value={type} key={type}>{type}</option>)}
                 </select>
               </label>
               <label>
                 <span>Размер, мм</span>
-                <input
-                  list="gkl-profile-sizes"
+                <select
                   value={row.size}
                   onChange={(event) => updateRow(row.id, "size", event.target.value)}
-                  placeholder="например, 60×27"
-                />
+                >
+                  {(profileSizes[row.type] || [CUSTOM_SIZE]).map((size) => (
+                    <option value={size} key={size}>{size}</option>
+                  ))}
+                </select>
+                {row.size === CUSTOM_SIZE ? (
+                  <input
+                    value={row.customSize}
+                    onChange={(event) => updateRow(row.id, "customSize", event.target.value)}
+                    placeholder="Укажите размер"
+                    aria-label="Другой размер профиля"
+                  />
+                ) : null}
               </label>
               <label>
                 <span>Толщина, мм</span>
@@ -287,10 +321,6 @@ export default function ProfileRequestBuilder() {
             </fieldset>
           ))}
         </div>
-
-        <datalist id="gkl-profile-sizes">
-          {commonSizes.map((size) => <option value={size} key={size} />)}
-        </datalist>
 
         <div className={styles.contactGrid}>
           <label><span>Ваше имя</span><input name="name" autoComplete="name" required /></label>
