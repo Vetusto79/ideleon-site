@@ -269,6 +269,7 @@
 }
 
 .positionRow label, .contactGrid label { min-width: 0; display: grid; gap: 7px; }
+.typeField { min-width: 0; }
 
 .positionRow label > span, .contactGrid label > span {
   color: #475569;
