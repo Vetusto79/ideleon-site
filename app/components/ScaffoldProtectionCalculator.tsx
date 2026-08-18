@@ -7,6 +7,8 @@ type ShapeKey = "square" | "rectangle" | "trapezoid" | "l" | "p" | "t" | "z" | "
 type SystemType = "wedge" | "clamp";
 type Row = { name: string; specification: string; formula: string; quantity: number; unit: string };
 
+const CALCULATION_FILE_NAME = "IDELEON_zashchita_ot_BPLA.csv";
+
 const SHAPES: Record<ShapeKey, { label: string; points: Point[] }> = {
   square: { label: "Квадрат", points: [{ x: 0, y: 0 }, { x: 20, y: 0 }, { x: 20, y: 20 }, { x: 0, y: 20 }] },
   rectangle: { label: "Прямоугольник", points: [{ x: 0, y: 0 }, { x: 30, y: 0 }, { x: 30, y: 20 }, { x: 0, y: 20 }] },
@@ -164,14 +166,17 @@ export default function ScaffoldProtectionCalculator() {
     };
   }, [buildingPoints, actualSegments, result.inner, result.outer]);
 
-  function downloadCalculation() {
+  function calculationCsv() {
     const table = [
       ["Форма", SHAPES[shape].label], ["Периметр", `${format(result.perimeter)} м`], ["Площадь", `${format(result.area)} м²`],
       ...actualSegments.map((segment, i) => [`Отрезок ${i + 1}`, `${format(segment.length)} м`]), [],
       ["Элемент", "Спецификация", "Основание", "Количество", "Ед."],
       ...result.rows.map((row) => [row.name, row.specification, row.formula, row.quantity, row.unit]),
     ];
-    downloadText(table.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(";")).join("\r\n"), "IDELEON_zashchita_ot_BPLA.csv");
+    return table.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(";")).join("\r\n");
+  }
+  function downloadCalculation() {
+    downloadText(calculationCsv(), CALCULATION_FILE_NAME);
   }
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -179,10 +184,12 @@ export default function ScaffoldProtectionCalculator() {
     setStatus("sending");
     try {
       const formData = new FormData();
-      formData.append("requestType", "calculation"); formData.append("name", name); formData.append("phone", phone); formData.append("email", email);
+      const calculationFile = new File(["\ufeff", calculationCsv()], CALCULATION_FILE_NAME, { type: "text/csv;charset=utf-8" });
+      formData.append("requestType", "calculation"); formData.append("name", name.trim()); formData.append("phone", phone.trim()); formData.append("email", email.trim());
       formData.append("sourcePage", "/calculators/stroitelnye-lesa-zashchitnyy-karkas");
-      formData.append("message", [`Защита здания от БПЛА`, `Форма: ${SHAPES[shape].label}`, ...actualSegments.map((s, i) => `Отрезок ${i + 1}: ${format(s.length)} м`), ...result.rows.map((r) => `${r.name}: ${r.quantity} ${r.unit}`)].join("\n"));
-      formData.append("consent", "on");
+      formData.append("task", [`Защита здания от БПЛА`, `Форма: ${SHAPES[shape].label}`, ...actualSegments.map((s, i) => `Отрезок ${i + 1}: ${format(s.length)} м`), ...result.rows.map((r) => `${r.name}: ${r.quantity} ${r.unit}`), "Файл расчёта приложен."].join("\n"));
+      formData.append("attachment", calculationFile);
+      formData.append("consent", "yes");
       const response = await fetch("/api/request", { method: "POST", body: formData });
       if (!response.ok) throw new Error();
       setStatus("success");

@@ -61,6 +61,7 @@ const ALLOWED_FILE_EXTENSIONS = [
   ".docx",
   ".xls",
   ".xlsx",
+  ".csv",
   ".zip",
   ".rar",
   ".jpg",
@@ -92,7 +93,7 @@ function validateFile(file: File | null) {
     return `Файл слишком большой. Максимальный размер — ${formatFileSize(MAX_FILE_SIZE)}.`;
   }
   if (!ALLOWED_FILE_EXTENSIONS.includes(getFileExtension(file.name))) {
-    return "Можно приложить PDF, DWG, DXF, Word, Excel, ZIP, RAR, JPG или PNG.";
+    return "Можно приложить PDF, DWG, DXF, Word, Excel, CSV, ZIP, RAR, JPG или PNG.";
   }
   return "";
 }
@@ -527,7 +528,7 @@ export default function MedicalLanding() {
                     accept={ALLOWED_FILE_EXTENSIONS.join(",")}
                     onChange={handleFileChange}
                   />
-                  <span className={styles.fileHelp}>PDF, DWG, DXF, Word, Excel, ZIP, RAR или изображение до 25 МБ.</span>
+                  <span className={styles.fileHelp}>PDF, DWG, DXF, Word, Excel, CSV, ZIP, RAR или изображение до 25 МБ.</span>
                   {fileName && <span className={styles.fileName}>{fileName}</span>}
                 </div>
               )}
