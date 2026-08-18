@@ -1156,7 +1156,7 @@ button.button:disabled {
   counter-reset: knowledge-step;
 }
 
-.knowledgeSteps li {
+.articleContent .knowledgeSteps li {
   position: relative;
   min-height: 56px;
   padding: 16px 18px 16px 66px;
@@ -1166,7 +1166,7 @@ button.button:disabled {
   counter-increment: knowledge-step;
 }
 
-.knowledgeSteps li::before {
+.articleContent .knowledgeSteps li::before {
   position: absolute;
   top: 11px;
   left: 14px;
