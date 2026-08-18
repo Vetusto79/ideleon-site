@@ -10,7 +10,7 @@ type RequestRow = { id: number; values: Record<string, string> };
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024;
 const ALLOWED_FILE_EXTENSIONS = [
-  ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".dwg", ".dxf",
+  ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".csv", ".dwg", ".dxf",
   ".jpg", ".jpeg", ".png", ".zip", ".rar",
 ];
 
@@ -67,7 +67,7 @@ export default function CatalogRequestBuilder({ config }: { config: CatalogProdu
       return `Файл слишком большой. Максимальный размер — ${formatFileSize(MAX_FILE_SIZE)}.`;
     }
     if (!ALLOWED_FILE_EXTENSIONS.includes(getFileExtension(file.name))) {
-      return "Можно приложить PDF, DWG, DXF, DOC, XLS, JPG, PNG, ZIP или RAR.";
+      return "Можно приложить PDF, DWG, DXF, DOC, XLS, XLSX, CSV, JPG, PNG, ZIP или RAR.";
     }
     return "";
   }
@@ -229,12 +229,12 @@ export default function CatalogRequestBuilder({ config }: { config: CatalogProdu
 
         <label className={styles.fileField} id="specification">
           <strong>Есть проект, ведомость или спецификация? Прикрепите</strong>
-          <span>PDF, DWG, DXF, Word, Excel, JPG, PNG, ZIP или RAR до 25 МБ.</span>
+          <span>PDF, DWG, DXF, Word, Excel, CSV, JPG, PNG, ZIP или RAR до 25 МБ.</span>
           <input
             ref={fileInputRef}
             name="attachment"
             type="file"
-            accept=".pdf,.doc,.docx,.xls,.xlsx,.dwg,.dxf,.jpg,.jpeg,.png,.zip,.rar"
+            accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.dwg,.dxf,.jpg,.jpeg,.png,.zip,.rar"
             onChange={handleFileChange}
           />
           {fileName ? <em>{fileName}</em> : null}

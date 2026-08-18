@@ -11,6 +11,7 @@ const ALLOWED_ATTACHMENT_EXTENSIONS = [
   ".docx",
   ".xls",
   ".xlsx",
+  ".csv",
   ".dwg",
   ".dxf",
   ".jpg",
@@ -48,6 +49,28 @@ function formatFileSize(bytes: number) {
 
 function isAllowedAttachment(file: File) {
   return ALLOWED_ATTACHMENT_EXTENSIONS.includes(getFileExtension(file.name));
+}
+
+function safeAttachmentName(fileName: string) {
+  return fileName.replace(/[\r\n\0]/g, "_").trim() || "attachment";
+}
+
+function attachmentContentType(file: File) {
+  const extension = getFileExtension(file.name);
+
+  if (extension === ".xlsx") {
+    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  }
+
+  if (extension === ".xls") {
+    return "application/vnd.ms-excel";
+  }
+
+  if (extension === ".csv") {
+    return "text/csv; charset=utf-8";
+  }
+
+  return file.type || "application/octet-stream";
 }
 
 export async function POST(request: Request) {
@@ -178,7 +201,7 @@ export async function POST(request: Request) {
         return NextResponse.json(
           {
             ok: false,
-            message: "Можно приложить PDF, DWG, DXF, DOC, DOCX, XLS, XLSX, JPG, PNG, ZIP или RAR.",
+            message: "Можно приложить PDF, DWG, DXF, DOC, DOCX, XLS, XLSX, CSV, JPG, PNG, ZIP или RAR.",
           },
           { status: 400 }
         );
@@ -219,6 +242,13 @@ export async function POST(request: Request) {
 
     const referer = sourcePage || request.headers.get("referer") || "Не определена";
     const createdAt = new Date().toISOString();
+    const attachmentData = attachment
+      ? {
+          filename: safeAttachmentName(attachment.name),
+          content: Buffer.from(await attachment.arrayBuffer()),
+          contentType: attachmentContentType(attachment),
+        }
+      : null;
 
     const subject = isCallback
       ? "Перезвонить клиенту — IDELEON"
@@ -229,9 +259,12 @@ export async function POST(request: Request) {
           : "Новая заявка с сайта IDELEON";
 
     const consentLine = `Согласие на обработку персональных данных: получено через чекбокс формы, ${createdAt}`;
-    const attachmentLine = attachment
-      ? `Файл: ${attachment.name} (${formatFileSize(attachment.size)})`
+    const attachmentLine = attachmentData && attachment
+      ? `Файл: ${attachmentData.filename} (${formatFileSize(attachment.size)})`
       : "Файл: не приложен";
+    const attachmentHtml = attachmentData && attachment
+      ? `${escapeHtml(attachmentData.filename)} (${escapeHtml(formatFileSize(attachment.size))})<br><span style="color:#64748b;font-size:13px">Файл прикреплён к письму отдельным вложением.</span>`
+      : "не приложен";
 
     const attributionLabels: Record<keyof typeof attribution, string> = {
       utm_source: "utm_source",
@@ -318,9 +351,7 @@ export async function POST(request: Request) {
             <p><b>Комментарий:</b></p>
             <p style="white-space:pre-wrap">${escapeHtml(task || "Не указан")}</p>
             <p><b>Файл:</b> ${
-              attachment
-                ? `${escapeHtml(attachment.name)} (${escapeHtml(formatFileSize(attachment.size))})`
-                : "не приложен"
+              attachmentHtml
             }</p>
             <hr />
             <p><b>Согласие:</b> получено через чекбокс формы, ${escapeHtml(createdAt)}</p>
@@ -339,9 +370,7 @@ export async function POST(request: Request) {
           <p><b>Сообщение:</b></p>
           <p style="white-space:pre-wrap">${escapeHtml(task)}</p>
           <p><b>Файл:</b> ${
-            attachment
-              ? `${escapeHtml(attachment.name)} (${escapeHtml(formatFileSize(attachment.size))})`
-              : "не приложен"
+            attachmentHtml
           }</p>
           <hr />
           <p><b>Согласие:</b> получено через чекбокс формы, ${escapeHtml(createdAt)}</p>
@@ -349,24 +378,30 @@ export async function POST(request: Request) {
         </div>
       `;
 
-    const attachments = [];
+    const attachments = !isCallback && attachmentData
+      ? [
+          {
+            filename: attachmentData.filename,
+            content: attachmentData.content,
+            contentType: attachmentData.contentType,
+            contentDisposition: "attachment" as const,
+            contentTransferEncoding: "base64" as const,
+            headers: {
+              "X-IDELEON-Attachment": "yes",
+            },
+          },
+        ]
+      : [];
 
-    if (!isCallback && attachment) {
-      const arrayBuffer = await attachment.arrayBuffer();
-
-      attachments.push({
-        filename: attachment.name,
-        content: Buffer.from(arrayBuffer),
-        contentType: attachment.type || undefined,
-      });
-    }
-
-    await transporter.sendMail({
+    const delivery = await transporter.sendMail({
       from: `"IDELEON сайт" <${mailFrom}>`,
       to: mailTo,
       cc: mailCc || undefined,
       subject,
-      text,
+      // Для писем с файлом используем одно HTML-тело и простую структуру
+      // multipart/mixed. Это надёжнее отображается в VK WorkSpace/Mail.ru,
+      // чем вложение рядом с вложенным multipart/alternative (text + html).
+      text: attachments.length ? undefined : text,
       html,
       attachments,
       replyTo: isCallback
@@ -377,6 +412,14 @@ export async function POST(request: Request) {
             : smtpUser
           : email,
     });
+
+    if (!delivery.accepted.length) {
+      throw new Error(`SMTP did not accept any recipients: ${delivery.response}`);
+    }
+
+    if (delivery.rejected.length) {
+      console.error("Request mail rejected recipients:", delivery.rejected);
+    }
 
     return NextResponse.json({ ok: true });
   } catch (error) {

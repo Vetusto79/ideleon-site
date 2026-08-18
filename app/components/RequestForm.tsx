@@ -12,6 +12,7 @@ const ALLOWED_FILE_EXTENSIONS = [
   ".docx",
   ".xls",
   ".xlsx",
+  ".csv",
   ".jpg",
   ".jpeg",
   ".png",
@@ -49,7 +50,7 @@ export default function RequestForm() {
 
     const extension = getFileExtension(file.name);
     if (!ALLOWED_FILE_EXTENSIONS.includes(extension)) {
-      return "Можно приложить PDF, DOC, DOCX, XLS, XLSX, JPG, PNG или ZIP.";
+      return "Можно приложить PDF, DOC, DOCX, XLS, XLSX, CSV, JPG, PNG или ZIP.";
     }
 
     return "";
@@ -155,13 +156,13 @@ export default function RequestForm() {
         <span className="fileFieldTitle">Прикрепить файл</span>
         <span className="fileFieldText">
           Можно приложить спецификацию, проект, смету или список материалов.
-          PDF, DOC, XLS, JPG, PNG или ZIP до 25 МБ.
+          PDF, DOC, XLS, XLSX, CSV, JPG, PNG или ZIP до 25 МБ.
         </span>
         <input
           ref={fileInputRef}
           name="attachment"
           type="file"
-          accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png,.zip"
+          accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.jpg,.jpeg,.png,.zip"
           onChange={handleFileChange}
         />
         {fileName && <span className="fileFieldName">{fileName}</span>}
