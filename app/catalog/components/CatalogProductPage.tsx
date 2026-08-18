@@ -2,13 +2,29 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import LeadCapture from "../../components/LeadCapture";
 import SiteFooter from "../../components/SiteFooter";
 import SiteHeader from "../../components/SiteHeader";
+import KnowledgeLinks from "../../components/KnowledgeLinks";
 import type { CatalogProductConfig } from "../../data/catalogProducts";
+import type { KnowledgeCategorySlug } from "../../data/knowledge";
 import CatalogRequestBuilder from "./CatalogRequestBuilder";
 import styles from "../gkl-profile/gklProfile.module.css";
 
 export default function CatalogProductPage({ config }: { config: CatalogProductConfig }) {
   const hasCalculators = config.calculators.length > 0;
   const secondHref = hasCalculators ? "#calculators" : "#specification";
+  const knowledgeCategory: Partial<Record<string, KnowledgeCategorySlug>> = {
+    "design-ceilings": "reechnye-dizaynerskie-potolki",
+    "rack-ceilings": "reechnye-dizaynerskie-potolki",
+    grilyato: "grilyato",
+    "medical-ceilings": "meditsinskie-potolki",
+    "revision-hatches": "revizionnye-lyuki",
+    "raised-floors": "falshpoly",
+    "sandwich-panels": "sendvich-paneli",
+    "gazosilikatnyy-blok": "gazosilikatnye-bloki",
+    "kirpich-keramicheskiy": "kirpich",
+    "kirpich-silikatnyy": "kirpich",
+    "metal-roll": "metalloprokat",
+    rebar: "armatura",
+  };
 
   return (
     <main className={styles.page}>
@@ -119,6 +135,10 @@ export default function CatalogProductPage({ config }: { config: CatalogProductC
           <p>На выходе — проверенная заявка и понятное коммерческое предложение.</p>
         </div>
       </section>
+
+      {knowledgeCategory[config.slug] ? (
+        <KnowledgeLinks category={knowledgeCategory[config.slug]!} />
+      ) : null}
 
       <LeadCapture id="manager-request" eyebrow="Можно проще" title={config.managerTitle} text={config.managerText} />
       <SiteFooter />

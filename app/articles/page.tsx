@@ -196,6 +196,18 @@ export default function ArticlesPage() {
       </section>
 
       <section className="articleHubSection">
+        <aside className="knowledgeHubPromo">
+          <div>
+            <p className="label">Новый справочный раздел</p>
+            <h2>Нужен ответ на конкретный вопрос?</h2>
+            <p>
+              В базе знаний собраны 100 коротких практических разборов: подбор,
+              расчёт, заявка, приёмка и поставка материалов.
+            </p>
+          </div>
+          <a className="button primary" href="/faq">Открыть базу знаний →</a>
+        </aside>
+
         <div className="articleCategoryNav">
           {categories.map((category) => (
             <a href={`#${category.id}`} key={category.id}>

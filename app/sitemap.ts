@@ -1,11 +1,22 @@
 import type { MetadataRoute } from "next";
+import { knowledgeTopics } from "./data/knowledge";
 
 const baseUrl = "https://ideleon.com";
+const siteUpdatedAt = new Date("2026-08-18T00:00:00.000Z");
 
-const routes: Array<{ path: string; priority: number }> = [
+const routes: Array<{
+  path: string;
+  priority: number;
+  changeFrequency?: MetadataRoute.Sitemap[number]["changeFrequency"];
+}> = [
   { path: "", priority: 1 },
   { path: "/catalog", priority: 0.7 },
   { path: "/articles", priority: 0.7 },
+  { path: "/faq", priority: 0.8 },
+  { path: "/articles/profil-dlya-gkl", priority: 0.65 },
+  { path: "/articles/potolochnye-sistemy", priority: 0.65 },
+  { path: "/articles/revizionnye-lyuki", priority: 0.65 },
+  { path: "/articles/postavki-stroymaterialov", priority: 0.65 },
   { path: "/about", priority: 0.7 },
   { path: "/privacy", priority: 0.7 },
   { path: "/solutions", priority: 0.7 },
@@ -59,12 +70,19 @@ const routes: Array<{ path: string; priority: number }> = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
-
-  return routes.map((route) => ({
+  const staticRoutes: MetadataRoute.Sitemap = routes.map((route) => ({
     url: `${baseUrl}${route.path}`,
-    lastModified,
-    changeFrequency: "weekly" as const,
+    lastModified: siteUpdatedAt,
+    changeFrequency: route.changeFrequency ?? (route.path.startsWith("/articles/") ? "monthly" : "weekly"),
     priority: route.priority,
   }));
+
+  const knowledgeRoutes: MetadataRoute.Sitemap = knowledgeTopics.map((topic) => ({
+    url: `${baseUrl}/faq/${topic.slug}`,
+    lastModified: new Date(`${topic.updatedAt ?? "2026-08-18"}T00:00:00.000Z`),
+    changeFrequency: "monthly",
+    priority: topic.searchIntent === "transactional" ? 0.75 : 0.65,
+  }));
+
+  return [...staticRoutes, ...knowledgeRoutes];
 }
