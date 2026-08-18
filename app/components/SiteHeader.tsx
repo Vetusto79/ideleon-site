@@ -47,6 +47,18 @@ export default function SiteHeader() {
   }
 
   const primaryPhone = siteConfig.contacts.phones[0];
+  const menuItems = siteConfig.menu.map((item) =>
+    item.href === "/articles" && item.children
+      ? {
+          ...item,
+          children: [
+            { label: "Редакционные статьи", href: "/articles" },
+            { label: "База знаний / FAQ", href: "/faq" },
+            ...item.children.slice(1),
+          ],
+        }
+      : item,
+  );
 
   return (
     <>
@@ -80,7 +92,7 @@ export default function SiteHeader() {
         </div>
 
         <nav id="site-navigation" className={mobileOpen ? "nav navMobileOpen" : "nav"}>
-          {siteConfig.menu.map((item) => {
+          {menuItems.map((item) => {
             const rootExpanded = openRoot === item.href;
 
             return (

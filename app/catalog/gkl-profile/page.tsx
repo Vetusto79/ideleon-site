@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LeadCapture from "../../components/LeadCapture";
+import KnowledgeLinks from "../../components/KnowledgeLinks";
 import SiteFooter from "../../components/SiteFooter";
 import SiteHeader from "../../components/SiteHeader";
 import ProfileRequestBuilder from "./ProfileRequestBuilder";
@@ -210,6 +211,8 @@ export default function GklProfilePage() {
           <p>Нет всего списка? Присылайте то, что есть. Остальное уточним.</p>
         </div>
       </section>
+
+      <KnowledgeLinks category="profil-gkl" />
 
       <LeadCapture
         id="manager-request"

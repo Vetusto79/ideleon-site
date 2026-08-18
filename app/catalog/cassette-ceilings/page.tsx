@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import LeadCapture from "../../components/LeadCapture";
+import KnowledgeLinks from "../../components/KnowledgeLinks";
 import SiteFooter from "../../components/SiteFooter";
 import SiteHeader from "../../components/SiteHeader";
 import CassetteCeilingRequestBuilder from "./CassetteCeilingRequestBuilder";
@@ -230,6 +231,8 @@ export default function CassetteCeilingsPage() {
           <p>Нет половины данных? Присылайте оставшуюся половину — начнём с неё.</p>
         </div>
       </section>
+
+      <KnowledgeLinks category="kassetnye-potolki" />
 
       <LeadCapture
         id="manager-request"
