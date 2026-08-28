@@ -3,7 +3,6 @@ import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import LeadCapture from "./components/LeadCapture";
 import BrandLogos from "./components/BrandLogos";
-import HeroVideo from "./components/HeroVideo";
 
 export const metadata = {
   title: "Поставка строительных материалов для застройщиков и подрядчиков",
@@ -91,10 +90,10 @@ export default function Home() {
     <main>
       <SiteHeader />
 
-      <section className="hero homeHero">
+      <section className="hero">
         <div className="heroText">
           <p className="label">Комплексные поставки по всей России</p>
-          <h1>Надёжный поставщик строительных материалов</h1>
+          <h1>Надёжный поставщик строительных материалов для профессиональных строителей</h1>
           <p className="lead">
             Иделеон поставляет строительные и потолочные системы для застройщиков,
             подрядчиков, коммерческих объектов и строительных компаний. Помогаем
@@ -105,7 +104,9 @@ export default function Home() {
             <CallbackModal />
           </div>
         </div>
-        <HeroVideo />
+        <div className="heroImage">
+          <img src="/images/hero-construction.jpg" alt="Строительный объект" />
+        </div>
       </section>
 
       <section className="features">
