@@ -3,6 +3,7 @@ import SiteHeader from "./components/SiteHeader";
 import SiteFooter from "./components/SiteFooter";
 import LeadCapture from "./components/LeadCapture";
 import BrandLogos from "./components/BrandLogos";
+import HeroCarousel from "./components/HeroCarousel";
 
 export const metadata = {
   title: "Поставка строительных материалов для застройщиков и подрядчиков",
@@ -104,9 +105,7 @@ export default function Home() {
             <CallbackModal />
           </div>
         </div>
-        <div className="heroImage">
-          <img src="/images/hero-construction.jpg" alt="Строительный объект" />
-        </div>
+        <HeroCarousel />
       </section>
 
       <section className="features">
