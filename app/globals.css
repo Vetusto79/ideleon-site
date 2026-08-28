@@ -107,6 +107,99 @@ a { color: inherit; text-decoration: none; }
   display: block;
 }
 
+.heroCarousel {
+  min-height: 0;
+  aspect-ratio: 16 / 10;
+  isolation: isolate;
+}
+
+.heroCarouselSlide {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+  pointer-events: none;
+}
+
+.heroCarouselSlide.isActive {
+  z-index: 1;
+  opacity: 1;
+}
+
+.heroCarouselSlide img {
+  min-height: 0;
+}
+
+.heroCarousel::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  z-index: 2;
+  height: 30%;
+  background: linear-gradient(to top, rgba(15, 23, 42, 0.34), transparent);
+  pointer-events: none;
+}
+
+.heroCarouselArrow {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(255, 255, 255, 0.58);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.48);
+  color: #ffffff;
+  font: 400 36px/1 Arial, Helvetica, sans-serif;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 0.2s ease, transform 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.heroCarouselArrow:hover,
+.heroCarouselArrow:focus-visible {
+  background: rgba(255, 106, 0, 0.92);
+  outline: none;
+  transform: translateY(-50%) scale(1.05);
+}
+
+.heroCarouselArrowPrevious {
+  left: 18px;
+}
+
+.heroCarouselArrowNext {
+  right: 18px;
+}
+
+.heroCarouselDots {
+  position: absolute;
+  left: 50%;
+  bottom: 18px;
+  z-index: 3;
+  display: flex;
+  gap: 9px;
+  transform: translateX(-50%);
+}
+
+.heroCarouselDots button {
+  width: 10px;
+  height: 10px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.46);
+  cursor: pointer;
+  transition: width 0.2s ease, background 0.2s ease;
+}
+
+.heroCarouselDots button.isActive {
+  width: 30px;
+  background: var(--orange);
+  border-color: var(--orange);
+}
+
 .features {
   max-width: 1760px;
   margin: 0 auto;
@@ -582,6 +675,14 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 640px) {
   .headerContacts { align-items: flex-start; }
   .hero h1 { font-size: 42px; }
+  .heroCarouselArrow {
+    width: 40px;
+    height: 40px;
+    font-size: 31px;
+  }
+  .heroCarouselArrowPrevious { left: 12px; }
+  .heroCarouselArrowNext { right: 12px; }
+  .heroCarouselDots { bottom: 12px; }
   .features, .catalogGrid, .brandGrid, .steps, .footer, .form { grid-template-columns: 1fr; }
 }
 
@@ -898,7 +999,10 @@ button.button:disabled {
   button.button,
   .form button,
   .callbackForm button[type="submit"],
-  .modalClose {
+  .modalClose,
+  .heroCarouselSlide,
+  .heroCarouselArrow,
+  .heroCarouselDots button {
     transition: none;
   }
 
