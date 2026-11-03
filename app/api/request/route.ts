@@ -217,7 +217,7 @@ export async function POST(request: Request) {
     const mailFrom = process.env.MAIL_FROM || smtpUser;
     const mailTo = process.env.MAIL_TO || "zakaz@ideleon.com";
     const mailCc =
-      process.env.MAIL_CC || "ilya@ideleon.com,alexei@ideleon.com";
+      process.env.MAIL_CC || "ilya@ideleon.com";
 
     if (!smtpUser || !smtpPassword || !mailFrom) {
       return NextResponse.json(
