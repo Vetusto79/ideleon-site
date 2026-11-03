@@ -13,12 +13,8 @@ export const siteConfig = {
         label: "+7-926-696-13-86",
         href: "tel:+79266961386",
       },
-      {
-        label: "+7-915-038-40-30",
-        href: "tel:+79150384030",
-      },
     ],
-    emails: ["ilya@ideleon.com", "alexei@ideleon.com"],
+    emails: ["ilya@ideleon.com"],
     orderEmail: "zakaz@ideleon.com",
   },
 
