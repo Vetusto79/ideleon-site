@@ -10,7 +10,7 @@ export type CalculatorProjectItem = {
   createdAt: string;
 };
 
-const LOGO_URL = "/wp-content/themes/ideleon-static/static/images/logo/ideleon-logo-horizontal.webp";
+const LOGO_URL = "/wp-content/themes/ideleon-static/static/images/logo/ideleon-logo-horizontal.png";
 
 function columnWidth(column: OfferColumn) {
   return column.width ?? 16;
@@ -59,7 +59,7 @@ async function loadLogoBase64() {
     const part = bytes.subarray(i, i + chunk);
     for (let j = 0; j < part.length; j += 1) binary += String.fromCharCode(part[j]);
   }
-  return `data:image/webp;base64,${btoa(binary)}`;
+  return `data:image/png;base64,${btoa(binary)}`;
 }
 
 function setupWorksheet(workbook: ExcelJS.Workbook, calculator: CalculatorConfig) {
@@ -109,7 +109,7 @@ function styleNote(cell: ExcelJS.Cell) {
 
 async function addLogo(worksheet: ExcelJS.Worksheet, workbook: ExcelJS.Workbook) {
   const base64 = await loadLogoBase64();
-  const imageId = workbook.addImage({ base64, extension: "webp" });
+  const imageId = workbook.addImage({ base64, extension: "png" });
   worksheet.addImage(imageId, {
     tl: { col: 0, row: 0 },
     ext: { width: 300, height: 82 },
