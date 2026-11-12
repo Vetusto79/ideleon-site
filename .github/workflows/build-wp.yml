@@ -1,4 +1,4 @@
-name: Build Test
+name: Build WordPress migration package
 
 on: [push]
 
@@ -14,3 +14,8 @@ jobs:
       - run: npm run build
         env:
           NEXT_TELEMETRY_DISABLED: "1"
+      - run: bash build-wp-package.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ideleon-static-theme
+          path: ideleon-static-theme.zip
