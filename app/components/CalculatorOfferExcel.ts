@@ -72,14 +72,6 @@ function setupWorksheet(workbook: ExcelJS.Workbook, calculator: CalculatorConfig
     fitToHeight: 0,
     paperSize: 9,
   };
-  worksheet.pageMargins = {
-    left: 0.35,
-    right: 0.35,
-    top: 0.45,
-    bottom: 0.45,
-    header: 0.2,
-    footer: 0.2,
-  };
   worksheet.columns = calculator.offerColumns.map((column) => ({
     key: column.key,
     width: columnWidth(column),
