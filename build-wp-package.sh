@@ -5,6 +5,31 @@ rm -rf wp-package
 mkdir -p wp-package/ideleon-static/static
 cp -R out/. wp-package/ideleon-static/static/
 
+# Create crawler directives for the migrated static site.
+cat > wp-package/ideleon-static/static/robots.txt <<'EOF'
+User-agent: *
+Allow: /
+
+Sitemap: https://ideleon.com/sitemap.xml
+EOF
+
+# Build a sitemap from every generated static HTML page.
+{
+  echo '<?xml version="1.0" encoding="UTF-8"?>'
+  echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
+  find wp-package/ideleon-static/static -type f -name 'index.html' | sort | while read -r file; do
+    rel="${file#wp-package/ideleon-static/static/}"
+    if [ "$rel" = "index.html" ]; then
+      url="https://ideleon.com/"
+    else
+      dir="${rel%/index.html}"
+      url="https://ideleon.com/${dir}/"
+    fi
+    printf '  <url><loc>%s</loc></url>\n' "$url"
+  done
+  echo '</urlset>'
+} > wp-package/ideleon-static/static/sitemap.xml
+
 # Remove obsolete partner contacts from generated HTML/JS/text payloads.
 find wp-package/ideleon-static/static -type f \
   ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' ! -name '*.webp' ! -name '*.gif' ! -name '*.ico' \
