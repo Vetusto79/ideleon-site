@@ -127,31 +127,72 @@ add_filter('redirect_canonical', 'ideleon_cancel_canonical');
 
 function ideleon_api_request() {
     if (is_admin()) return;
+
     $path = ideleon_static_path();
     $method = isset($_SERVER['REQUEST_METHOD']) ? strtoupper($_SERVER['REQUEST_METHOD']) : 'GET';
     if ($path !== '/api/request' || $method !== 'POST') return;
 
-    $raw = file_get_contents('php://input');
-    $data = json_decode($raw, true);
-    if (!is_array($data)) $data = $_POST;
+    $data = $_POST;
+    if (empty($data)) {
+        $raw = file_get_contents('php://input');
+        $json = json_decode($raw, true);
+        if (is_array($json)) $data = $json;
+    }
 
     $name = isset($data['name']) ? sanitize_text_field($data['name']) : '';
     $phone = isset($data['phone']) ? sanitize_text_field($data['phone']) : '';
     $email = isset($data['email']) ? sanitize_email($data['email']) : '';
     $subject = isset($data['subject']) ? sanitize_text_field($data['subject']) : 'Заявка с сайта ИДЕЛЕОН';
-    $message = isset($data['message']) ? wp_kses_post($data['message']) : '';
-    $source = isset($data['source']) ? sanitize_text_field($data['source']) : 'Сайт';
+    $task = isset($data['task']) ? sanitize_textarea_field($data['task']) : '';
+    $message = isset($data['message']) ? sanitize_textarea_field($data['message']) : '';
+    $source = isset($data['sourcePage']) ? esc_url_raw($data['sourcePage']) : (isset($data['source']) ? sanitize_text_field($data['source']) : 'Сайт');
 
-    $body = "Источник: {$source}\nИмя: {$name}\nТелефон: {$phone}\nE-mail: {$email}\n\n{$message}";
-    $headers = array('Content-Type: text/plain; charset=UTF-8');
+    if ($subject === 'Заявка с сайта ИДЕЛЕОН' && !empty($data['requestType'])) {
+        $subject = $data['requestType'] === 'calculation' ? 'Расчёт с сайта ИДЕЛЕОН' : 'Заявка с сайта ИДЕЛЕОН';
+    }
+
+    $body = "Источник: {$source}\nИмя: {$name}\nТелефон: {$phone}\nE-mail: {$email}\n\n";
+    if ($task !== '') $body .= "Задача / расчёт:\n{$task}\n\n";
+    if ($message !== '') $body .= "Сообщение:\n{$message}\n";
+
+    $headers = array(
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: ИДЕЛЕОН <zakaz@ideleon.com>',
+    );
     if ($email) $headers[] = 'Reply-To: ' . $email;
 
-    $sent = wp_mail('zakaz@ideleon.com', $subject, $body, $headers);
-    if ($sent) wp_mail('ilya@ideleon.com', 'Копия: ' . $subject, $body, $headers);
+    $attachments = array();
+    if (!empty($_FILES['attachment']['tmp_name']) && is_uploaded_file($_FILES['attachment']['tmp_name'])) {
+        $uploadError = isset($_FILES['attachment']['error']) ? (int) $_FILES['attachment']['error'] : UPLOAD_ERR_OK;
+        if ($uploadError === UPLOAD_ERR_OK) {
+            $attachments[] = $_FILES['attachment']['tmp_name'];
+        }
+    }
+
+    $mailError = '';
+    $errorHandler = function($error) use (&$mailError) {
+        if ($error instanceof WP_Error) {
+            $mailError = $error->get_error_message();
+        }
+    };
+    add_action('wp_mail_failed', $errorHandler);
+
+    $sent = wp_mail('zakaz@ideleon.com', $subject, $body, $headers, $attachments);
+
+    if ($sent) {
+        wp_mail('ilya@ideleon.com', 'Копия: ' . $subject, $body, $headers, $attachments);
+    }
+
+    remove_action('wp_mail_failed', $errorHandler);
 
     status_header($sent ? 200 : 500);
     header('Content-Type: application/json; charset=utf-8');
-    echo wp_json_encode(array('ok' => (bool) $sent));
+    echo wp_json_encode(array(
+        'ok' => (bool) $sent,
+        'message' => $sent
+            ? 'Заявка успешно отправлена.'
+            : ('Не удалось отправить письмо. ' . ($mailError ?: 'Почтовый сервер Hoster не принял сообщение.')),
+    ));
     exit;
 }
 add_action('template_redirect', 'ideleon_api_request', 1);
