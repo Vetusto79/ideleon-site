@@ -56,7 +56,8 @@ async function loadLogoBase64() {
   let binary = "";
   const chunk = 0x8000;
   for (let i = 0; i < bytes.length; i += chunk) {
-    const part = bytes.subarray(i, i + chunk);\n    for (let j = 0; j < part.length; j += 1) binary += String.fromCharCode(part[j]);
+    const part = bytes.subarray(i, i + chunk);
+    for (let j = 0; j < part.length; j += 1) binary += String.fromCharCode(part[j]);
   }
   return `data:image/webp;base64,${btoa(binary)}`;
 }
