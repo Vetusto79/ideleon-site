@@ -55,8 +55,12 @@ export default function CallbackModalHost() {
         return;
       }
 
-      // На компьютере tel: остаётся в HTML как резервный вариант без JavaScript,
-      // но при штатной загрузке клиента клик открывает форму обратного звонка.
+      // На компьютере клик по телефону открывает форму обратного звонка.
+      // Фиксируем именно клик по телефону и отдельно открытие callback-формы.
+      reachGoal("click_phone", {
+        source: window.location.href,
+        phone: link.getAttribute("href") || "",
+      });
       event.preventDefault();
       openModal(link.getAttribute("href") || undefined);
     }
@@ -166,6 +170,8 @@ export default function CallbackModalHost() {
             autoComplete="tel"
             required
           />
+          <input type="hidden" name="email" value="zakaz@ideleon.com" />
+          <input type="hidden" name="message" value="Запрос обратного звонка с сайта ИДЕЛЕОН" />
 
           <label className="consentField compact">
             <input name="consent" type="checkbox" value="yes" required />
