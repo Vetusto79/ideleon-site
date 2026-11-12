@@ -5,6 +5,12 @@ rm -rf wp-package
 mkdir -p wp-package/ideleon-static/static
 cp -R out/. wp-package/ideleon-static/static/
 
+# Remove obsolete partner contacts from generated HTML/JS/text payloads.
+find wp-package/ideleon-static/static -type f \
+  ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' ! -name '*.webp' ! -name '*.gif' ! -name '*.ico' \
+  ! -name '*.svg' ! -name '*.woff' ! -name '*.woff2' ! -name '*.ttf' ! -name '*.mp4' ! -name '*.pdf' \
+  -print0 | xargs -0 perl -pi -e 's/sapunov\\.a\\.a\\@ideleon-group\\.ru/zakaz\\@ideleon.com/g; s/alexei\\@ideleon\\.com/ilya\\@ideleon.com/g; s/\\+7-910-305-73-02/\\+7-926-696-13-86/g; s/\\+7-915-038-40-30/\\+7-926-696-13-86/g'
+
 cat > wp-package/ideleon-static/style.css <<'EOF'
 /*
 Theme Name: ИДЕЛЕОН — Static Migration
@@ -72,10 +78,14 @@ function ideleon_serve_asset() {
             break;
         }
     }
-    if (!$match) return;
-
-    $file = ideleon_static_file(ltrim($path, '/'));
-    if (!$file) return;
+    if (!$match) {
+        $candidate = ideleon_static_file(ltrim($path, '/'));
+        if (!$candidate || strtolower(pathinfo($candidate, PATHINFO_EXTENSION)) === 'html') return;
+        $file = $candidate;
+    } else {
+        $file = ideleon_static_file(ltrim($path, '/'));
+        if (!$file) return;
+    }
 
     nocache_headers();
     header('Content-Type: ' . ideleon_mime($file));
