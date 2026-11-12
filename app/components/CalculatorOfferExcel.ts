@@ -49,19 +49,6 @@ function asNumber(value: number) {
   return Number.isFinite(value) ? value : 0;
 }
 
-async function loadLogoBase64() {
-  const response = await fetch(LOGO_URL, { cache: "force-cache" });
-  if (!response.ok) throw new Error(`Не удалось загрузить логотип: ${LOGO_URL}`);
-  const bytes = new Uint8Array(await response.arrayBuffer());
-  let binary = "";
-  const chunk = 0x8000;
-  for (let i = 0; i < bytes.length; i += chunk) {
-    const part = bytes.subarray(i, i + chunk);
-    for (let j = 0; j < part.length; j += 1) binary += String.fromCharCode(part[j]);
-  }
-  return `data:image/png;base64,${btoa(binary)}`;
-}
-
 function setupWorksheet(workbook: ExcelJS.Workbook, calculator: CalculatorConfig) {
   const worksheet = workbook.addWorksheet("КП");
   worksheet.views = [{ showGridLines: false }];
@@ -105,15 +92,6 @@ function styleBody(cell: ExcelJS.Cell, wrap = false) {
 function styleNote(cell: ExcelJS.Cell) {
   cell.font = { name: "Arial", size: 11, color: { argb: "FF49627F" } };
   cell.alignment = { vertical: "middle", wrapText: true };
-}
-
-async function addLogo(worksheet: ExcelJS.Worksheet, workbook: ExcelJS.Workbook) {
-  const base64 = await loadLogoBase64();
-  const imageId = workbook.addImage({ base64, extension: "png" });
-  worksheet.addImage(imageId, {
-    tl: { col: 0, row: 0 },
-    ext: { width: 300, height: 82 },
-  });
 }
 
 function addMergedText(
@@ -206,7 +184,6 @@ async function buildWorkbook(
   workbook.modified = new Date();
   const worksheet = setupWorksheet(workbook, calculator);
   buildContent(worksheet);
-  await addLogo(worksheet, workbook);
   const buffer = await workbook.xlsx.writeBuffer();
   return new Blob([buffer], {
     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
