@@ -25,7 +25,9 @@ EOF
       dir="${rel%/index.html}"
       url="https://ideleon.com/${dir}/"
     fi
-    printf '  <url><loc>%s</loc></url>\n' "$url"
+    if [ "$url" != "https://ideleon.com/404/" ]; then
+      printf '  <url><loc>%s</loc></url>\n' "$url"
+    fi
   done
   echo '</urlset>'
 } > wp-package/ideleon-static/static/sitemap.xml
@@ -150,6 +152,123 @@ function ideleon_cancel_canonical($redirect) {
 }
 add_filter('redirect_canonical', 'ideleon_cancel_canonical');
 
+
+function ideleon_mail_settings() {
+    $defaults = array(
+        'user' => '',
+        'pass' => '',
+        'host' => 'smtp.yandex.ru',
+        'port' => 465,
+        'secure' => 'ssl',
+    );
+    $saved = get_option('ideleon_mail_settings', array());
+    if (!is_array($saved)) $saved = array();
+
+    if (empty($saved)) {
+        $all = wp_load_alloptions();
+        foreach ($all as $value) {
+            if (!is_array($value)) continue;
+            $candidate = array();
+            foreach (array('user','login','username','email','smtp_user') as $k) {
+                if (!empty($value[$k]) && strpos((string)$value[$k], '@') !== false) { $candidate['user'] = $value[$k]; break; }
+            }
+            foreach (array('pass','password','smtp_pass','smtp_password') as $k) {
+                if (!empty($value[$k])) { $candidate['pass'] = $value[$k]; break; }
+            }
+            if (!empty($candidate['user']) && !empty($candidate['pass'])) {
+                $saved = $candidate;
+                break;
+            }
+        }
+    }
+
+    return wp_parse_args($saved, $defaults);
+}
+
+function ideleon_mail_admin_menu() {
+    add_options_page('Почта ИДЕЛЕОН', 'Почта ИДЕЛЕОН', 'manage_options', 'ideleon-mail', 'ideleon_mail_settings_page');
+}
+add_action('admin_menu', 'ideleon_mail_admin_menu');
+
+function ideleon_mail_register_settings() {
+    register_setting('ideleon_mail_group', 'ideleon_mail_settings', array(
+        'type' => 'array',
+        'sanitize_callback' => function($value) {
+            $old = get_option('ideleon_mail_settings', array());
+            if (!is_array($old)) $old = array();
+            return array(
+                'user' => isset($value['user']) ? sanitize_email($value['user']) : ($old['user'] ?? ''),
+                'pass' => isset($value['pass']) && $value['pass'] !== '' ? sanitize_text_field($value['pass']) : ($old['pass'] ?? ''),
+                'host' => 'smtp.yandex.ru',
+                'port' => 465,
+                'secure' => 'ssl',
+            );
+        }
+    ));
+}
+add_action('admin_init', 'ideleon_mail_register_settings');
+
+function ideleon_mail_settings_page() {
+    if (!current_user_can('manage_options')) return;
+    $s = ideleon_mail_settings();
+    ?>
+    <div class="wrap">
+        <h1>Почта ИДЕЛЕОН</h1>
+        <p>SMTP Яндекс для отправки заявок с сайта.</p>
+        <form method="post" action="options.php">
+            <?php settings_fields('ideleon_mail_group'); ?>
+            <table class="form-table">
+                <tr><th scope="row"><label for="ideleon-mail-user">Yandex e-mail</label></th>
+                    <td><input id="ideleon-mail-user" name="ideleon_mail_settings[user]" type="email" class="regular-text" value="<?php echo esc_attr($s['user']); ?>" placeholder="example@yandex.ru"></td></tr>
+                <tr><th scope="row"><label for="ideleon-mail-pass">Пароль приложения</label></th>
+                    <td><input id="ideleon-mail-pass" name="ideleon_mail_settings[pass]" type="password" class="regular-text" value="<?php echo esc_attr($s['pass']); ?>" autocomplete="new-password"></td></tr>
+            </table>
+            <?php submit_button('Сохранить'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+function ideleon_smtp_send($to, $subject, $body, $replyTo = '', $attachments = array()) {
+    $s = ideleon_mail_settings();
+    if (empty($s['user']) || empty($s['pass'])) {
+        return new WP_Error('smtp_config', 'SMTP Яндекс не настроен. Откройте Настройки → Почта ИДЕЛЕОН.');
+    }
+
+    require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+    require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+    require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+
+    $lastError = '';
+    foreach (array(array('port'=>465,'secure'=>'ssl'), array('port'=>587,'secure'=>'tls')) as $attempt) {
+        try {
+            $mail = new \PHPMailer\PHPMailer\PHPMailer(true);
+            $mail->isSMTP();
+            $mail->Host = 'smtp.yandex.ru';
+            $mail->SMTPAuth = true;
+            $mail->Username = $s['user'];
+            $mail->Password = $s['pass'];
+            $mail->Port = $attempt['port'];
+            $mail->SMTPSecure = $attempt['secure'];
+            $mail->CharSet = 'UTF-8';
+            $mail->setFrom($s['user'], 'ИДЕЛЕОН');
+            $mail->addAddress($to);
+            if ($replyTo && is_email($replyTo)) $mail->addReplyTo($replyTo);
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+            $mail->isHTML(false);
+            foreach ((array)$attachments as $attachment) {
+                if (is_string($attachment) && is_file($attachment)) $mail->addAttachment($attachment);
+            }
+            $mail->send();
+            return true;
+        } catch (\Throwable $e) {
+            $lastError = $e->getMessage();
+        }
+    }
+    return new WP_Error('smtp_send_failed', 'SMTP Яндекс: ' . $lastError);
+}
+
 function ideleon_api_request() {
     if (is_admin()) return;
 
@@ -194,21 +313,12 @@ function ideleon_api_request() {
         }
     }
 
-    $mailError = '';
-    $errorHandler = function($error) use (&$mailError) {
-        if ($error instanceof WP_Error) {
-            $mailError = $error->get_error_message();
-        }
-    };
-    add_action('wp_mail_failed', $errorHandler);
-
-    $sent = wp_mail('zakaz@ideleon.com', $subject, $body, $headers, $attachments);
-
+    $mailResult = ideleon_smtp_send('zakaz@ideleon.com', $subject, $body, $email, $attachments);
+    $sent = ($mailResult === true);
     if ($sent) {
-        wp_mail('ilya@ideleon.com', 'Копия: ' . $subject, $body, $headers, $attachments);
+        ideleon_smtp_send('ilya@ideleon.com', 'Копия: ' . $subject, $body, $email, $attachments);
     }
-
-    remove_action('wp_mail_failed', $errorHandler);
+    $mailError = $mailResult instanceof WP_Error ? $mailResult->get_error_message() : '';
 
     status_header($sent ? 200 : 500);
     header('Content-Type: application/json; charset=utf-8');
