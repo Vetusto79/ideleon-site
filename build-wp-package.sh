@@ -5,6 +5,9 @@ rm -rf wp-package
 mkdir -p wp-package/ideleon-static/static
 cp -R out/. wp-package/ideleon-static/static/
 
+# Calculator Excel export fetches the logo directly in the browser. Use the WordPress theme path there.
+find wp-package/ideleon-static/static/_next/static -type f -name '*.js' -print0 | xargs -0 perl -pi -e 's#"/images/logo/ideleon-logo-horizontal\\.webp"#"/wp-content/themes/ideleon-static/static/images/logo/ideleon-logo-horizontal.webp"#g; s#\x27/images/logo/ideleon-logo-horizontal\\.webp\x27#\x27/wp-content/themes/ideleon-static/static/images/logo/ideleon-logo-horizontal.webp\x27#g'
+
 # Create crawler directives for the migrated static site.
 cat > wp-package/ideleon-static/static/robots.txt <<'EOF'
 User-agent: *
