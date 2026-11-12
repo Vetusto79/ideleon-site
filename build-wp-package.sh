@@ -9,7 +9,7 @@ cp -R out/. wp-package/ideleon-static/static/
 find wp-package/ideleon-static/static -type f \
   ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' ! -name '*.webp' ! -name '*.gif' ! -name '*.ico' \
   ! -name '*.svg' ! -name '*.woff' ! -name '*.woff2' ! -name '*.ttf' ! -name '*.mp4' ! -name '*.pdf' \
-  -print0 | xargs -0 perl -pi -e 's/sapunov\\.a\\.a\\@ideleon-group\\.ru/zakaz\\@ideleon.com/g; s/alexei\\@ideleon\\.com/ilya\\@ideleon.com/g; s/\\+7-910-305-73-02/\\+7-926-696-13-86/g; s/\\+7-915-038-40-30/\\+7-926-696-13-86/g'
+  -print0 | xargs -0 perl -pi -e 's/sapunov\.a\.a\@ideleon-group\.ru/zakaz\@ideleon.com/g; s/alexei\@ideleon\.com/ilya\@ideleon.com/g; s/\+7-910-305-73-02/\+7-926-696-13-86/g; s/\+7-915-038-40-30/\+7-926-696-13-86/g'
 
 cat > wp-package/ideleon-static/style.css <<'EOF'
 /*
