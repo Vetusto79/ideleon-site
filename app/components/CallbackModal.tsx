@@ -119,6 +119,8 @@ export default function CallbackModal() {
                 autoComplete="tel"
                 required
               />
+              <input type="hidden" name="email" value="zakaz@ideleon.com" />
+              <input type="hidden" name="message" value="Запрос обратного звонка с сайта ИДЕЛЕОН" />
 
               <label className="consentField compact">
                 <input name="consent" type="checkbox" value="yes" required />
