@@ -99,7 +99,7 @@ function styleHeader(cell: ExcelJS.Cell) {
 function styleBody(cell: ExcelJS.Cell, wrap = false) {
   cell.font = { name: "Arial", size: 11 };
   cell.border = { left: { style: "thin", color: { argb: "FFCBD5E1" } }, right: { style: "thin", color: { argb: "FFCBD5E1" } }, top: { style: "thin", color: { argb: "FFCBD5E1" } }, bottom: { style: "thin", color: { argb: "FFCBD5E1" } } };
-  cell.alignment = { vertical: "center", wrapText: wrap };
+  cell.alignment = { vertical: "middle", wrapText: wrap };
 }
 
 function styleNote(cell: ExcelJS.Cell) {
