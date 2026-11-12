@@ -33,10 +33,7 @@ EOF
 } > wp-package/ideleon-static/static/sitemap.xml
 
 # Remove obsolete partner contacts from generated HTML/JS/text payloads.
-find wp-package/ideleon-static/static -type f \
-  ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' ! -name '*.webp' ! -name '*.gif' ! -name '*.ico' \
-  ! -name '*.svg' ! -name '*.woff' ! -name '*.woff2' ! -name '*.ttf' ! -name '*.mp4' ! -name '*.pdf' \
-  -print0 | xargs -0 perl -pi -e 's/sapunov\.a\.a\@ideleon-group\.ru/zakaz\@ideleon.com/g; s/alexei\@ideleon\.com/ilya\@ideleon.com/g; s/\+7-910-305-73-02/\+7-926-696-13-86/g; s/\+7-915-038-40-30/\+7-926-696-13-86/g'
+find wp-package/ideleon-static/static -type f   ! -name '*.png' ! -name '*.jpg' ! -name '*.jpeg' ! -name '*.webp' ! -name '*.gif' ! -name '*.ico'   ! -name '*.svg' ! -name '*.woff' ! -name '*.woff2' ! -name '*.ttf' ! -name '*.mp4' ! -name '*.pdf'   -print0 | xargs -0 perl -pi -e 's/sapunov\.a\.a\@ideleon-group\.ru/zakaz\@ideleon.com/g; s/alexei\@ideleon\.com/ilya\@ideleon.com/g; s/\+7-910-305-73-02/\+7-926-696-13-86/g; s/\+7-915-038-40-30/\+7-926-696-13-86/g'
 
 cat > wp-package/ideleon-static/style.css <<'EOF'
 /*
@@ -152,7 +149,6 @@ function ideleon_cancel_canonical($redirect) {
 }
 add_filter('redirect_canonical', 'ideleon_cancel_canonical');
 
-
 function ideleon_mail_settings() {
     $defaults = array(
         'user' => '',
@@ -258,7 +254,16 @@ function ideleon_smtp_send($to, $subject, $body, $replyTo = '', $attachments = a
             $mail->Body = $body;
             $mail->isHTML(false);
             foreach ((array)$attachments as $attachment) {
-                if (is_string($attachment) && is_file($attachment)) $mail->addAttachment($attachment);
+                if (is_array($attachment) && !empty($attachment['path']) && is_file($attachment['path'])) {
+                    $mail->addAttachment(
+                        $attachment['path'],
+                        !empty($attachment['name']) ? $attachment['name'] : basename($attachment['path']),
+                        isset($attachment['encoding']) ? $attachment['encoding'] : 'base64',
+                        !empty($attachment['type']) ? $attachment['type'] : 'application/octet-stream'
+                    );
+                } elseif (is_string($attachment) && is_file($attachment)) {
+                    $mail->addAttachment($attachment);
+                }
             }
             $mail->send();
             return true;
@@ -299,17 +304,19 @@ function ideleon_api_request() {
     if ($task !== '') $body .= "Задача / расчёт:\n{$task}\n\n";
     if ($message !== '') $body .= "Сообщение:\n{$message}\n";
 
-    $headers = array(
-        'Content-Type: text/plain; charset=UTF-8',
-        'From: ИДЕЛЕОН <zakaz@ideleon.com>',
-    );
-    if ($email) $headers[] = 'Reply-To: ' . $email;
-
     $attachments = array();
     if (!empty($_FILES['attachment']['tmp_name']) && is_uploaded_file($_FILES['attachment']['tmp_name'])) {
         $uploadError = isset($_FILES['attachment']['error']) ? (int) $_FILES['attachment']['error'] : UPLOAD_ERR_OK;
         if ($uploadError === UPLOAD_ERR_OK) {
-            $attachments[] = $_FILES['attachment']['tmp_name'];
+            $originalName = isset($_FILES['attachment']['name']) ? sanitize_file_name(wp_unslash($_FILES['attachment']['name'])) : '';
+            $mimeType = isset($_FILES['attachment']['type']) ? sanitize_mime_type($_FILES['attachment']['type']) : '';
+            if ($originalName === '') $originalName = 'КП-ИДЕЛЕОН.xlsx';
+            if ($mimeType === '') $mimeType = ideleon_mime($originalName);
+            $attachments[] = array(
+                'path' => $_FILES['attachment']['tmp_name'],
+                'name' => $originalName,
+                'type' => $mimeType,
+            );
         }
     }
 
