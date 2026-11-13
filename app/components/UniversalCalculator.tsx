@@ -613,7 +613,7 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
               <div className="gklProjectFooter">
                 <button
                   type="button"
-                  className="primaryButton"
+                  className="primaryButton projectDownloadButton"
                   onClick={downloadProjectExcelOffer}
                   disabled={projectItems.length === 0}
                 >
@@ -825,6 +825,18 @@ export default function UniversalCalculator({ calculatorSlug }: { calculatorSlug
           flex-wrap: wrap;
           gap: 12px;
           margin-top: 20px;
+        }
+        .projectDownloadButton {
+          min-height: 56px;
+          padding: 0 24px;
+          border-radius: 14px;
+          font-size: 16px;
+          font-weight: 900;
+          box-shadow: 0 12px 28px rgba(255, 106, 0, 0.2);
+        }
+        .projectDownloadButton:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 16px 34px rgba(255, 106, 0, 0.28);
         }
         @media (max-width: 860px) {
           .gklProjectItem {
