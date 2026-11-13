@@ -9,7 +9,7 @@ export type CalculatorProjectItem = {
   createdAt: string;
 };
 
-const LOGO_URL = "/images/logo/ideleon-logo-horizontal.png";
+const LOGO_URL = "/wp-content/themes/ideleon-static/static/images/logo/ideleon-logo-horizontal.png";
 
 function stringToBytes(value: string) {
   return new TextEncoder().encode(value);
