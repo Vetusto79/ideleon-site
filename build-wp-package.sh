@@ -369,3 +369,5 @@ EOF
 
 (cd wp-package && zip -qr ../ideleon-static-theme.zip ideleon-static)
 ls -lh ideleon-static-theme.zip
+
+# Build trigger: robots.txt SEO fix.
