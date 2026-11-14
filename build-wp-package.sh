@@ -153,6 +153,11 @@ function ideleon_cancel_canonical($redirect) {
 }
 add_filter('redirect_canonical', 'ideleon_cancel_canonical');
 
+function ideleon_robots_txt($output, $public) {
+    return "User-agent: *\nAllow: /\n\nSitemap: https://ideleon.com/sitemap.xml\n";
+}
+add_filter('robots_txt', 'ideleon_robots_txt', 10, 2);
+
 function ideleon_mail_settings() {
     $defaults = array(
         'user' => '',
